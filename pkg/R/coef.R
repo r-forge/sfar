@@ -1,0 +1,286 @@
+# coefficients from sfacross ----
+
+#' @title  coef method for frontier objects
+#'
+#' @name coef
+#'
+#' @aliases coef.sfacross
+#'
+#' @description \code{coef} extracts coefficients for the likelihood estimation
+#'
+#' @param object A (latent class) stochastic frontier model returned by
+#'   \code{\link{sfacross}} or \code{\link{lcmcross}}.
+#' @param extraPar Logical. If \code{TRUE} additional parameters are also
+#'   returned:
+#'
+#'   \code{sigmaSq} = \code{sigmauSq} + \code{sigmavSq},
+#'
+#'   \code{lambdaSq} = \code{sigmauSq}/\code{sigmavSq},
+#'
+#'   \code{sigmauSq} = \eqn{\exp{(Wu)}},
+#'
+#'   \code{sigmavSq} = \eqn{\exp{(Wv)}},
+#'
+#'   \code{sigma} = \code{sigmaSq}^0.5,
+#'
+#'   \code{lambda} = \code{lambdaSq}^0.5,
+#'
+#'   \code{sigmau} = \code{sigmauSq}^0.5,
+#'
+#'   \code{sigmav} = \code{sigmavSq}^0.5,
+#'
+#'   \code{gamma} = \code{sigmauSq}/(\code{sigmauSq} + \code{sigmavSq})
+#'
+#'   In the case of object of class \code{lcmcross} each additional
+#'   parameter terminates with \code{"#"} that represents the class
+#'   number.
+#'
+#' @param ... Currently ignored.
+#'
+#' @return \code{coef} returns a named vector of the coefficients estimated.
+#' @export
+#'
+#' @author K Hervé Dakpo, Yann Desjeux and Laure Latruffe
+#'
+#' @seealso
+#'
+#' \code{\link{sfacross}}, for the stochastic frontier analysis model fitting
+#' function.
+#'
+#' \code{\link{lcmcross}}, for the latent class stochastic frontier analysis
+#' model fitting function.
+#'
+#' @examples
+#'
+#' ## Data on fossil fuel fired steam electric power generation plants in the
+#' ## United States
+#'
+#' # Translog SFA (cost function) truncated normal with scaling property
+#'
+#' tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
+#' log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
+#' I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
+#' udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
+#' scaling = TRUE, method = "mla")
+#'
+#' coef(tl_u_ts)
+#'
+#' ## Using data on eighty-two countries production (DGP)
+#'
+#' # LCM Cobb Douglas (production function) half normal distribution
+#'
+#' cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal",
+#'                     data = worldprod, S = 1, method = "ucminf")
+#'
+#' coef(cb_2c_h)
+#' @keywords methods coefficients
+coef.sfacross <- function(object, extraPar = FALSE, ...) {
+  if (length(extraPar) != 1 || !is.logical(extraPar[1]))
+    stop("argument 'extraPar' must be a single logical value",
+         call. = FALSE)
+  cRes <- object$mleParam
+  if (extraPar) {
+    if (object$udist == "tnormal") {
+      if (object$scaling) {
+        beta <- object$mleParam[1:(object$nXvar)]
+        delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+          (object$nuHvar - 1))]
+        tau <- object$mleParam[object$nXvar + (object$nuHvar -
+          1) + 1]
+        cu <- object$mleParam[object$nXvar + (object$nuHvar -
+          1) + 2]
+        phi <- object$mleParam[(object$nXvar + (object$nuHvar -
+          1) + 2 + 1):(object$nXvar + (object$nuHvar -
+          1) + 2 + object$nvHvar)]
+        uHvar <- model.matrix(object$formula, data = object$dataTable,
+          rhs = 3)
+        vHvar <- model.matrix(object$formula, data = object$dataTable,
+          rhs = 4)
+        Wu <- cu + 2 * as.numeric(crossprod(matrix(delta),
+          t(uHvar[, -1])))
+        Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
+      } else {
+        delta <- object$mleParam[(object$nXvar + object$nmuHvar +
+          1):(object$nXvar + object$nmuHvar + object$nuHvar)]
+        phi <- object$mleParam[(object$nXvar + object$nmuHvar +
+          object$nuHvar + 1):(object$nXvar + object$nmuHvar +
+          object$nuHvar + object$nvHvar)]
+        uHvar <- model.matrix(object$formula, data = object$dataTable,
+          rhs = 3)
+        vHvar <- model.matrix(object$formula, data = object$dataTable,
+          rhs = 4)
+        Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
+        Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
+      }
+    } else {
+      if (object$udist == "lognormal") {
+        delta <- object$mleParam[(object$nXvar + object$nmuHvar +
+          1):(object$nXvar + object$nmuHvar + object$nuHvar)]
+        phi <- object$mleParam[(object$nXvar + object$nmuHvar +
+          object$nuHvar + 1):(object$nXvar + object$nmuHvar +
+          object$nuHvar + object$nvHvar)]
+        uHvar <- model.matrix(object$formula, data = object$dataTable,
+          rhs = 3)
+        vHvar <- model.matrix(object$formula, data = object$dataTable,
+          rhs = 4)
+        Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
+        Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
+      } else {
+        delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+          object$nuHvar)]
+        phi <- object$mleParam[(object$nXvar + object$nuHvar +
+          1):(object$nXvar + object$nuHvar + object$nvHvar)]
+        uHvar <- model.matrix(object$formula, data = object$dataTable,
+          rhs = 2)
+        vHvar <- model.matrix(object$formula, data = object$dataTable,
+          rhs = 3)
+        Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
+        Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
+      }
+    }
+    if (object$udist == "lognormal" || (object$udist == "tnormal" &
+      object$scaling == FALSE)) {
+      if (object$nuHvar > 1 || object$nvHvar > 1 || object$nmuHvar >
+        1)
+        cat("Variances averaged over observations     \n\n")
+    } else {
+      if (object$nuHvar > 1 || object$nvHvar > 1)
+        cat("Variances averaged over observations     \n\n")
+    }
+    cRes <- c(cRes, sigmaSq = mean(exp(Wu)) + mean(exp(Wv)),
+      lambdaSq = mean(exp(Wu))/mean(exp(Wv)), sigmauSq = mean(exp(Wu)),
+      sigmavSq = mean(exp(Wv)), sigma = sqrt(mean(exp(Wu)) +
+        mean(exp(Wv))), lambda = sqrt(mean(exp(Wu))/mean(exp(Wv))),
+      sigmau = sqrt(mean(exp(Wu))), sigmav = sqrt(mean(exp(Wv))),
+      gamma = mean(exp(Wu))/(mean(exp(Wu)) + mean(exp(Wv))))
+  }
+  return(cRes)
+}
+
+# coefficients from lcmcross ----
+#' @rdname coef
+#' @aliases coef.lcmcross
+#' @export
+coef.lcmcross <- function(object, extraPar = FALSE, ...) {
+  if (length(extraPar) != 1 || !is.logical(extraPar[1]))
+    stop("argument 'extraPar' must be a single logical value",
+      call. = FALSE)
+  cRes <- object$mleParam
+  if (extraPar) {
+    uHvar <- model.matrix(object$formula, data = object$dataTable,
+      rhs = 2)
+    vHvar <- model.matrix(object$formula, data = object$dataTable,
+      rhs = 3)
+    delta1 <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+      object$nuHvar)]
+    phi1 <- object$mleParam[(object$nXvar + object$nuHvar +
+      1):(object$nXvar + object$nuHvar + object$nvHvar)]
+    delta2 <- object$mleParam[(2 * object$nXvar + object$nuHvar +
+      object$nvHvar + 1):(2 * object$nXvar + 2 * object$nuHvar +
+      object$nvHvar)]
+    phi2 <- object$mleParam[(2 * object$nXvar + 2 * object$nuHvar +
+      object$nvHvar + 1):(2 * object$nXvar + 2 * object$nuHvar +
+      2 * object$nvHvar)]
+    Wu1 <- as.numeric(crossprod(matrix(delta1), t(uHvar)))
+    Wv1 <- as.numeric(crossprod(matrix(phi1), t(vHvar)))
+    Wu2 <- as.numeric(crossprod(matrix(delta2), t(uHvar)))
+    Wv2 <- as.numeric(crossprod(matrix(phi2), t(vHvar)))
+    if (object$nClasses == 3) {
+      delta3 <- object$mleParam[(3 * object$nXvar + 2 *
+        object$nuHvar + 2 * object$nvHvar + 1):(3 * object$nXvar +
+        3 * object$nuHvar + 2 * object$nvHvar)]
+      phi3 <- object$mleParam[(3 * object$nXvar + 3 * object$nuHvar +
+        2 * object$nvHvar + 1):(3 * object$nXvar + 3 *
+        object$nuHvar + 3 * object$nvHvar)]
+      Wu3 <- as.numeric(crossprod(matrix(delta3), t(uHvar)))
+      Wv3 <- as.numeric(crossprod(matrix(phi3), t(vHvar)))
+    } else {
+      if (object$nClasses == 4) {
+        delta4 <- object$mleParam[(4 * object$nXvar +
+          3 * object$nuHvar + 3 * object$nvHvar + 1):(4 *
+          object$nXvar + 4 * object$nuHvar + 3 * object$nvHvar)]
+        phi4 <- object$mleParam[(4 * object$nXvar + 4 *
+          object$nuHvar + 3 * object$nvHvar + 1):(4 *
+          object$nXvar + 4 * object$nuHvar + 4 * object$nvHvar)]
+        Wu4 <- as.numeric(crossprod(matrix(delta4), t(uHvar)))
+        Wv4 <- as.numeric(crossprod(matrix(phi4), t(vHvar)))
+      } else {
+        if (object$nClasses == 5) {
+          delta5 <- object$mleParam[(5 * object$nXvar +
+          4 * object$nuHvar + 4 * object$nvHvar + 1):(5 *
+          object$nXvar + 5 * object$nuHvar + 4 * object$nvHvar)]
+          phi5 <- object$mleParam[(5 * object$nXvar +
+          5 * object$nuHvar + 4 * object$nvHvar + 1):(5 *
+          object$nXvar + 5 * object$nuHvar + 5 * object$nvHvar)]
+          Wu5 <- as.numeric(crossprod(matrix(delta5),
+          t(uHvar)))
+          Wv5 <- as.numeric(crossprod(matrix(phi5), t(vHvar)))
+        }
+      }
+    }
+    if (object$nuHvar > 1 || object$nvHvar > 1)
+      cat("Variances averaged over observations     \n\n")
+    cRes <- c(cRes, sigmaSq1 = mean(exp(Wu1)) + mean(exp(Wv1)),
+      lambdaSq1 = mean(exp(Wu1))/mean(exp(Wv1)), sigmauSq1 = mean(exp(Wu1)),
+      sigmavSq1 = mean(exp(Wv1)), sigma1 = sqrt(mean(exp(Wu1)) +
+        mean(exp(Wv1))), lambda1 = sqrt(mean(exp(Wu1))/mean(exp(Wv1))),
+      sigmau1 = sqrt(mean(exp(Wu1))), sigmav1 = sqrt(mean(exp(Wv1))),
+      gamma1 = mean(exp(Wu1))/(mean(exp(Wu1)) + mean(exp(Wv1))),
+      sigmaSq2 = mean(exp(Wu2)) + mean(exp(Wv2)), lambdaSq2 = mean(exp(Wu2))/mean(exp(Wv2)),
+      sigmauSq2 = mean(exp(Wu2)), sigmavSq2 = mean(exp(Wv2)),
+      sigma2 = sqrt(mean(exp(Wu2)) + mean(exp(Wv2))), lambda2 = sqrt(mean(exp(Wu2))/mean(exp(Wv2))),
+      sigmau2 = sqrt(mean(exp(Wu2))), sigmav2 = sqrt(mean(exp(Wv2))),
+      gamma2 = mean(exp(Wu2))/(mean(exp(Wu2)) + mean(exp(Wv2))))
+    if (object$nClasses == 3) {
+      cRes <- c(cRes, sigmaSq3 = mean(exp(Wu3)) + mean(exp(Wv3)),
+        lambdaSq3 = mean(exp(Wu3))/mean(exp(Wv3)), sigmauSq3 = mean(exp(Wu3)),
+        sigmavSq3 = mean(exp(Wv3)), sigma3 = sqrt(mean(exp(Wu3)) +
+          mean(exp(Wv3))), lambda3 = sqrt(mean(exp(Wu3))/mean(exp(Wv3))),
+        sigmau3 = sqrt(mean(exp(Wu3))), sigmav3 = sqrt(mean(exp(Wv3))),
+        gamma3 = mean(exp(Wu3))/(mean(exp(Wu3)) + mean(exp(Wv3))))
+    } else {
+      if (object$nClasses == 4) {
+        cRes <- c(cRes, sigmaSq3 = mean(exp(Wu3)) + mean(exp(Wv3)),
+          lambdaSq3 = mean(exp(Wu3))/mean(exp(Wv3)),
+          sigmauSq3 = mean(exp(Wu3)), sigmavSq3 = mean(exp(Wv3)),
+          sigma3 = sqrt(mean(exp(Wu3)) + mean(exp(Wv3))),
+          lambda3 = sqrt(mean(exp(Wu3))/mean(exp(Wv3))),
+          sigmau3 = sqrt(mean(exp(Wu3))), sigmav3 = sqrt(mean(exp(Wv3))),
+          gamma3 = mean(exp(Wu3))/(mean(exp(Wu3)) + mean(exp(Wv3))),
+          sigmaSq4 = mean(exp(Wu4)) + mean(exp(Wv4)),
+          lambdaSq4 = mean(exp(Wu4))/mean(exp(Wv4)),
+          sigmauSq4 = mean(exp(Wu4)), sigmavSq4 = mean(exp(Wv4)),
+          sigma4 = sqrt(mean(exp(Wu4)) + mean(exp(Wv4))),
+          lambda4 = sqrt(mean(exp(Wu4))/mean(exp(Wv4))),
+          sigmau4 = sqrt(mean(exp(Wu4))), sigmav4 = sqrt(mean(exp(Wv4))),
+          gamma4 = mean(exp(Wu4))/(mean(exp(Wu4)) + mean(exp(Wv4))))
+      } else {
+        if (object$nClasses == 5) {
+          cRes <- c(cRes, sigmaSq3 = mean(exp(Wu3)) +
+          mean(exp(Wv3)), lambdaSq3 = mean(exp(Wu3))/mean(exp(Wv3)),
+          sigmauSq3 = mean(exp(Wu3)), sigmavSq3 = mean(exp(Wv3)),
+          sigma3 = sqrt(mean(exp(Wu3)) + mean(exp(Wv3))),
+          lambda3 = sqrt(mean(exp(Wu3))/mean(exp(Wv3))),
+          sigmau3 = sqrt(mean(exp(Wu3))), sigmav3 = sqrt(mean(exp(Wv3))),
+          gamma3 = mean(exp(Wu3))/(mean(exp(Wu3)) +
+            mean(exp(Wv3))), sigmaSq4 = mean(exp(Wu4)) +
+            mean(exp(Wv4)), lambdaSq4 = mean(exp(Wu4))/mean(exp(Wv4)),
+          sigmauSq4 = mean(exp(Wu4)), sigmavSq4 = mean(exp(Wv4)),
+          sigma4 = sqrt(mean(exp(Wu4)) + mean(exp(Wv4))),
+          lambda4 = sqrt(mean(exp(Wu4))/mean(exp(Wv4))),
+          sigmau4 = sqrt(mean(exp(Wu4))), sigmav4 = sqrt(mean(exp(Wv4))),
+          gamma4 = mean(exp(Wu4))/(mean(exp(Wu4)) +
+            mean(exp(Wv4))), sigmaSq5 = mean(exp(Wu5)) +
+            mean(exp(Wv5)), lambdaSq5 = mean(exp(Wu5))/mean(exp(Wv5)),
+          sigmauSq5 = mean(exp(Wu5)), sigmavSq5 = mean(exp(Wv5)),
+          sigma5 = sqrt(mean(exp(Wu5)) + mean(exp(Wv5))),
+          lambda5 = sqrt(mean(exp(Wu5))/mean(exp(Wv5))),
+          sigmau5 = sqrt(mean(exp(Wu5))), sigmav5 = sqrt(mean(exp(Wv5))),
+          gamma5 = mean(exp(Wu5))/(mean(exp(Wu5)) +
+            mean(exp(Wv5))))
+        }
+      }
+    }
+  }
+  return(cRes)
+}
