@@ -30,7 +30,7 @@ of (in-)efficiency confidence intervals (defaut = \code{0.95}). Only when \code{
 
 \value{
 A dataframe that contains individual (in-)efficiency estimates. These are ordered in 
-the same way as the corresponding observations in the data set used for the estimation.
+the same way as the corresponding observations in the dataset used for the estimation.
 
 \bold{- For object of class \code{"sfacross"} the following elements are
 returned:}
