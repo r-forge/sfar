@@ -581,7 +581,12 @@ sfacross <- function(formula, muhet, uhet, vhet, data, subset,
   }
   rm(mleList)
   class(returnObj) <- "sfacross"
-  print.sfacross(returnObj)
+    cat("Call:\n")
+    cat(deparse(returnObj$call))
+    cat("\n\n")
+    cat("Likelihood estimates using", returnObj$optType, "\n")
+    cat(sfadist(returnObj$udist), "\n\n")
+    cat(returnObj$typeSfa, "\n")
   return(returnObj)
 }
 
