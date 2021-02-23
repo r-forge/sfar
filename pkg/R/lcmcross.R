@@ -435,10 +435,10 @@ lcmcross <- function(formula, uhet, vhet, thet, data, subset,
   returnObj$typeSfa <- typeSfa
   returnObj$Nobs <- N
   returnObj$nXvar <- nXvar
-  returnObj$nZvar <- nZvar
+  returnObj$nZHvar <- nZvar
   returnObj$logDepVar <- logDepVar
-  returnObj$nuHvar <- nuHvar
-  returnObj$nvHvar <- nvHvar
+  returnObj$nuZUvar <- nuHvar
+  returnObj$nvZVvar <- nvHvar
   returnObj$nParm <- nParm
   returnObj$udist <- udist
   returnObj$startVal <- mleList$startVal
@@ -479,7 +479,12 @@ lcmcross <- function(formula, uhet, vhet, thet, data, subset,
   returnObj$validObs <- validObs
   rm(mleList)
   class(returnObj) <- "lcmcross"
-  print.lcmcross(returnObj)
+    cat("Call:\n")
+    cat(deparse(returnObj$call))
+    cat("\n\n")
+    cat("Likelihood estimates using", returnObj$optType, "\n")
+    cat("Normal-Half Normal Latent Class Stochastic Frontier Model", "\n\n")
+    cat(returnObj$typeSfa, "\n")
   return(returnObj)
 }
 

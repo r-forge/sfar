@@ -1,12 +1,6 @@
 # conditional efficiencies sfacross ----------
 
-efficiencies.sfacross <- function(object, indataTable = FALSE,
-                                  level = 0.95, ...) {
-  if (length(indataTable) != 1 || !is.logical(indataTable[1])) {
-    stop("argument 'indataTable' must be a single logical value",
-      call. = FALSE
-    )
-  }
+efficiencies.sfacross <- function(object, level = 0.95, ...) {
   if (level < 0 || level > 0.9999) {
     stop("'level' must be between 0 and 0.9999", call. = FALSE)
   }
@@ -71,21 +65,12 @@ efficiencies.sfacross <- function(object, indataTable = FALSE,
       }
     }
   }
-  if (indataTable) {
-    return(bind_cols(object$dataTable, EffRes))
-  } else {
-    return(EffRes)
-  }
+return(data.frame(EffRes))
 }
 
 # conditional efficiencies lcmcross ----------
 
-efficiencies.lcmcross <- function(object, indataTable = FALSE, level = 0.95, ...) {
-  if (length(indataTable) != 1 || !is.logical(indataTable[1])) {
-    stop("argument 'indataTable' must be a single logical value",
-      call. = FALSE
-    )
-  }
+efficiencies.lcmcross <- function(object, level = 0.95, ...) {
   if (level < 0 || level > 0.9999) {
     stop("'level' must be between 0 and 0.9999", call. = FALSE)
   }
@@ -110,9 +95,5 @@ efficiencies.lcmcross <- function(object, indataTable = FALSE, level = 0.95, ...
       }
     }
   }
-  if (indataTable) {
-    return(bind_cols(object$dataTable, EffRes))
-  } else {
-    return(EffRes)
-  }
+return(data.frame(EffRes))
 }
