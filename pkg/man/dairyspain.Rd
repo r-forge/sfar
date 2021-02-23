@@ -1,11 +1,11 @@
 \name{dairyspain}
 \alias{dairyspain}
 \docType{data}
-\title{Spanish Dairy Farm Production}
+\title{Data on Spanish Dairy Farms}
 
-\description{This dataset contains six years of observations on 
-247 dairy farms in northern Spain, drawn from 1993-1998.  The original data consists of 
-the farm and year identification, plus measurements on one output (i.e. milk), and four inputs (i.e. cows, land, labor and feed).
+\description{This dataset contains six years of observations on 247 dairy farms in northern Spain, 
+drawn from 1993-1998. The original data consist in the farm and year identifications, plus measurements 
+on one output (i.e. milk), and four inputs (i.e. cows, land, labor and feed).
 }
 \usage{dairyspain}
 \format{
@@ -13,7 +13,7 @@ the farm and year identification, plus measurements on one output (i.e. milk), a
   \describe{
     \item{FARM}{Farm identification.}
     \item{AGEL}{Age of the farmer.}
-    \item{YEAR}{Year Identification.}
+    \item{YEAR}{Year identification.}
     \item{COWS}{Number of milking cows.}
     \item{LAND}{Agricultural area.}
     \item{MILK}{Milk production.}
@@ -44,12 +44,12 @@ the farm and year identification, plus measurements on one output (i.e. milk), a
 }
 \details{
 This dataset has been used in Alvarez \emph{et al.} (2004). 
-The data have been normalized so that the logs of the inputs sum to zero over the 1482 observations.
+The data have been normalized so that the logs of the inputs sum to zero over the 1,482 observations.
 }
 \source{\url{http://pages.stern.nyu.edu/~wgreene/Econometrics/oldPanelDataSets.htm}}
 
 \references{
-Alvarez, A., C. Arias, and W. Greene. 2004. Accounting for unobservables in production models: management and inefficiency. \emph{Econometric Society}, 1--20.
+Alvarez, A., C. Arias, and W. Greene. 2004. Accounting for unobservables in production models: management and inefficiency. \emph{Econometric Society}, n°341, 1--20.
 }
 \examples{
 str(dairyspain)

@@ -1,9 +1,9 @@
 \name{electricity}
 \alias{electricity}
 \docType{data}
-\title{U.S. electric power generation}
+\title{Data on U.S. electric power generation}
 
-\description{This dataset is on U.S. electic power generation.}
+\description{This dataset is on electric power generation in the United States.}
 
 \usage{electricity}
 \format{
@@ -25,9 +25,9 @@
 \source{\url{http://pages.stern.nyu.edu/~wgreene/Text/tables/tablelist5.htm}}
 
 \references{
-Christensen, L.R., and W.H. Greene. 1976. Economies of scale in US electric power generation. \emph{The Journal of Political Economy}, 655--676.
+Christensen, L.R., and W.H. Greene. 1976. Economies of scale in US electric power generation. \emph{The Journal of Political Economy}, \bold{84}:655--676.
 
-Greene, W.H. 1990. A Gamma-Distributed Stochastic Frontier Model. \emph{Journal of econometrics}, \bold{46}:141--163.
+Greene, W.H. 1990. A Gamma-distributed stochastic frontier model. \emph{Journal of Econometrics}, \bold{46}:141--163.
 }
 
 \examples{

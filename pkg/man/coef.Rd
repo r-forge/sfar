@@ -8,6 +8,13 @@
 
 \title{coef methods for class \code{summary} of frontier objects}
 
+\description{
+Extract the coefficients, their standard errors, z-values, and
+(asymptotic) P-values from models returned by the \code{summary} methods
+for objects of class \code{sfacross} or \code{lcmcross}.
+
+\code{coef} extracts coefficients for the likelihood estimation
+}
 \usage{
 \method{coef}{summary.sfacross}(object, ...)
 
@@ -24,7 +31,7 @@
 
 \item{...}{Currently ignored.}
 
-\item{extraPar}{Logical. If \code{TRUE} additional parameters are also
+\item{extraPar}{Logical (default = \code{FALSE}). If \code{TRUE} additional parameters are also
 returned:
 
 \code{sigmaSq} = \code{sigmauSq} + \code{sigmavSq},
@@ -45,29 +52,16 @@ returned:
 
 \code{gamma} = \code{sigmauSq}/(\code{sigmauSq} + \code{sigmavSq})
 
-In the case of object of class \code{lcmcross} each additional
+In the case of object of class \code{lcmcross}, each additional
 parameter terminates with \code{"#"} that represents the class
 number.}
 }
 \value{
 The \code{coef} method for objects of class summary.sfacross or
-summary.lcmcross returns a matrix with four to seven columns (depending on
-the option \code{grad} and \code{ci}). These columns contain the estimated
+summary.lcmcross returns a matrix with four. These columns contain the estimated
 coefficients, their standard errors, z-values, and (asymptotic) P-values.
-Optionally, the gradient is also returned and or with the coefficients
-confidence intervals.
-
-\code{coef} returns a named vector of the coefficients estimated.
 }
-\description{
-Extract the coefficients, their standard errors, z-values, and
-(asymptotic) P-values from models returned by the \code{summary} methods
-for objects of class \code{sfacross} or \code{lcmcross}. Optionally, the
-gradient is also returned and or with the coefficients confidence
-intervals.
 
-\code{coef} extracts coefficients for the likelihood estimation
-}
 \examples{
 ## Data on fossil fuel fired steam electric power generation plants in the
 ## United States
@@ -77,29 +71,8 @@ log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
 I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
 udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
 scaling = TRUE, method = "mla")
+  coef(tl_u_ts, extraPar = TRUE)
   coef(summary(tl_u_ts))
-
-## Using data on eighty-two countries production (DGP)
-# LCM Cobb Douglas (production function) half normal distribution
-cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal",
-                    data = worldprod, S = 1, method = "ucminf")
-  coef(summary(cb_2c_h))
-
-## Data on fossil fuel fired steam electric power generation plants in the
-## United States
-# Translog SFA (cost function) truncated normal with scaling property
-tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
-log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
-I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
-udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
-scaling = TRUE, method = "mla")
-  coef(tl_u_ts)
-
-## Using data on eighty-two countries production (DGP)
-# LCM Cobb Douglas (production function) half normal distribution
-cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal",
-                    data = worldprod, S = 1, method = "ucminf")
-  coef(cb_2c_h)
 }
 
 \seealso{
@@ -112,6 +85,4 @@ model fitting function.
 
 \author{K Hervé Dakpo, Yann Desjeux and Laure Latruffe}
 
-\keyword{coefficients}
 \keyword{methods}
-\keyword{summary}
