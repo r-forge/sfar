@@ -88,16 +88,16 @@ not. Default = \code{TRUE}.}
 estimation. Default = \code{'bfgs'}. 9 algorithms are available:
 \itemize{
 \item \code{'bfgs'}, for Broyden-Fletcher-Goldfarb-Shanno
-(\code{\link[maxLik]{maxBFGS}})
+(\code{\link[maxLik:maxNR]{maxBFGS}})
 \item \code{'bhhh'}, for Berndt-Hall-Hall-Hausman
-(\code{\link[maxLik]{maxBHHH}})
+(\code{\link[maxLik:maxNR]{maxBHHH}})
 \item \code{'nr'}, for Newton-Raphson (\code{\link[maxLik]{maxNR}})
-\item \code{'nm'}, for Nelder-Mead (\code{\link[maxLik]{maxNM}})
+\item \code{'nm'}, for Nelder-Mead (\code{\link[maxLik:maxBFGS]{maxNM}})
 \item \code{'ucminf'}, implements a quasi-Newton type with BFGS updating of the
 inverse Hessian and soft line search with a trust region type monitoring of
 the input to the line search algorithm (\code{\link[ucminf]{ucminf}})
 \item \code{'mla'}, for general-purpose optimization based on
-Marquardt-Levenberg algorithm (\code{\link[marqLevAlg]{mla}})
+Marquardt-Levenberg algorithm (\code{\link[marqLevAlg:marqLevAlg]{mla}})
 \item \code{'sr1'}, for Symmetric Rank 1
 (\code{\link[trustOptim]{trust.optim}})
 \item \code{'sparse'}, for trust regions and sparse Hessian
@@ -147,7 +147,7 @@ optimization.}
 and \code{'nr'} algorithms. If \code{'stephalving'} step is decreased but
 the direction is kept, if \code{'marquardt'} the step length is decreased
 while also moving closer to the pure gradient direction. Default =
-\code{'marquardt'}. See \code{\link[maxLik]{maxBHHH}} and
+\code{'marquardt'}. See \code{\link[maxLik:maxNR]{maxBHHH}} and
 \code{\link[maxLik]{maxNR}}.}
 
 \item{x}{An object of class \code{sfacross} returned by the function

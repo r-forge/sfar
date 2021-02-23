@@ -5,6 +5,12 @@
 \alias{fitted.lcmcross}
 \title{Fitted frontier value}
 
+\description{
+This method returns the fitted frontier values from classic or latent class 
+stochastic frontier models estimated respectively with \code{\link{sfacross}} or
+\code{\link{lcmcross}}.
+}
+
 \usage{
 \method{fitted}{sfacross}(object, ...)
 
@@ -12,42 +18,29 @@
 }
 
 \arguments{
-\item{object}{A (latent class) stochastic frontier model returned by
-\code{\link{sfacross}} or \code{\link{lcmcross}}.}
+\item{object}{A classic or a latent class stochastic frontier model returned by
+\code{\link{sfacross}} or \code{\link{lcmcross}}, respectively.}
 
 \item{...}{Currently ignored.}
 }
 
 \value{
-\code{fitted} returns a vector of fitted values in the case of object
-of class \code{sfacross}. When class of object is \code{lcmcross} a data
-frame containing the fitted values for each latent class is returned. The
-fitted values are ordered in the same way as the corresponding observations
-in the data set used for the estimation.
-}
+\code{\link{fitted}} returns a vector of fitted values in the case of object
+of class \code{sfacross}.
 
-\description{
-This method returns the fitted frontier values
-from stochastic frontier models estimated with \code{\link{sfacross}} or
-\code{\link{lcmcross}}.
+\code{\link{fitted}} returns a data frame containing the fitted values for each 
+ class in the case of object of class \code{lcmcross}.
+
+The fitted values are ordered in the same way as the corresponding observations
+in the dataset used for the estimation.
 }
 
 \examples{
-## Data on fossil fuel fired steam electric power generation plants in the
-## United States
-# Translog SFA (cost function) truncated normal with scaling property
-tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
-log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
-I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
-udist = 'tnormal', muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
-scaling = TRUE, method = 'mla')
-  fitted(tl_u_ts)
-
 ## Using data on eighty-two countries production (DGP)
 # LCM Cobb Douglas (production function) half normal distribution
-cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = 'hnormal',
-                    data = worldprod, S = 1, method = 'ucminf')
-  fitted(cb_2c_h)
+cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = 'hnormal', data = worldprod)
+  fit.val <- fitted(cb_2c_h)
+  head(fit.val)
 }
 
 \seealso{
@@ -60,5 +53,4 @@ model fitting function.
 
 \author{K Hervé Dakpo, Yann Desjeux and Laure Latruffe}
 
-\keyword{fitted}
 \keyword{methods}
