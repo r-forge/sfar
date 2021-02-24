@@ -109,8 +109,8 @@ Default = \code{2000}.}
 \item{stepmax}{Numeric. Step max for \code{ucminf} algorithm. Default = \code{0.1}.}
 
 \item{qac}{Character. Quadratic Approximation Correction for \code{"bhhh"}
-and \code{"nr"} algorithms. If \code{"qac = stephalving"} step is decreased but
-the direction is kept, if \code{"qac = marquardt"} (default) the step length is decreased
+and \code{"nr"} algorithms. If \code{"qac = stephalving"}, the step length is decreased but
+the direction is kept. If \code{"qac = marquardt"} (default), the step length is decreased
 while also moving closer to the pure gradient direction. See \code{\link[maxLik:maxNR]{maxBHHH}} and
 \code{\link[maxLik]{maxNR}}.}
 
@@ -132,8 +132,7 @@ for the jump-start algorithm. Default = \code{0.5}.}
 starting value should be multiplied to define the upper bounds 
 for the jump-start algorithm. Default = \code{1.5}.}
 
-\item{x}{An object of class \code{lcmcross} returned by the function
-\code{lcmcross}.}
+\item{x}{An object of class \code{lcmcross} returned by \code{\link{lcmcross}}.}
 
 \item{digits}{Number of digits displayed in values.}
 
@@ -197,7 +196,7 @@ positivity on these parameters, the variances are modelled respectively as:
 where \eqn{Z_u} and \eqn{Z_v} are the heteroscedasticity variables (inefficiency 
 drivers in the case of \eqn{Z_u} and`\eqn{\delta} and \eqn{\phi} the coefficients). 
 In the case of heterogeneity in the truncated mean \eqn{\mu}, it is modelled
-as \eqn{\mu=\omega'Z_{mu}}.
+as \eqn{\mu=\omega'Z_{\mu}}.
 }
 
 \value{
@@ -208,7 +207,7 @@ the following elements:
 
 \item{formula}{Multi parts formula describing the estimated model.}
 
-\item{S}{The argument \sQuote{'S'}. See the section \bold{Arguments}.}
+\item{S}{The argument \code{'S'}. See the section \bold{Arguments}.}
 
 \item{typeSfa}{Character string. "Latent Class Production/Profit Frontier, 
 e = v - u" when \code{S = 1} and "Latent Class Cost Frontier, e = v + u" when \code{S = -1}.}
@@ -318,19 +317,19 @@ frontier: A framework for the analysis of firm inefficiency.
 
   \code{\link[=coef.lcmcross]{coef}} for extracting coefficients of the estimation.
 
-\code{\link[=efficiencies.lcmcross]{efficiencies}} for calculating efficiency estimates.
+  \code{\link[=efficiencies.lcmcross]{efficiencies}} for calculating efficiency estimates.
 
-\code{\link[=fitted.lcmcross]{fitted}} for obtaining the fitted frontier value.
+  \code{\link[=fitted.lcmcross]{fitted}} for obtaining the fitted frontier value.
 
-\code{\link[=ic.lcmcross]{ic}} for computing information criteria.
+  \code{\link[=ic.lcmcross]{ic}} for computing information criteria.
 
-\code{\link[=logLik.lcmcross]{logLik}} for extracting log-likelihood value of the estimation.
+  \code{\link[=logLik.lcmcross]{logLik}} for extracting log-likelihood value of the estimation.
 
-\code{\link[=marginal.lcmcross]{marginal}} for calculating marginal effects of Z-variables on inefficiency.
+  \code{\link[=marginal.lcmcross]{marginal}} for calculating marginal effects of Z-variables on inefficiency.
 
-\code{\link[=residuals.lcmcross]{residuals}} for extracting residuals of the estimation.
+  \code{\link[=residuals.lcmcross]{residuals}} for extracting residuals of the estimation.
 
-\code{\link[=vcov.lcmcross]{vcov}} for extracting the variance-covariance matrix
+  \code{\link[=vcov.lcmcross]{vcov}} for extracting the variance-covariance matrix
 of the coefficients.
 }
 

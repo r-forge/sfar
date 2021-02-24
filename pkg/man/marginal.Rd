@@ -4,46 +4,33 @@
 \alias{marginal.sfacross}
 \alias{marginal.lcmcross}
 
-\title{Marginal effects of the determinants of inefficiency}
+\title{Marginal effects of the inefficiency drivers}
+
+\description{
+This function returns marginal effects of the inefficiency drivers 
+from classic or latent class stochastic frontier models estimated with
+\code{\link{sfacross}} or \code{\link{lcmcross}, respectively.}
+}
 
 \usage{
-\method{marginal}{sfacross}(object, indataTable = FALSE, ...)
+\method{marginal}{sfacross}(object, ...)
 
-\method{marginal}{lcmcross}(object, indataTable = FALSE, ...)
+\method{marginal}{lcmcross}(object, ...)
 }
 
 \arguments{
-\item{object}{A (latent class) stochastic frontier model returned by
-\code{\link{sfacross}} or \code{\link{lcmcross}}.}
-
-\item{indataTable}{Logical. If \code{TRUE}, marginal effects are returned in
-addition to the information in the \code{dataTable} object. When \code{FALSE}
-(Default) only the marginal effects are returned.
-\code{FALSE}.}
+\item{object}{A classic or a latent class stochastic frontier model respectively 
+returned by \code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
 \item{...}{Currently ignored.}
 }
 
-\value{
-A dataframe containing the marginal effects of the \code{Z} variables
-on the expected inefficiency (each variable has the prefix \code{"Eu_"})
-and on the variance of the inefficiency (each variable has the prefix
-\code{"Vu_"}) is returned.
-
-In the case of the latent class model, each variable terminates with the
-suffix \code{"_c#"} where \code{"#"} is the class number.
-}
-\description{
-This function returns marginal effects of the determinants of
-efficiency from (Latent class) stochastic frontier models estimated with
-\code{\link{sfacross}} or \code{\link{lcmcross}}
-}
 \details{
 The function \code{marginal} operates in the presence of exogenous
 variables that explain inefficiency (\eqn{uhet = ~ Z_u} or \eqn{muhet = ~
-  Z_{mu}}).
+ Z_{mu}}).
 
-Two components are computed for each variables: the marginal effects on the
+Two components are computed for each variable: the marginal effects on the
 expected inefficiency (\eqn{\frac{\partial E[u]}{\partial Z_{(m)u}}}) and the
 marginal effects on the variance of inefficiency (\eqn{\frac{\partial
   V[u]}{\partial Z_{(m)u}}}).
@@ -52,6 +39,16 @@ The model also accommodates the Wang (2002) parametrization of
 \eqn{\mu} and \eqn{\sigma_u^2} by the same vector of exogenous variables.
 This double parameterization accounts for non-monotonic relationships
 between the inefficiency and its determinants.
+}
+
+\value{
+A dataframe containing the marginal effects of the \eqn{Z_u} variables
+on the expected inefficiency (each variable has the prefix \code{"Eu_"})
+and on the variance of the inefficiency (each variable has the prefix
+\code{"Vu_"}) is returned.
+
+In the case of the latent class model, each variable terminates with the
+suffix \code{"_c#"} where \code{"#"} is the class number.
 }
 
 \examples{
@@ -63,18 +60,20 @@ log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
 I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
 udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
 scaling = TRUE, method = "mla")
-  marginal(tl_u_ts)
+  mar <- marginal(tl_u_ts)
+  head(mar)
 
 ## Using data on eighty-two countries production (DGP)
 # LCM Cobb Douglas (production function) half normal distribution
 cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal",
-data = worldprod, uhet = ~ initStat, S = 1, method = "ucminf")
-  marginal(cb_2c_h, indataTable = TRUE)
+           data = worldprod, uhet = ~ initStat, S = 1, method = "ucminf")
+  mar <- marginal(cb_2c_h)
+  head(mar)
 }
 
 \references{
 Wang, H.J. 2002. Heteroscedasticity and non-monotonic efficiency effects of a
-stochastic frontier model. emph{Journal of Productivity Analysis},
+stochastic frontier model. \emph{Journal of Productivity Analysis},
 \bold{18}:241--253.
 }
 
@@ -88,5 +87,4 @@ model fitting function.
 
 \author{K Hervé Dakpo, Yann Desjeux and Laure Latruffe}
 
-\keyword{marginal}
 \keyword{methods}

@@ -10,15 +10,15 @@ in the Tarlac region of the Philippines between 1990 and 1997.}
   A data frame with 344 observations on the following 17 variables.
   \describe{
       \item{YEARDUM}{Time period (1= 1990, ..., 8 = 1997).}
-      \item{FMERCODE}{Farmer code (1, ..., 43).}
+      \item{FARMERCODE}{Farmer code (1, ..., 43).}
       \item{PROD}{Output (tonnes of freshly threshed rice).}
       \item{AREA}{Area planted (hectares).}
       \item{LABOR}{Labour used (man-days of family and hired labour).}
       \item{NPK}{Fertiliser used (kg of active ingredients).}
-      \item{OTHER}{Other inputs used (Laspeyres index = 100 for Firm 17 in 1991).}
+      \item{OTHER}{Other inputs used (Laspeyres index = 100 for Farm 17 in 1991).}
       \item{PRICE}{Output price (pesos per kg).}
       \item{AREAP}{Rental price of land (pesos per hectare).}
-      \item{LABORP}{Labour price (pesos per hired man-day.}
+      \item{LABORP}{Labour price (pesos per hired man-day).}
       \item{NPKP}{Fertiliser price (pesos per kg of active ingredient).}
       \item{OTHERP}{Price of other inputs (implicit price index).}
       \item{AGE}{Age of the household head (years).}
@@ -29,7 +29,7 @@ in the Tarlac region of the Philippines between 1990 and 1997.}
   }
 }
 \details{This dataset is published as supplement to Coelli \emph{et al.} (2005).
-While most variables of this data set were supplied by the International Rice 
+While most variables of this dataset were supplied by the International Rice 
 Research Institute (IRRI), some were calculated by Coelli \emph{et al.} (2005, see p. 325--326).
 The survey is described in Pandey \emph{et al.} (1999).
 }
@@ -41,10 +41,10 @@ Supplementary files for Coelli \emph{et al.} (2005),
 See also \code{\link[frontier]{riceProdPhil}}.
 }
 \references{
-Coelli, T. J., Rao, D. S. P., O'Donnell, C. J., and Battese, G. E. (2005). \emph{An Introduction to Efficiency and Productivity Analysis},
+Coelli, T. J., Rao, D. S. P., O'Donnell, C. J., and Battese, G. E. 2005. \emph{An Introduction to Efficiency and Productivity Analysis},
 Springer, New York.
 
-Pandey, S., Masciat, P., Velasco, L, and Villano, R. (1999). Risk analysis of a rainfed rice production system system in Tarlac,
+Pandey, S., Masciat, P., Velasco, L, and Villano, R. 1999. Risk analysis of a rainfed rice production system system in Tarlac,
 Central Luzon, Philippines. \emph{Experimental Agriculture}, \bold{35}:225--237.
 }
 \examples{

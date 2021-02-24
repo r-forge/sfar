@@ -12,7 +12,7 @@ on one output (i.e. milk), and four inputs (i.e. cows, land, labor and feed).
   A data frame with 1482 observations on the following 29 variables.
   \describe{
     \item{FARM}{Farm identification.}
-    \item{AGEL}{Age of the farmer.}
+    \item{AGEF}{Age of the farmer.}
     \item{YEAR}{Year identification.}
     \item{COWS}{Number of milking cows.}
     \item{LAND}{Agricultural area.}
