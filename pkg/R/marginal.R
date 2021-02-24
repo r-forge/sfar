@@ -7,7 +7,7 @@ marginal.sfacross <- function(object, indataTable = FALSE, ...) {
     )
   }
   if (object$udist == "hnormal") {
-    if (object$nuHvar == 1) {
+    if (object$nuZUvar == 1) {
       warning("marginal effects cannot be computed for homoscedastic models",
         call. = FALSE
       )
@@ -19,7 +19,7 @@ marginal.sfacross <- function(object, indataTable = FALSE, ...) {
     }
   } else {
     if (object$udist == "exponential") {
-      if (object$nuHvar == 1) {
+      if (object$nuZUvar == 1) {
         warning("marginal effects cannot be computed for homoscedastic models",
           call. = FALSE
         )
@@ -31,7 +31,7 @@ marginal.sfacross <- function(object, indataTable = FALSE, ...) {
       }
     } else {
       if (object$udist == "gamma") {
-        if (object$nuHvar == 1) {
+        if (object$nuZUvar == 1) {
           warning("marginal effects cannot be computed for homoscedastic models",
             call. = FALSE
           )
@@ -43,7 +43,7 @@ marginal.sfacross <- function(object, indataTable = FALSE, ...) {
         }
       } else {
         if (object$udist == "rayleigh") {
-          if (object$nuHvar == 1) {
+          if (object$nuZUvar == 1) {
             warning("marginal effects cannot be computed for homoscedastic models",
               call. = FALSE
             )
@@ -55,7 +55,7 @@ marginal.sfacross <- function(object, indataTable = FALSE, ...) {
           }
         } else {
           if (object$udist == "uniform") {
-            if (object$nuHvar == 1) {
+            if (object$nuZUvar == 1) {
               warning("marginal effects cannot be computed for homoscedastic models",
                 call. = FALSE
               )
@@ -68,7 +68,7 @@ marginal.sfacross <- function(object, indataTable = FALSE, ...) {
           } else {
             if (object$udist == "tnormal") {
               if (object$scaling) {
-                if (object$nuHvar == 1) {
+                if (object$nuZUvar == 1) {
                   warning("marginal effects cannot be computed for homogeneous or homoscedastic models",
                     call. = FALSE
                   )
@@ -79,7 +79,7 @@ marginal.sfacross <- function(object, indataTable = FALSE, ...) {
                   )
                 }
               } else {
-                if (object$nmuHvar == 1 & object$nuHvar ==
+                if (object$nmuHvar == 1 & object$nuZUvar ==
                   1) {
                   warning("marginal effects cannot be computed for homogeneous or homoscedastic models",
                     call. = FALSE
@@ -93,7 +93,7 @@ marginal.sfacross <- function(object, indataTable = FALSE, ...) {
               }
             } else {
               if (object$udist == "lognormal") {
-                if (object$nmuHvar == 1 & object$nuHvar ==
+                if (object$nmuHvar == 1 & object$nuZUvar ==
                   1) {
                   warning("marginal effects cannot be computed for homogeneous or homoscedastic models",
                     call. = FALSE
@@ -126,7 +126,7 @@ marginal.lcmcross <- function(object, indataTable = FALSE, ...) {
       call. = FALSE
     )
   }
-  if (object$nuHvar == 1) {
+  if (object$nuZUvar == 1) {
     warning("marginal effects cannot be computed for homoscedastic models",
       call. = FALSE
     )
