@@ -7,12 +7,12 @@
 
 # Log-likelihood ----------
 
-cgammanormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
+cgammanormlike <- function(parm, nXvar, nuZUvar, nvZVvar, uHvar,
   vHvar, Yvar, Xvar, S, N, FiMat) {
   beta <- parm[1:(nXvar)]
-  delta <- parm[(nXvar + 1):(nXvar + nuHvar)]
-  phi <- parm[(nXvar + nuHvar + 1):(nXvar + nuHvar + nvHvar)]
-  P <- parm[nXvar + nuHvar + nvHvar + 1]
+  delta <- parm[(nXvar + 1):(nXvar + nuZUvar)]
+  phi <- parm[(nXvar + nuZUvar + 1):(nXvar + nuZUvar + nvZVvar)]
+  P <- parm[nXvar + nuZUvar + nvZVvar + 1]
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
   Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
   epsilon <- Yvar - as.numeric(crossprod(matrix(beta), t(Xvar)))
@@ -33,7 +33,7 @@ cgammanormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
 
 # starting value for the log-likelihood ----------
 
-cstgammanorm <- function(olsObj, epsiRes, S, nuHvar, uHvar, nvHvar,
+cstgammanorm <- function(olsObj, epsiRes, S, nuZUvar, uHvar, nvZVvar,
   vHvar) {
   m2 <- moment(epsiRes, order = 2)
   m3 <- moment(epsiRes, order = 3)
@@ -49,20 +49,20 @@ cstgammanorm <- function(olsObj, epsiRes, S, nuHvar, uHvar, nvHvar,
   }
   dep_u <- 1/2 * log((epsiRes^2 - varv)^2)
   dep_v <- 1/2 * log((epsiRes^2 - varu)^2)
-  reg_hetu <- if (nuHvar == 1) {
+  reg_hetu <- if (nuZUvar == 1) {
     lm(log(varu) ~ 1)
   } else {
-    lm(dep_u ~ ., data = as.data.frame(uHvar[, 2:nuHvar]))
+    lm(dep_u ~ ., data = as.data.frame(uHvar[, 2:nuZUvar]))
   }
   if (any(is.na(reg_hetu$coefficients)))
     stop("At least one of the OLS coefficients of 'uhet' is NA: ",
       paste(colnames(uHvar)[is.na(reg_hetu$coefficients)],
         collapse = ", "), ". This may be due to a singular matrix due to potential perfect multicollinearity",
       call. = FALSE)
-  reg_hetv <- if (nvHvar == 1) {
+  reg_hetv <- if (nvZVvar == 1) {
     lm(log(varv) ~ 1)
   } else {
-    lm(dep_v ~ ., data = as.data.frame(vHvar[, 2:nvHvar]))
+    lm(dep_v ~ ., data = as.data.frame(vHvar[, 2:nvZVvar]))
   }
   if (any(is.na(reg_hetv$coefficients)))
     stop("at least one of the OLS coefficients of 'vhet' is NA: ",
@@ -83,12 +83,12 @@ cstgammanorm <- function(olsObj, epsiRes, S, nuHvar, uHvar, nvHvar,
 
 # Gradient of the likelihood function ----------
 
-cgradgammanormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
+cgradgammanormlike <- function(parm, nXvar, nuZUvar, nvZVvar, uHvar,
   vHvar, Yvar, Xvar, S, N, FiMat) {
   beta <- parm[1:(nXvar)]
-  delta <- parm[(nXvar + 1):(nXvar + nuHvar)]
-  phi <- parm[(nXvar + nuHvar + 1):(nXvar + nuHvar + nvHvar)]
-  P <- parm[nXvar + nuHvar + nvHvar + 1]
+  delta <- parm[(nXvar + 1):(nXvar + nuZUvar)]
+  phi <- parm[(nXvar + nuZUvar + 1):(nXvar + nuZUvar + nvZVvar)]
+  P <- parm[nXvar + nuZUvar + nvZVvar + 1]
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
   Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
   epsilon <- Yvar - as.numeric(crossprod(matrix(beta), t(Xvar)))
@@ -128,15 +128,15 @@ cgradgammanormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
   }
   gx <- sweep(Xvar, MARGIN = 1, STATS = S * sigx2, FUN = "*") +
     gx
-  gu <- matrix(nrow = N, ncol = nuHvar)
-  for (k in 1:nuHvar) {
+  gu <- matrix(nrow = N, ncol = nuZUvar)
+  for (k in 1:nuZUvar) {
     gu[, k] <- apply(sweep(F5, MARGIN = 1, STATS = uHvar[,
       k], FUN = "*"), 1, sum)/sumF3
   }
   gu <- sweep(uHvar, MARGIN = 1, STATS = sigx5, FUN = "*") +
     gu
-  gv <- matrix(nrow = N, ncol = nvHvar)
-  for (k in 1:nvHvar) {
+  gv <- matrix(nrow = N, ncol = nvZVvar)
+  for (k in 1:nvZVvar) {
     gv[, k] <- apply(sweep(F7, MARGIN = 1, STATS = vHvar[,
       k], FUN = "*"), 1, sum)/sumF3
   }
@@ -150,14 +150,14 @@ cgradgammanormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
 # Optimization using different algorithms ----------
 
 gammanormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
-  N, FiMat, uHvar, nuHvar, vHvar, nvHvar, Yvar, Xvar, method,
+  N, FiMat, uHvar, nuZUvar, vHvar, nvZVvar, Yvar, Xvar, method,
   printInfo, itermax, stepmax, tol, gradtol, hessianType, qac) {
   startVal <- if (!is.null(start))
     start else cstgammanorm(olsObj = olsParam, epsiRes = dataTable[["olsResiduals"]],
-    S = S, uHvar = uHvar, nuHvar = nuHvar, vHvar = vHvar,
-    nvHvar = nvHvar)
+    S = S, uHvar = uHvar, nuZUvar = nuZUvar, vHvar = vHvar,
+    nvZVvar = nvZVvar)
   startLoglik <- sum(cgammanormlike(startVal, nXvar = nXvar,
-    nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar, vHvar = vHvar,
+    nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar, vHvar = vHvar,
     Yvar = Yvar, Xvar = Xvar, S = S, N = N, FiMat = FiMat))
   if (method %in% c("bfgs", "bhhh", "nr", "nm")) {
     maxRoutine <- switch(method, bfgs = function(...) maxBFGS(...),
@@ -167,10 +167,10 @@ gammanormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
   }
   mleObj <- switch(method, ucminf = ucminf(par = startVal,
     fn = function(parm) -sum(cgammanormlike(parm, nXvar = nXvar,
-      nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar,
+      nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
       FiMat = FiMat)), gr = function(parm) -colSums(cgradgammanormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S, N = N, FiMat = FiMat)), hessian = 0, control = list(trace = printInfo,
       maxeval = itermax, stepmax = stepmax, xtol = tol,
@@ -178,25 +178,25 @@ gammanormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
     grad = cgradgammanormlike, start = startVal, finalHessian = if (hessianType ==
       2) "bhhh" else TRUE, control = list(printLevel = if (printInfo) 2 else 0,
       iterlim = itermax, reltol = tol, tol = tol, qac = qac),
-    nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar,
+    nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
     vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
     FiMat = FiMat), sr1 = trust.optim(x = startVal, fn = function(parm) -sum(cgammanormlike(parm,
-    nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar,
+    nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
     vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
     FiMat = FiMat)), gr = function(parm) -colSums(cgradgammanormlike(parm,
-    nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar,
+    nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
     vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
     FiMat = FiMat)), method = "SR1", control = list(maxit = itermax,
     cgtol = gradtol, stop.trust.radius = tol, prec = tol,
     report.level = if (printInfo) 4L else 0, report.precision = 1L)),
     sparse = trust.optim(x = startVal, fn = function(parm) -sum(cgammanormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S, N = N, FiMat = FiMat)), gr = function(parm) -colSums(cgradgammanormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S, N = N, FiMat = FiMat)), hs = function(parm) as(jacobian(function(parm) -colSums(cgradgammanormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S, N = N, FiMat = FiMat)), parm), "dgCMatrix"),
       method = "Sparse", control = list(maxit = itermax,
@@ -204,25 +204,25 @@ gammanormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
         report.level = if (printInfo) 4L else 0, report.precision = 1L,
         preconditioner = 1L)), mla = mla(b = startVal,
       fn = function(parm) -sum(cgammanormlike(parm, nXvar = nXvar,
-        nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar,
+        nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
         vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S,
         N = N, FiMat = FiMat)), gr = function(parm) -colSums(cgradgammanormlike(parm,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S, N = N, FiMat = FiMat)), print.info = printInfo,
       maxiter = itermax, epsa = gradtol, epsb = gradtol),
     nlminb = nlminb(start = startVal, objective = function(parm) -sum(cgammanormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S, N = N, FiMat = FiMat)), gradient = function(parm) -colSums(cgradgammanormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S, N = N, FiMat = FiMat)), control = list(iter.max = itermax,
       trace = printInfo, eval.max = itermax, rel.tol = tol,
       x.tol = tol)))
   if (method %in% c("ucminf", "nlminb")) {
     mleObj$gradient <- colSums(cgradgammanormlike(mleObj$par,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S, N = N, FiMat = FiMat))
   }
@@ -245,20 +245,20 @@ gammanormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
   if (hessianType != 2) {
     if (method %in% c("ucminf", "nlminb"))
       mleObj$hessian <- jacobian(function(parm) colSums(cgradgammanormlike(parm,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S, N = N, FiMat = FiMat)), mleObj$par)
     if (method == "sr1")
       mleObj$hessian <- jacobian(function(parm) colSums(cgradgammanormlike(parm,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S, N = N, FiMat = FiMat)), mleObj$solution)
   }
   mleObj$logL_OBS <- cgammanormlike(parm = mleParam, nXvar = nXvar,
-    nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar, vHvar = vHvar,
+    nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar, vHvar = vHvar,
     Yvar = Yvar, Xvar = Xvar, S = S, N = N, FiMat = FiMat)
   mleObj$gradL_OBS <- cgradgammanormlike(parm = mleParam, nXvar = nXvar,
-    nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar, vHvar = vHvar,
+    nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar, vHvar = vHvar,
     Yvar = Yvar, Xvar = Xvar, S = S, N = N, FiMat = FiMat)
   return(list(startVal = startVal, startLoglik = startLoglik,
     mleObj = mleObj, mleParam = mleParam))
@@ -269,10 +269,10 @@ gammanormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
 cgammanormeff <- function(object, level) {
   beta <- object$mleParam[1:(object$nXvar)]
   delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-    object$nuHvar)]
-  phi <- object$mleParam[(object$nXvar + object$nuHvar + 1):(object$nXvar +
-    object$nuHvar + object$nvHvar)]
-  P <- object$mleParam[object$nXvar + object$nuHvar + object$nvHvar +
+    object$nuZUvar)]
+  phi <- object$mleParam[(object$nXvar + object$nuZUvar + 1):(object$nXvar +
+    object$nuZUvar + object$nvZVvar)]
+  P <- object$mleParam[object$nXvar + object$nuZUvar + object$nvZVvar +
     1]
   Xvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 1)
@@ -308,13 +308,13 @@ cgammanormeff <- function(object, level) {
 
 cmarggammanorm_Eu <- function(object) {
   delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-    object$nuHvar)]
-  P <- object$mleParam[object$nXvar + object$nuHvar + object$nvHvar +
+    object$nuZUvar)]
+  P <- object$mleParam[object$nXvar + object$nuZUvar + object$nvZVvar +
     1]
   uHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 2)
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
-  margEff <- kronecker(matrix(delta[2:object$nuHvar], nrow = 1),
+  margEff <- kronecker(matrix(delta[2:object$nuZUvar], nrow = 1),
     matrix(P/2 * exp(Wu/2), ncol = 1))
   colnames(margEff) <- paste0("Eu_", colnames(uHvar)[-1])
   return(margEff)
@@ -322,13 +322,13 @@ cmarggammanorm_Eu <- function(object) {
 
 cmarggammanorm_Vu <- function(object) {
   delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-    object$nuHvar)]
-  P <- object$mleParam[object$nXvar + object$nuHvar + object$nvHvar +
+    object$nuZUvar)]
+  P <- object$mleParam[object$nXvar + object$nuZUvar + object$nvZVvar +
     1]
   uHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 2)
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
-  margEff <- kronecker(matrix(delta[2:object$nuHvar], nrow = 1),
+  margEff <- kronecker(matrix(delta[2:object$nuZUvar], nrow = 1),
     matrix(P * exp(Wu), ncol = 1))
   colnames(margEff) <- paste0("Vu_", colnames(uHvar)[-1])
   return(margEff)

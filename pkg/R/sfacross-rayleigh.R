@@ -7,11 +7,11 @@
 
 # Log-likelihood ----------
 
-craynormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
+craynormlike <- function(parm, nXvar, nuZUvar, nvZVvar, uHvar,
   vHvar, Yvar, Xvar, S) {
   beta <- parm[1:(nXvar)]
-  delta <- parm[(nXvar + 1):(nXvar + nuHvar)]
-  phi <- parm[(nXvar + nuHvar + 1):(nXvar + nuHvar + nvHvar)]
+  delta <- parm[(nXvar + 1):(nXvar + nuZUvar)]
+  phi <- parm[(nXvar + nuZUvar + 1):(nXvar + nuZUvar + nvZVvar)]
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
   Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
   epsilon <- Yvar - as.numeric(crossprod(matrix(beta), t(Xvar)))
@@ -25,7 +25,7 @@ craynormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
 
 # starting value for the log-likelihood ----------
 
-cstraynorm <- function(olsObj, epsiRes, S, nuHvar, uHvar, nvHvar,
+cstraynorm <- function(olsObj, epsiRes, S, nuZUvar, uHvar, nvZVvar,
   vHvar) {
   m2 <- moment(epsiRes, order = 2)
   m3 <- moment(epsiRes, order = 3)
@@ -41,20 +41,20 @@ cstraynorm <- function(olsObj, epsiRes, S, nuHvar, uHvar, nvHvar,
   }
   dep_u <- 1/2 * log(((epsiRes^2 - varv) * 2/(4 - pi))^2)
   dep_v <- 1/2 * log((epsiRes^2 - (4 - pi/2) * varu)^2)
-  reg_hetu <- if (nuHvar == 1) {
+  reg_hetu <- if (nuZUvar == 1) {
     lm(log(varu) ~ 1)
   } else {
-    lm(dep_u ~ ., data = as.data.frame(uHvar[, 2:nuHvar]))
+    lm(dep_u ~ ., data = as.data.frame(uHvar[, 2:nuZUvar]))
   }
   if (any(is.na(reg_hetu$coefficients)))
     stop("At least one of the OLS coefficients of 'uhet' is NA: ",
       paste(colnames(uHvar)[is.na(reg_hetu$coefficients)],
         collapse = ", "), ". This may be due to a singular matrix due to potential perfect multicollinearity",
       call. = FALSE)
-  reg_hetv <- if (nvHvar == 1) {
+  reg_hetv <- if (nvZVvar == 1) {
     lm(log(varv) ~ 1)
   } else {
-    lm(dep_v ~ ., data = as.data.frame(vHvar[, 2:nvHvar]))
+    lm(dep_v ~ ., data = as.data.frame(vHvar[, 2:nvZVvar]))
   }
   if (any(is.na(reg_hetv$coefficients)))
     stop("at least one of the OLS coefficients of 'vhet' is NA: ",
@@ -75,11 +75,11 @@ cstraynorm <- function(olsObj, epsiRes, S, nuHvar, uHvar, nvHvar,
 
 # Gradient of the likelihood function ----------
 
-cgradraynormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
+cgradraynormlike <- function(parm, nXvar, nuZUvar, nvZVvar, uHvar,
   vHvar, Yvar, Xvar, S) {
   beta <- parm[1:(nXvar)]
-  delta <- parm[(nXvar + 1):(nXvar + nuHvar)]
-  phi <- parm[(nXvar + nuHvar + 1):(nXvar + nuHvar + nvHvar)]
+  delta <- parm[(nXvar + 1):(nXvar + nuZUvar)]
+  phi <- parm[(nXvar + nuZUvar + 1):(nXvar + nuZUvar + nvZVvar)]
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
   Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
   sigma_sq <- exp(Wu) + exp(Wv)
@@ -122,11 +122,11 @@ cgradraynormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
 
 # Hessian of the likelihood function ----------
 
-chessraynormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
+chessraynormlike <- function(parm, nXvar, nuZUvar, nvZVvar, uHvar,
   vHvar, Yvar, Xvar, S) {
   beta <- parm[1:(nXvar)]
-  delta <- parm[(nXvar + 1):(nXvar + nuHvar)]
-  phi <- parm[(nXvar + nuHvar + 1):(nXvar + nuHvar + nvHvar)]
+  delta <- parm[(nXvar + 1):(nXvar + nuZUvar)]
+  phi <- parm[(nXvar + nuZUvar + 1):(nXvar + nuZUvar + nvZVvar)]
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
   Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
   sigma_sq <- exp(Wu) + exp(Wv)
@@ -167,27 +167,27 @@ chessraynormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
   wuepsi <- exp(Wu) * (epsilon)
   dmusigwuepsi <- dmusigwu * (epsilon)
   wdmu1sig <- (wvsigmasq) * dmusig
-  hessll <- matrix(nrow = nXvar + nuHvar + nvHvar, ncol = nXvar +
-    nuHvar + nvHvar)
+  hessll <- matrix(nrow = nXvar + nuZUvar + nvZVvar, ncol = nXvar +
+    nuZUvar + nvZVvar)
   hessll[1:nXvar, 1:nXvar] <- crossprod(sweep(Xvar, MARGIN = 1,
     STATS = S^2 * (((((S^2 * wuepsisq/((sigma_sq) * exp(Wv)) -
       1) * (sigx4) + exp(Wu)/(sigx2)) * dmusig - exp(Wu) *
       (pdmusigepsi)^2/(pdmusigsq))/(pdmusig) + 1/exp(Wv)) *
       wusq - 1/exp(Wv)), FUN = "*"), Xvar)
-  hessll[1:nXvar, (nXvar + 1):(nXvar + nuHvar)] <- crossprod(sweep(Xvar,
+  hessll[1:nXvar, (nXvar + 1):(nXvar + nuZUvar)] <- crossprod(sweep(Xvar,
     MARGIN = 1, STATS = S * (((pmusig - 0.5 * (S * dmusigwuepsi/(sigx2)))/(pdmusigsq) -
       (0.5 * (dwsig) - pmusigepsi) * exp(Wu) * (pdmusigepsi)/(pdmusigsq)^2) *
       (1 - wusq) - 2 * (S * (sigx3) * wuepsi/(sigx2))) *
       exp(Wu), FUN = "*"), uHvar)
-  hessll[1:nXvar, (nXvar + nuHvar + 1):(nXvar + nuHvar + nvHvar)] <- crossprod(sweep(Xvar,
+  hessll[1:nXvar, (nXvar + nuZUvar + 1):(nXvar + nuZUvar + nvZVvar)] <- crossprod(sweep(Xvar,
     MARGIN = 1, STATS = S * (((exp(Wu) * (S * (0.5 * ((wvsigmasq)/exp(Wv)) +
       1/(sigma_sq)) * dmusigepsi/sigmastar - (0.5 * (wdmu2sig) +
       pmusigepsisq) * (pdmusigepsi)/(pdmusig)) - pmusig)/(pdmusigsq) +
       2 * (S * (wvsigmasq2wu) * wuepsi/(sigx5))) * wusq -
       4 * (S * (epsilon)/(2 * exp(Wv))^2)) * exp(Wv), FUN = "*"),
     vHvar)
-  hessll[(nXvar + 1):(nXvar + nuHvar), (nXvar + 1):(nXvar +
-    nuHvar)] <- crossprod(sweep(uHvar, MARGIN = 1, STATS = ((((0.5 *
+  hessll[(nXvar + 1):(nXvar + nuZUvar), (nXvar + 1):(nXvar +
+    nuZUvar)] <- crossprod(sweep(uHvar, MARGIN = 1, STATS = ((((0.5 *
     (dwsig) + S * (S * (sigx3) * dmusigwuepsi - pmusig) *
     (epsilon) - ((0.5 * (dwsig) - pmusigepsi) * wusq + 0.5 *
     (0.5 * ((1 - wusq) * dwsig) + S^2 * dmusig3epsisq)))/(pdmusig) -
@@ -198,8 +198,8 @@ chessraynormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
     ((wuwvsig2)^2 * exp(Wu) * (sigma_sq)/(sigx2)^2)) * sigmastar) *
     exp(Wu)/(sigx2)^2)/(sigx2) - (wuwvsig2) * (sigx3) * exp(Wu)/(sigx2)^2) *
     wuepsisq) * exp(Wu), FUN = "*"), uHvar)
-  hessll[(nXvar + nuHvar + 1):(nXvar + nuHvar + nvHvar), (nXvar +
-    nuHvar + 1):(nXvar + nuHvar + nvHvar)] <- crossprod(sweep(vHvar,
+  hessll[(nXvar + nuZUvar + 1):(nXvar + nuZUvar + nvZVvar), (nXvar +
+    nuZUvar + 1):(nXvar + nuZUvar + nvZVvar)] <- crossprod(sweep(vHvar,
     MARGIN = 1, STATS = (((((0.5 * (exp(Wv) * (S^2 * (wvsigmasq2wu) *
       dmusigwu * wuepsisq/(sigx5) - dmusig)/(sigma_sq) -
       0.5 * (wdmu1sig)) + 0.5 * dmusig) * (wvsigmasq)/sigmastar +
@@ -214,8 +214,8 @@ chessraynormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
           exp(Wv))) * wuepsisq)) * exp(Wu) - 0.5 * (wvsigmasq))/(sigma_sq) +
       (2 - 16 * (exp(Wv)^2/(2 * exp(Wv))^2)) * (S * (epsilon))^2/(2 *
         exp(Wv))^2) * exp(Wv), FUN = "*"), vHvar)
-  hessll[(nXvar + 1):(nXvar + nuHvar), (nXvar + nuHvar + 1):(nXvar +
-    nuHvar + nvHvar)] <- crossprod(sweep(uHvar, MARGIN = 1,
+  hessll[(nXvar + 1):(nXvar + nuZUvar), (nXvar + nuZUvar + 1):(nXvar +
+    nuZUvar + nvZVvar)] <- crossprod(sweep(uHvar, MARGIN = 1,
     STATS = (((0.5 * (wdmu1sig) + 0.5 * ((dmusig * wvsigmasq2 -
       S^2 * (wvsigmasq) * dmusig3epsisq/sigmastar) * wusq -
       0.5 * ((1 - wusq) * wdmu1sig)))/sigmastar + (pmusigepsi -
@@ -238,14 +238,14 @@ chessraynormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
 # Optimization using different algorithms ----------
 
 raynormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
-  uHvar, nuHvar, vHvar, nvHvar, Yvar, Xvar, method, printInfo,
+  uHvar, nuZUvar, vHvar, nvZVvar, Yvar, Xvar, method, printInfo,
   itermax, stepmax, tol, gradtol, hessianType, qac) {
   startVal <- if (!is.null(start))
     start else cstraynorm(olsObj = olsParam, epsiRes = dataTable[["olsResiduals"]],
-    S = S, uHvar = uHvar, nuHvar = nuHvar, vHvar = vHvar,
-    nvHvar = nvHvar)
+    S = S, uHvar = uHvar, nuZUvar = nuZUvar, vHvar = vHvar,
+    nvZVvar = nvZVvar)
   startLoglik <- sum(craynormlike(startVal, nXvar = nXvar,
-    nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar, vHvar = vHvar,
+    nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar, vHvar = vHvar,
     Yvar = Yvar, Xvar = Xvar, S = S))
   if (method %in% c("bfgs", "bhhh", "nr", "nm")) {
     maxRoutine <- switch(method, bfgs = function(...) maxBFGS(...),
@@ -255,10 +255,10 @@ raynormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
   }
   mleObj <- switch(method, ucminf = ucminf(par = startVal,
     fn = function(parm) -sum(craynormlike(parm, nXvar = nXvar,
-      nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar,
+      nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S)),
     gr = function(parm) -colSums(cgradraynormlike(parm, nXvar = nXvar,
-      nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar,
+      nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S)),
     hessian = 0, control = list(trace = printInfo, maxeval = itermax,
       stepmax = stepmax, xtol = tol, grtol = gradtol)),
@@ -266,54 +266,54 @@ raynormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       hess = chessraynormlike, start = startVal, finalHessian = if (hessianType ==
         2) "bhhh" else TRUE, control = list(printLevel = if (printInfo) 2 else 0,
         iterlim = itermax, reltol = tol, tol = tol, qac = qac),
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S), sr1 = trust.optim(x = startVal, fn = function(parm) -sum(craynormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S)), gr = function(parm) -colSums(cgradraynormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S)), method = "SR1", control = list(maxit = itermax,
       cgtol = gradtol, stop.trust.radius = tol, prec = tol,
       report.level = if (printInfo) 4L else 0, report.precision = 1L)),
     sparse = trust.optim(x = startVal, fn = function(parm) -sum(craynormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S)), gr = function(parm) -colSums(cgradraynormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S)), hs = function(parm) as(-chessraynormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S), "dgCMatrix"), method = "Sparse", control = list(maxit = itermax,
       cgtol = gradtol, stop.trust.radius = tol, prec = tol,
       report.level = if (printInfo) 4L else 0, report.precision = 1L,
       preconditioner = 1L)), mla = mla(b = startVal, fn = function(parm) -sum(craynormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S)), gr = function(parm) -colSums(cgradraynormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S)), hess = function(parm) -chessraynormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S), print.info = printInfo, maxiter = itermax,
       epsa = gradtol, epsb = gradtol), nlminb = nlminb(start = startVal,
       objective = function(parm) -sum(craynormlike(parm,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S)), gradient = function(parm) -colSums(cgradraynormlike(parm,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S)), hessian = function(parm) -chessraynormlike(parm,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S), control = list(iter.max = itermax, trace = printInfo,
         eval.max = itermax, rel.tol = tol, x.tol = tol)))
   if (method %in% c("ucminf", "nlminb")) {
     mleObj$gradient <- colSums(cgradraynormlike(mleObj$par,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S))
   }
@@ -336,20 +336,20 @@ raynormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
   if (hessianType != 2) {
     if (method %in% c("ucminf", "nlminb"))
       mleObj$hessian <- chessraynormlike(parm = mleObj$par,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S)
     if (method == "sr1")
       mleObj$hessian <- chessraynormlike(parm = mleObj$solution,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S)
   }
   mleObj$logL_OBS <- craynormlike(parm = mleParam, nXvar = nXvar,
-    nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar, vHvar = vHvar,
+    nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar, vHvar = vHvar,
     Yvar = Yvar, Xvar = Xvar, S = S)
   mleObj$gradL_OBS <- cgradraynormlike(parm = mleParam, nXvar = nXvar,
-    nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar, vHvar = vHvar,
+    nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar, vHvar = vHvar,
     Yvar = Yvar, Xvar = Xvar, S = S)
   return(list(startVal = startVal, startLoglik = startLoglik,
     mleObj = mleObj, mleParam = mleParam))
@@ -360,9 +360,9 @@ raynormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
 craynormeff <- function(object, level) {
   beta <- object$mleParam[1:(object$nXvar)]
   delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-    object$nuHvar)]
-  phi <- object$mleParam[(object$nXvar + object$nuHvar + 1):(object$nXvar +
-    object$nuHvar + object$nvHvar)]
+    object$nuZUvar)]
+  phi <- object$mleParam[(object$nXvar + object$nuZUvar + 1):(object$nXvar +
+    object$nuZUvar + object$nvZVvar)]
   Xvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 1)
   uHvar <- model.matrix(object$formula, data = object$dataTable,
@@ -399,11 +399,11 @@ craynormeff <- function(object, level) {
 
 cmargraynorm_Eu <- function(object) {
   delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-    object$nuHvar)]
+    object$nuZUvar)]
   uHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 2)
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
-  margEff <- kronecker(matrix(delta[2:object$nuHvar], nrow = 1),
+  margEff <- kronecker(matrix(delta[2:object$nuZUvar], nrow = 1),
     matrix(exp(Wu/2) * 1/2 * sqrt(pi/2), ncol = 1))
   colnames(margEff) <- paste0("Eu_", colnames(uHvar)[-1])
   return(margEff)
@@ -411,11 +411,11 @@ cmargraynorm_Eu <- function(object) {
 
 cmargraynorm_Vu <- function(object) {
   delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-    object$nuHvar)]
+    object$nuZUvar)]
   uHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 2)
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
-  margEff <- kronecker(matrix(delta[2:object$nuHvar], nrow = 1),
+  margEff <- kronecker(matrix(delta[2:object$nuZUvar], nrow = 1),
     matrix(exp(Wu) * (4 - pi)/2, ncol = 1))
   colnames(margEff) <- paste0("Vu_", colnames(uHvar)[-1])
   return(margEff)

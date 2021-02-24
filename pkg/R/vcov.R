@@ -9,10 +9,10 @@ vcov.sfacross <- function(object, extraPar = FALSE, ...) {
   resCov <- object$invHessian
   if (extraPar) {
     if (object$udist %in% c("tnormal", "lognormal")) {
-      delta <- object$mleParam[(object$nXvar + object$nmuHvar +
-        1):(object$nXvar + object$nmuHvar + object$nuZUvar)]
-      phi <- object$mleParam[(object$nXvar + object$nmuHvar +
-        object$nuZUvar + 1):(object$nXvar + object$nmuHvar +
+      delta <- object$mleParam[(object$nXvar + object$nmuZUvar +
+        1):(object$nXvar + object$nmuZUvar + object$nuZUvar)]
+      phi <- object$mleParam[(object$nXvar + object$nmuZUvar +
+        object$nuZUvar + 1):(object$nXvar + object$nmuZUvar +
         object$nuZUvar + object$nvZVvar)]
       uHvar <- model.matrix(object$formula,
         data = object$dataTable,
@@ -38,10 +38,14 @@ vcov.sfacross <- function(object, extraPar = FALSE, ...) {
     }
     Wu <- mean(as.numeric(crossprod(matrix(delta), t(uHvar))))
     Wv <- mean(as.numeric(crossprod(matrix(phi), t(vHvar))))
-    if (object$nuZUvar > 1 || object$nvZVvar > 1 || object$nmuHvar > 1) {
-      stop("argument 'extraPar' is not available for heteroscedasctic models",
-        call. = FALSE
-      )
+    if (object$udist %in% c("tnormal", "lognormal")) {
+      if (object$nuZUvar > 1 || object$nvZVvar > 1 || object$nmuZUvar > 1) {
+        stop("argument 'extraPar' is not available for heteroscedasctic models", call. = FALSE)
+      }
+    } else {
+      if (object$nuZUvar > 1 || object$nvZVvar > 1) {
+       stop("argument 'extraPar' is not available for heteroscedasctic models", call. = FALSE)
+      }
     }
     jac <- diag(nrow(resCov))
     jac <- rbind(jac, matrix(0, nrow = 9, ncol = ncol(resCov)))
@@ -79,17 +83,7 @@ vcov.sfacross <- function(object, extraPar = FALSE, ...) {
 
 # variance covariance matrix for lcmcross ----------
 
-vcov.lcmcross <- function(object, extraPar = FALSE, ...) {
-  if (length(extraPar) != 1 || !is.logical(extraPar[1])) {
-    stop("argument 'extraPar' must be a single logical value",
-      call. = FALSE
-    )
-  }
-  if (extraPar) {
-    warning("'extraPar' is not yet available for object of class 'lcmcross'",
-      call. = FALSE
-    )
-  }
+vcov.lcmcross <- function(object, ...) {
   resCov <- object$invHessian
   return(resCov)
 }

@@ -1,11 +1,6 @@
 # marginal effects computation sfacross ----------
 
-marginal.sfacross <- function(object, indataTable = FALSE, ...) {
-  if (length(indataTable) != 1 || !is.logical(indataTable[1])) {
-    stop("argument 'indataTable' must be a single logical value",
-      call. = FALSE
-    )
-  }
+marginal.sfacross <- function(object, ...) {
   if (object$udist == "hnormal") {
     if (object$nuZUvar == 1) {
       warning("marginal effects cannot be computed for homoscedastic models",
@@ -79,7 +74,7 @@ marginal.sfacross <- function(object, indataTable = FALSE, ...) {
                   )
                 }
               } else {
-                if (object$nmuHvar == 1 & object$nuZUvar ==
+                if (object$nmuZUvar == 1 & object$nuZUvar ==
                   1) {
                   warning("marginal effects cannot be computed for homogeneous or homoscedastic models",
                     call. = FALSE
@@ -93,7 +88,7 @@ marginal.sfacross <- function(object, indataTable = FALSE, ...) {
               }
             } else {
               if (object$udist == "lognormal") {
-                if (object$nmuHvar == 1 & object$nuZUvar ==
+                if (object$nmuZUvar == 1 & object$nuZUvar ==
                   1) {
                   warning("marginal effects cannot be computed for homogeneous or homoscedastic models",
                     call. = FALSE
@@ -111,21 +106,12 @@ marginal.sfacross <- function(object, indataTable = FALSE, ...) {
       }
     }
   }
-  if (indataTable) {
-    return(bind_cols(object$dataTable, EffMarg))
-  } else {
-    return(EffMarg)
-  }
+  return(data.frame(EffMarg))
 }
 
 # marginal effects computation lcmcross ----------
 
-marginal.lcmcross <- function(object, indataTable = FALSE, ...) {
-  if (length(indataTable) != 1 || !is.logical(indataTable[1])) {
-    stop("argument 'indataTable' must be a single logical value",
-      call. = FALSE
-    )
-  }
+marginal.lcmcross <- function(object, ...) {
   if (object$nuZUvar == 1) {
     warning("marginal effects cannot be computed for homoscedastic models",
       call. = FALSE
@@ -159,9 +145,5 @@ marginal.lcmcross <- function(object, indataTable = FALSE, ...) {
       }
     }
   }
-  if (indataTable) {
-    return(bind_cols(object$dataTable, EffMarg))
-  } else {
-    return(EffMarg)
-  }
+  return(data.frame(EffMarg))
 }

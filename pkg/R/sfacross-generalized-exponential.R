@@ -7,11 +7,11 @@
 
 # Log-likelihood ----------
 
-cgenexponormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
+cgenexponormlike <- function(parm, nXvar, nuZUvar, nvZVvar, uHvar,
   vHvar, Yvar, Xvar, S) {
   beta <- parm[1:(nXvar)]
-  delta <- parm[(nXvar + 1):(nXvar + nuHvar)]
-  phi <- parm[(nXvar + nuHvar + 1):(nXvar + nuHvar + nvHvar)]
+  delta <- parm[(nXvar + 1):(nXvar + nuZUvar)]
+  phi <- parm[(nXvar + nuZUvar + 1):(nXvar + nuZUvar + nvZVvar)]
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
   Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
   epsilon <- Yvar - as.numeric(crossprod(matrix(beta), t(Xvar)))
@@ -26,8 +26,8 @@ cgenexponormlike <- function(parm, nXvar, nuHvar, nvHvar, uHvar,
 
 # starting value for the log-likelihood ----------
 
-cstgenexponorm <- function(olsObj, epsiRes, S, nuHvar, uHvar,
-  nvHvar, vHvar) {
+cstgenexponorm <- function(olsObj, epsiRes, S, nuZUvar, uHvar,
+  nvZVvar, vHvar) {
   m2 <- moment(epsiRes, order = 2)
   m3 <- moment(epsiRes, order = 3)
   if (S * m3 > 0) {
@@ -42,20 +42,20 @@ cstgenexponorm <- function(olsObj, epsiRes, S, nuHvar, uHvar,
   }
   dep_u <- 1/2 * log((epsiRes^2 - varv)^2)
   dep_v <- 1/2 * log((epsiRes^2 - varu)^2)
-  reg_hetu <- if (nuHvar == 1) {
+  reg_hetu <- if (nuZUvar == 1) {
     lm(log(varu) ~ 1)
   } else {
-    lm(dep_u ~ ., data = as.data.frame(uHvar[, 2:nuHvar]))
+    lm(dep_u ~ ., data = as.data.frame(uHvar[, 2:nuZUvar]))
   }
   if (any(is.na(reg_hetu$coefficients)))
     stop("At least one of the OLS coefficients of 'uhet' is NA: ",
       paste(colnames(uHvar)[is.na(reg_hetu$coefficients)],
         collapse = ", "), ". This may be due to a singular matrix due to potential perfect multicollinearity",
       call. = FALSE)
-  reg_hetv <- if (nvHvar == 1) {
+  reg_hetv <- if (nvZVvar == 1) {
     lm(log(varv) ~ 1)
   } else {
-    lm(dep_v ~ ., data = as.data.frame(vHvar[, 2:nvHvar]))
+    lm(dep_v ~ ., data = as.data.frame(vHvar[, 2:nvZVvar]))
   }
   if (any(is.na(reg_hetv$coefficients)))
     stop("at least one of the OLS coefficients of 'vhet' is NA: ",
@@ -76,11 +76,11 @@ cstgenexponorm <- function(olsObj, epsiRes, S, nuHvar, uHvar,
 
 # Gradient of the likelihood function ----------
 
-cgradgenexponormlike <- function(parm, nXvar, nuHvar, nvHvar,
+cgradgenexponormlike <- function(parm, nXvar, nuZUvar, nvZVvar,
   uHvar, vHvar, Yvar, Xvar, S) {
   beta <- parm[1:(nXvar)]
-  delta <- parm[(nXvar + 1):(nXvar + nuHvar)]
-  phi <- parm[(nXvar + nuHvar + 1):(nXvar + nuHvar + nvHvar)]
+  delta <- parm[(nXvar + 1):(nXvar + nuZUvar)]
+  phi <- parm[(nXvar + nuZUvar + 1):(nXvar + nuZUvar + nvZVvar)]
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
   Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
   epsilon <- Yvar - as.numeric(crossprod(matrix(beta), t(Xvar)))
@@ -118,11 +118,11 @@ cgradgenexponormlike <- function(parm, nXvar, nuHvar, nvHvar,
 
 # Hessian of the likelihood function ----------
 
-chessgenexponormlike <- function(parm, nXvar, nuHvar, nvHvar,
+chessgenexponormlike <- function(parm, nXvar, nuZUvar, nvZVvar,
   uHvar, vHvar, Yvar, Xvar, S) {
   beta <- parm[1:(nXvar)]
-  delta <- parm[(nXvar + 1):(nXvar + nuHvar)]
-  phi <- parm[(nXvar + nuHvar + 1):(nXvar + nuHvar + nvHvar)]
+  delta <- parm[(nXvar + 1):(nXvar + nuZUvar)]
+  phi <- parm[(nXvar + nuZUvar + 1):(nXvar + nuZUvar + nvZVvar)]
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
   Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
   epsilon <- Yvar - as.numeric(crossprod(matrix(beta), t(Xvar)))
@@ -151,22 +151,22 @@ chessgenexponormlike <- function(parm, nXvar, nuHvar, nvHvar,
   sigx5 <- 2 * (exp(Wv) * pb/exp(Wu)) - db * (wvwu - epsiv)
   sigx4 <- eA * (exp(Wv) * pa/(2 * exp(Wu)) - (epsiuv) * da) -
     (sigx5) * eB
-  hessll <- matrix(nrow = nXvar + nuHvar + nvHvar, ncol = nXvar +
-    nuHvar + nvHvar)
+  hessll <- matrix(nrow = nXvar + nuZUvar + nvZVvar, ncol = nXvar +
+    nuZUvar + nvZVvar)
   hessll[1:nXvar, 1:nXvar] <- crossprod(sweep(Xvar, MARGIN = 1,
     STATS = S^2 * ((((wvwuepsi)/exp(Wv/2) - 1/exp(Wu/2)) *
       da/exp(Wv/2) - (pda)/exp(Wu/2)) * eA - ((((wvwuepsix2)/exp(Wv/2) -
       2/exp(Wu/2)) * db/exp(Wv/2) - 2 * ((db/exp(Wv/2) -
       2 * (pb/exp(Wu/2)))/exp(Wu/2))) * eB + (sigx1)^2/(pab)))/(pab),
     FUN = "*"), Xvar)
-  hessll[1:nXvar, (nXvar + 1):(nXvar + nuHvar)] <- crossprod(sweep(Xvar,
+  hessll[1:nXvar, (nXvar + 1):(nXvar + nuZUvar)] <- crossprod(sweep(Xvar,
     MARGIN = 1, STATS = S * ((((0.5 + sigx2) * pa - 0.5 *
       (da * wvwu))/exp(Wu/2) + (0.5 * ((wvwuepsi)/exp(Wu/2)) -
       (sigx2)/exp(Wv/2)) * da) * eA - ((((wvwuepsix2)/exp(Wu/2) -
       (eC)/exp(Wv/2)) * db + (pb - 2 * (db * wvwu - (eC) *
       pb))/exp(Wu/2)) * eB + (sigx3) * (sigx1)/(pab)))/(pab),
     FUN = "*"), uHvar)
-  hessll[1:nXvar, (nXvar + nuHvar + 1):(nXvar + nuHvar + nvHvar)] <- crossprod(sweep(Xvar,
+  hessll[1:nXvar, (nXvar + nuZUvar + 1):(nXvar + nuZUvar + nvZVvar)] <- crossprod(sweep(Xvar,
     MARGIN = 1, STATS = S * ((da * (exp(Wv)/(2 * exp(Wu)) -
       ((epsiuv) * (wvwuepsi) + 0.5))/exp(Wv/2) - (exp(Wv) *
       pa/(2 * exp(Wu)) - (epsiuv) * da)/exp(Wu/2)) * eA -
@@ -174,8 +174,8 @@ chessgenexponormlike <- function(parm, nXvar, nuHvar, nvHvar,
         epsiv) + 0.5)) * db/exp(Wv/2) - 2 * ((sigx5)/exp(Wu/2))) *
         eB + (sigx1) * (sigx4)/(pab)))/(pab), FUN = "*"),
     vHvar)
-  hessll[(nXvar + 1):(nXvar + nuHvar), (nXvar + 1):(nXvar +
-    nuHvar)] <- crossprod(sweep(uHvar, MARGIN = 1, STATS = (((0.5 *
+  hessll[(nXvar + 1):(nXvar + nuZUvar), (nXvar + 1):(nXvar +
+    nuZUvar)] <- crossprod(sweep(uHvar, MARGIN = 1, STATS = (((0.5 *
     (0.5 * (exp(Wv/2) * (wvwuepsi)/exp(Wu/2)) - 0.5) - 0.5 *
     (sigx2)) * da * wvwu - ((0.5 * (da * wvwu) - (sigx2) *
     pa) * (sigx2) + (2 * ((1 - 8 * (exp(Wu)^2/(2 * exp(Wu))^2)) *
@@ -185,8 +185,8 @@ chessgenexponormlike <- function(parm, nXvar, nuHvar, nvHvar,
     (epsilon)/exp(Wu/2)) + 2 * (exp(Wv)/exp(Wu))) * pb -
     (eC) * (db * wvwu - (eC) * pb)) * eB + (sigx3)^2/(pab)))/(pab),
     FUN = "*"), uHvar)
-  hessll[(nXvar + nuHvar + 1):(nXvar + nuHvar + nvHvar), (nXvar +
-    nuHvar + 1):(nXvar + nuHvar + nvHvar)] <- crossprod(sweep(vHvar,
+  hessll[(nXvar + nuZUvar + 1):(nXvar + nuZUvar + nvZVvar), (nXvar +
+    nuZUvar + 1):(nXvar + nuZUvar + nvZVvar)] <- crossprod(sweep(vHvar,
     MARGIN = 1, STATS = ((((exp(Wv) * pa/(2 * exp(Wu)) -
       (epsiuv) * da)/2 + (pa - (epsiuv) * da)/2) * exp(Wv)/exp(Wu) -
       (0.25 * (wvwu) + 0.25 * (S * (epsilon)/exp(Wv/2)) -
@@ -195,8 +195,8 @@ chessgenexponormlike <- function(parm, nXvar, nuHvar, nvHvar,
       (0.25 * (S * (epsilon)/exp(Wv/2)) + 0.5 * (wvwu) +
         b * (wvwu - epsiv)^2) * db) * eB + (sigx4)^2/(pab)))/(pab),
     FUN = "*"), vHvar)
-  hessll[(nXvar + 1):(nXvar + nuHvar), (nXvar + nuHvar + 1):(nXvar +
-    nuHvar + nvHvar)] <- crossprod(sweep(uHvar, MARGIN = 1,
+  hessll[(nXvar + 1):(nXvar + nuZUvar), (nXvar + nuZUvar + 1):(nXvar +
+    nuZUvar + nvZVvar)] <- crossprod(sweep(uHvar, MARGIN = 1,
     STATS = (((da * exp(Wv/2)/(4 * (exp(Wu) * exp(Wu/2))) -
       2 * (exp(Wu) * pa/(2 * exp(Wu))^2)) * exp(Wv) - ((0.5 *
       ((epsiuv) * (wvwuepsi)) - 0.25) * da * wvwu + (sigx2) *
@@ -213,14 +213,14 @@ chessgenexponormlike <- function(parm, nXvar, nuHvar, nvHvar,
 # Optimization using different algorithms ----------
 
 genexponormAlgOpt <- function(start, olsParam, dataTable, S,
-  nXvar, uHvar, nuHvar, vHvar, nvHvar, Yvar, Xvar, method,
+  nXvar, uHvar, nuZUvar, vHvar, nvZVvar, Yvar, Xvar, method,
   printInfo, itermax, stepmax, tol, gradtol, hessianType, qac) {
   startVal <- if (!is.null(start))
     start else cstgenexponorm(olsObj = olsParam, epsiRes = dataTable[["olsResiduals"]],
-    S = S, uHvar = uHvar, nuHvar = nuHvar, vHvar = vHvar,
-    nvHvar = nvHvar)
+    S = S, uHvar = uHvar, nuZUvar = nuZUvar, vHvar = vHvar,
+    nvZVvar = nvZVvar)
   startLoglik <- sum(cgenexponormlike(startVal, nXvar = nXvar,
-    nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar, vHvar = vHvar,
+    nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar, vHvar = vHvar,
     Yvar = Yvar, Xvar = Xvar, S = S))
   if (method %in% c("bfgs", "bhhh", "nr", "nm")) {
     maxRoutine <- switch(method, bfgs = function(...) maxBFGS(...),
@@ -230,10 +230,10 @@ genexponormAlgOpt <- function(start, olsParam, dataTable, S,
   }
   mleObj <- switch(method, ucminf = ucminf(par = startVal,
     fn = function(parm) -sum(cgenexponormlike(parm, nXvar = nXvar,
-      nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar,
+      nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S)),
     gr = function(parm) -colSums(cgradgenexponormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S)), hessian = 0, control = list(trace = printInfo,
       maxeval = itermax, stepmax = stepmax, xtol = tol,
@@ -242,54 +242,54 @@ genexponormAlgOpt <- function(start, olsParam, dataTable, S,
     start = startVal, finalHessian = if (hessianType == 2) "bhhh" else TRUE,
     control = list(printLevel = if (printInfo) 2 else 0,
       iterlim = itermax, reltol = tol, tol = tol, qac = qac),
-    nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar,
+    nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
     vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S), sr1 = trust.optim(x = startVal,
     fn = function(parm) -sum(cgenexponormlike(parm, nXvar = nXvar,
-      nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar,
+      nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S)),
     gr = function(parm) -colSums(cgradgenexponormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S)), method = "SR1", control = list(maxit = itermax,
       cgtol = gradtol, stop.trust.radius = tol, prec = tol,
       report.level = if (printInfo) 4L else 0, report.precision = 1L)),
     sparse = trust.optim(x = startVal, fn = function(parm) -sum(cgenexponormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S)), gr = function(parm) -colSums(cgradgenexponormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S)), hs = function(parm) as(-chessgenexponormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S), "dgCMatrix"), method = "Sparse", control = list(maxit = itermax,
       cgtol = gradtol, stop.trust.radius = tol, prec = tol,
       report.level = if (printInfo) 4L else 0, report.precision = 1L,
       preconditioner = 1L)), mla = mla(b = startVal, fn = function(parm) -sum(cgenexponormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S)), gr = function(parm) -colSums(cgradgenexponormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S)), hess = function(parm) -chessgenexponormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S), print.info = printInfo, maxiter = itermax,
       epsa = gradtol, epsb = gradtol), nlminb = nlminb(start = startVal,
       objective = function(parm) -sum(cgenexponormlike(parm,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S)), gradient = function(parm) -colSums(cgradgenexponormlike(parm,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S)), hessian = function(parm) -chessgenexponormlike(parm,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S), control = list(iter.max = itermax, trace = printInfo,
         eval.max = itermax, rel.tol = tol, x.tol = tol)))
   if (method %in% c("ucminf", "nlminb")) {
     mleObj$gradient <- colSums(cgradgenexponormlike(mleObj$par,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S))
   }
@@ -312,20 +312,20 @@ genexponormAlgOpt <- function(start, olsParam, dataTable, S,
   if (hessianType != 2) {
     if (method %in% c("ucminf", "nlminb"))
       mleObj$hessian <- chessgenexponormlike(parm = mleObj$par,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S)
     if (method == "sr1")
       mleObj$hessian <- chessgenexponormlike(parm = mleObj$solution,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S)
   }
   mleObj$logL_OBS <- cgenexponormlike(parm = mleParam, nXvar = nXvar,
-    nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar, vHvar = vHvar,
+    nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar, vHvar = vHvar,
     Yvar = Yvar, Xvar = Xvar, S = S)
   mleObj$gradL_OBS <- cgradgenexponormlike(parm = mleParam,
-    nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar,
+    nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
     vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S)
   return(list(startVal = startVal, startLoglik = startLoglik,
     mleObj = mleObj, mleParam = mleParam))
@@ -336,9 +336,9 @@ genexponormAlgOpt <- function(start, olsParam, dataTable, S,
 cgenexponormeff <- function(object, level) {
   beta <- object$mleParam[1:(object$nXvar)]
   delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-    object$nuHvar)]
-  phi <- object$mleParam[(object$nXvar + object$nuHvar + 1):(object$nXvar +
-    object$nuHvar + object$nvHvar)]
+    object$nuZUvar)]
+  phi <- object$mleParam[(object$nXvar + object$nuZUvar + 1):(object$nXvar +
+    object$nuZUvar + object$nvZVvar)]
   Xvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 1)
   uHvar <- model.matrix(object$formula, data = object$dataTable,
@@ -373,11 +373,11 @@ cgenexponormeff <- function(object, level) {
 
 cmarggenexponorm_Eu <- function(object) {
   delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-    object$nuHvar)]
+    object$nuZUvar)]
   uHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 2)
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
-  margEff <- kronecker(matrix(delta[2:object$nuHvar] * 3/4,
+  margEff <- kronecker(matrix(delta[2:object$nuZUvar] * 3/4,
     nrow = 1), matrix(exp(Wu/2), ncol = 1))
   colnames(margEff) <- paste0("Eu_", colnames(uHvar)[-1])
   return(margEff)
@@ -385,11 +385,11 @@ cmarggenexponorm_Eu <- function(object) {
 
 cmarggenexponorm_Vu <- function(object) {
   delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-    object$nuHvar)]
+    object$nuZUvar)]
   uHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 2)
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
-  margEff <- kronecker(matrix(delta[2:object$nuHvar] * 5/4,
+  margEff <- kronecker(matrix(delta[2:object$nuZUvar] * 5/4,
     nrow = 1), matrix(exp(Wu), ncol = 1))
   colnames(margEff) <- paste0("Vu_", colnames(uHvar)[-1])
   return(margEff)
