@@ -1,7 +1,7 @@
 \name{utility}
 \alias{utility}
 \docType{data}
-\title{U.S. electricity generating plants}
+\title{Data on U.S. electricity generating plants}
 
 \description{This dataset contains data on fossil fuel fired steam electric
 power generation plants in the United States between 1986 and 1996.
@@ -31,8 +31,8 @@ power generation plants in the United States between 1986 and 1996.
 \source{\url{https://sites.google.com/site/sfbook2014/home/for-stata-v12-v13-v14}}
 
 \references{
-Kumbhakar, S.C., H.J. Wang, and A. Horncastle. 2014. A Practitioner's Guide to 
-Stochastic Frontier Analysis Using Stata: Cambridge University Press.
+Kumbhakar, S.C., H.J. Wang, and A. Horncastle. 2014. \emph{A Practitioner's Guide to 
+Stochastic Frontier Analysis Using Stata}. Cambridge University Press.
 }
 
 \examples{

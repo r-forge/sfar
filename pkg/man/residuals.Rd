@@ -6,6 +6,12 @@
 
 \title{Residuals of frontier estimation}
 
+\description{
+This method returns the residuals values from classic or latent class 
+stochastic frontier models estimated with \code{\link{sfacross}} or
+\code{\link{lcmcross}}, respectively.
+}
+
 \usage{
 \method{residuals}{sfacross}(object, ...)
 
@@ -13,24 +19,21 @@
 }
 
 \arguments{
-\item{object}{A (latent class) stochastic frontier model returned by
-\code{\link{sfacross}} or \code{\link{lcmcross}}.}
+\item{object}{A classic or a latent class stochastic frontier model 
+respectively returned by \code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
 \item{...}{Currently ignored.}
 }
 
 \value{
-\code{residuals} returns a vector of residuals values in the case of
-object of class \code{sfacross}. When class of object is \code{lcmcross} a
-data frame containing the residuals values for each latent class is
-returned. The residuals values are ordered in the same way as the
-corresponding observations in the data set used for the estimation.
-}
+When the \code{object} is of class \code{sfacross}, \code{link{residuals}} 
+returns a vector of residuals values.
 
-\description{
-This method returns the residuals values
-from stochastic frontier models estimated with \code{\link{sfacross}} or
-\code{\link{lcmcross}}.
+When the \code{object} is of class \code{lcmcross}, \code{link{residuals}} 
+returns a data frame containing the residuals values for each latent class.
+
+The residuals values are ordered in the same way as the
+corresponding observations in the data set used for the estimation.
 }
 
 \examples{
@@ -48,7 +51,8 @@ scaling = TRUE, method = 'mla')
 # LCM Cobb Douglas (production function) half normal distribution
 cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = 'hnormal',
            data = worldprod, S = 1, method = 'ucminf')
-  residuals(cb_2c_h)
+  resid <- residuals(cb_2c_h)
+  head(resid)
 }
 
 \seealso{
@@ -62,4 +66,3 @@ model fitting function.
 \author{K Hervé Dakpo, Yann Desjeux and Laure Latruffe}
 
 \keyword{methods}
-\keyword{residuals}

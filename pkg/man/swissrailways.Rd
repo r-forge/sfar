@@ -1,8 +1,7 @@
 \name{swissrailways}
 \alias{swissrailways}
 \docType{data}
-\title{
-Swiss Railways
+\title{Data on Swiss railways
 }
 \description{This dataset is an unbalanced panel of 50 Swiss railway companies over the period 1985-1997.}
 
@@ -14,7 +13,7 @@ Swiss Railways
     \item{YEAR}{Year identification.}
     \item{NI}{Number of years observed.}
     \item{STOPS}{Number of stops in network.}
-    \item{NETWORK}{Network lenght (in meters).}
+    \item{NETWORK}{Network length (in meters).}
     \item{NARROW_T}{Dummy variable for railroads with narrow track.}
     \item{RACK}{Dummy variable for ‘rack rail’ in network.}
     \item{TUNNEL}{Dummy variable for network with tunnels over 300 meters on average.}
@@ -53,7 +52,7 @@ on public transport companies and has been used in Farsi \emph{et al.} (2005).
 \url{http://people.stern.nyu.edu/wgreene/Microeconometrics.htm}
 }
 \references{
-Farsi, M., M. Filippini, and W. Greene. 2005. Efficiency Measurement in Network Industries: Application to the Swiss Railway Companies. \emph{Journal of Regulatory Economics}, \bold{28}:69--90.
+Farsi, M., M. Filippini, and W. Greene. 2005. Efficiency measurement in network industries: Application to the Swiss railway companies. \emph{Journal of Regulatory Economics}, \bold{28}:69--90.
 }
 \examples{
 str(swissrailways)

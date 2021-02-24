@@ -10,19 +10,20 @@
 \usage{
 \method{skewnessTest}{sfacross}(object, test = "agostino", ...)
 }
-\arguments{
-\item{object}{An object of either class \code{"sfacross"}, returned by the
-function \code{\link{sfacross}}.}
 
-\item{test}{A character string. If \code{"agostino"} (default) D'agostino skewness test is
-returned. If \code{"coelli"} Coelli (1995) skewness test is returned.}
+\arguments{
+\item{object}{An object of class \code{"sfacross"}, returned by \code{\link{sfacross}}.}
+
+\item{test}{A character string specifying the test to implement. If \code{"agostino"} 
+(default), then D'agostino skewness test is implemented (D'Agostino et Pearson, 1973). 
+If \code{"coelli"}, Coelli skewness test is implemented (Coelli, 1995).}
 
 \item{...}{Currently ignored.}
 }
 
 \value{
-\code{skewnessTest} returns either the D'agostino or the Coelli
-skewness test.
+\code{skewnessTest} returns the results of either the D'Agostino's or the 
+Coelli's skewness test.
 }
 
 \note{
@@ -42,8 +43,8 @@ scaling = TRUE, method = "mla")
 }
 
 \references{
-Coelli, T. 1995. Estimators and Hypothesis Tests for a Stochastic Frontier
-Function - a Monte-Carlo Analysis. \emph{Journal of Productivity Analysis},
+Coelli, T. 1995. Estimators and hypothesis tests for a stochastic frontier
+function - a Monte-Carlo analysis. \emph{Journal of Productivity Analysis},
 \bold{6}:247--268.
 
 D'Agostino, R., and E.S. Pearson. 1973. Tests for departure from normality.
@@ -52,4 +53,3 @@ Empirical results for the distributions of \eqn{b_2} and \eqn{\sqrt{b_1}}.
 }
 
 \keyword{methods}
-\keyword{skewness}

@@ -1,7 +1,7 @@
 \name{worldprod}
 \alias{worldprod}
 \docType{data}
-\title{World production frontier}
+\title{Data on World production}
 
 \description{This dataset provides information on production related variables for eighty-two countries 
 over the period 1960–1987.}
@@ -9,7 +9,7 @@ over the period 1960–1987.}
 \usage{worldprod}
 
 \format{
-  A data frame with 2296 observations on the following 12 variables.
+  A data frame with 2,296 observations on the following 12 variables.
   \describe{
     \item{country}{Country name.}
     \item{code}{Country identification.}
@@ -32,7 +32,7 @@ over the period 1960–1987.}
 \source{\url{https://sites.google.com/site/sfbook2014/home/for-stata-v12-v13-v14}}
 
 \references{
-Kumbhakar, S.C., H.J. Wang, and A. Horncastle. 2014. A Practitioner's Guide to Stochastic Frontier Analysis Using Stata: Cambridge University Press.
+Kumbhakar, S.C., H.J. Wang, and A. Horncastle. 2014. \emph{A Practitioner's Guide to Stochastic Frontier Analysis Using Stata}. Cambridge University Press.
 }
 
 \examples{
