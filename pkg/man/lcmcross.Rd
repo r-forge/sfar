@@ -195,7 +195,7 @@ terms, a single part (right) formula can also be specified. To impose the
 positivity on these parameters, the variances are modelled respectively as:
 \eqn{\sigma^2_{u|j} = \exp{(\delta_j'Z_u)}} and \eqn{\sigma^2_{v|j} = \exp{(\phi_j'Z_v)}}, 
 where \eqn{Z_u} and \eqn{Z_v} are the heteroscedasticity variables (inefficiency 
-drivers in the case of \eqn{Z_u} and`\eqn{\delta}} and \eqn{\phi}} the coefficients). 
+drivers in the case of \eqn{Z_u} and`\eqn{\delta} and \eqn{\phi} the coefficients). 
 In the case of heterogeneity in the truncated mean \eqn{\mu}, it is modelled
 as \eqn{\mu=\omega'Z_{mu}}.
 }
@@ -328,7 +328,7 @@ frontier: A framework for the analysis of firm inefficiency.
 
 \code{\link[=marginal.lcmcross]{marginal}} for calculating marginal effects of Z-variables on inefficiency.
 
-\code{\link{=residuals.lcmcross]{residuals}} for extracting residuals of the estimation.
+\code{\link[=residuals.lcmcross]{residuals}} for extracting residuals of the estimation.
 
 \code{\link[=vcov.lcmcross]{vcov}} for extracting the variance-covariance matrix
 of the coefficients.
