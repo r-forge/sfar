@@ -10,10 +10,10 @@ vcov.sfacross <- function(object, extraPar = FALSE, ...) {
   if (extraPar) {
     if (object$udist %in% c("tnormal", "lognormal")) {
       delta <- object$mleParam[(object$nXvar + object$nmuHvar +
-        1):(object$nXvar + object$nmuHvar + object$nuHvar)]
+        1):(object$nXvar + object$nmuHvar + object$nuZUvar)]
       phi <- object$mleParam[(object$nXvar + object$nmuHvar +
-        object$nuHvar + 1):(object$nXvar + object$nmuHvar +
-        object$nuHvar + object$nvHvar)]
+        object$nuZUvar + 1):(object$nXvar + object$nmuHvar +
+        object$nuZUvar + object$nvZVvar)]
       uHvar <- model.matrix(object$formula,
         data = object$dataTable,
         rhs = 3
@@ -24,9 +24,9 @@ vcov.sfacross <- function(object, extraPar = FALSE, ...) {
       )
     } else {
       delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-        object$nuHvar)]
-      phi <- object$mleParam[(object$nXvar + object$nuHvar +
-        1):(object$nXvar + object$nuHvar + object$nvHvar)]
+        object$nuZUvar)]
+      phi <- object$mleParam[(object$nXvar + object$nuZUvar +
+        1):(object$nXvar + object$nuZUvar + object$nvZVvar)]
       uHvar <- model.matrix(object$formula,
         data = object$dataTable,
         rhs = 2
@@ -38,7 +38,7 @@ vcov.sfacross <- function(object, extraPar = FALSE, ...) {
     }
     Wu <- mean(as.numeric(crossprod(matrix(delta), t(uHvar))))
     Wv <- mean(as.numeric(crossprod(matrix(phi), t(vHvar))))
-    if (object$nuHvar > 1 || object$nvHvar > 1 || object$nmuHvar > 1) {
+    if (object$nuZUvar > 1 || object$nvZVvar > 1 || object$nmuHvar > 1) {
       stop("argument 'extraPar' is not available for heteroscedasctic models",
         call. = FALSE
       )

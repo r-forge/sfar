@@ -152,10 +152,10 @@ fName_uv_sfacross <- function(Xvar, udist, uHvar, vHvar) {
   })
 }
 
-fName_lcmcross <- function(Xvar, uHvar, vHvar, Zvar, nZvar, lcmClasses) {
+fName_lcmcross <- function(Xvar, uHvar, vHvar, Zvar, nZHvar, lcmClasses) {
   c(rep(c(colnames(Xvar), paste0("Zu_", colnames(uHvar)), paste0("Zv_",
     colnames(vHvar))), lcmClasses), paste0(rep(paste0("Cl",
-    1:(lcmClasses - 1)), each = nZvar), "_", rep(colnames(Zvar),
+    1:(lcmClasses - 1)), each = nZHvar), "_", rep(colnames(Zvar),
     lcmClasses - 1)))
 }
 

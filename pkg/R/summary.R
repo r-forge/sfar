@@ -1,7 +1,6 @@
 # summary for sfacross ----------
 
-summary.sfacross <- function(object, grad = FALSE, ci = FALSE,
-                             ...) {
+summary.sfacross <- function(object, grad = FALSE, ci = FALSE, ...) {
   if (length(grad) != 1 || !is.logical(grad[1])) {
     stop("argument 'grad' must be a single logical value",
       call. = FALSE
@@ -12,20 +11,20 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE,
       call. = FALSE
     )
   }
-  object$AIC <- ic.sfacross(object, IC = "AIC")
-  object$BIC <- ic.sfacross(object, IC = "BIC")
-  object$HQIC <- ic.sfacross(object, IC = "HQIC")
+  object$AIC <- -2 * object$mleLoglik + 2 * object$nParm
+  object$BIC <- -2 * object$mleLoglik + log(object$Nobs) * object$nParm
+  object$HQIC <- -2 * object$mleLoglik + 2 * log(log(object$Nobs)) * object$nParm
   if (object$udist == "tnormal") {
     if (object$scaling) {
       delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-        (object$nuHvar - 1))]
-      tau <- object$mleParam[object$nXvar + (object$nuHvar -
+        (object$nuZUvar - 1))]
+      tau <- object$mleParam[object$nXvar + (object$nuZUvar -
         1) + 1]
-      cu <- object$mleParam[object$nXvar + (object$nuHvar -
+      cu <- object$mleParam[object$nXvar + (object$nuZUvar -
         1) + 2]
-      phi <- object$mleParam[(object$nXvar + (object$nuHvar -
-        1) + 2 + 1):(object$nXvar + (object$nuHvar -
-        1) + 2 + object$nvHvar)]
+      phi <- object$mleParam[(object$nXvar + (object$nuZUvar -
+        1) + 2 + 1):(object$nXvar + (object$nuZUvar -
+        1) + 2 + object$nvZVvar)]
       muHvar <- model.matrix(object$formula,
         data = object$dataTable,
         rhs = 2
@@ -42,10 +41,10 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE,
       omega <- object$mleParam[(object$nXvar + 1):(object$nXvar +
         object$nmuHvar)]
       delta <- object$mleParam[(object$nXvar + object$nmuHvar +
-        1):(object$nXvar + object$nmuHvar + object$nuHvar)]
+        1):(object$nXvar + object$nmuHvar + object$nuZUvar)]
       phi <- object$mleParam[(object$nXvar + object$nmuHvar +
-        object$nuHvar + 1):(object$nXvar + object$nmuHvar +
-        object$nuHvar + object$nvHvar)]
+        object$nuZUvar + 1):(object$nXvar + object$nmuHvar +
+        object$nuZUvar + object$nvZVvar)]
       muHvar <- model.matrix(object$formula,
         data = object$dataTable,
         rhs = 2
@@ -64,10 +63,10 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE,
       omega <- object$mleParam[(object$nXvar + 1):(object$nXvar +
         object$nmuHvar)]
       delta <- object$mleParam[(object$nXvar + object$nmuHvar +
-        1):(object$nXvar + object$nmuHvar + object$nuHvar)]
+        1):(object$nXvar + object$nmuHvar + object$nuZUvar)]
       phi <- object$mleParam[(object$nXvar + object$nmuHvar +
-        object$nuHvar + 1):(object$nXvar + object$nmuHvar +
-        object$nuHvar + object$nvHvar)]
+        object$nuZUvar + 1):(object$nXvar + object$nmuHvar +
+        object$nuZUvar + object$nvZVvar)]
       muHvar <- model.matrix(object$formula,
         data = object$dataTable,
         rhs = 2
@@ -82,9 +81,9 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE,
       )
     } else {
       delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-        object$nuHvar)]
-      phi <- object$mleParam[(object$nXvar + object$nuHvar +
-        1):(object$nXvar + object$nuHvar + object$nvHvar)]
+        object$nuZUvar)]
+      phi <- object$mleParam[(object$nXvar + object$nuZUvar +
+        1):(object$nXvar + object$nuZUvar + object$nvZVvar)]
       uHvar <- model.matrix(object$formula,
         data = object$dataTable,
         rhs = 2
@@ -112,19 +111,19 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE,
     }
   }
   P <- if (object$udist == "gamma") {
-    object$mleParam[object$nXvar + object$nuHvar + object$nvHvar +
+    object$mleParam[object$nXvar + object$nuZUvar + object$nvZVvar +
       1]
   } else {
     NULL
   }
   k <- if (object$udist == "weibull") {
-    object$mleParam[object$nXvar + object$nuHvar + object$nvHvar +
+    object$mleParam[object$nXvar + object$nuZUvar + object$nvZVvar +
       1]
   } else {
     NULL
   }
   lambda <- if (object$udist == "tslaplace") {
-    object$mleParam[object$nXvar + object$nuHvar + object$nvHvar +
+    object$mleParam[object$nXvar + object$nuZUvar + object$nvZVvar +
       1]
   } else {
     NULL
@@ -251,15 +250,12 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE,
   row.names(mleRes) <- names(object$startVal)
   object$mleRes <- mleRes
   object$chisq <- 2 * (object$mleLoglik - object$olsLoglik)
-  object$df <- object$nParm - object$nXvar - object$nvHvar
+  object$df <- object$nParm - object$nXvar - object$nvZVvar
   class(object) <- "summary.sfacross"
   return(object)
 }
 
 # print summary for sfacross ----------
-#' @rdname summary
-#' @aliases print.summary.sfacross
-#' @export
 
 print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), ...) {
   mleRes <- x$mleRes
@@ -364,16 +360,16 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
   mleRes1 <- mleRes[1:x$nXvar, , drop = FALSE]
   if (x$udist == "tnormal") {
     if (x$scaling) {
-      mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + (x$nuHvar -
+      mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + (x$nuZUvar -
         1)), , drop = FALSE]
-      mleRes3 <- mleRes[x$nXvar + (x$nuHvar - 1) + 1, ,
+      mleRes3 <- mleRes[x$nXvar + (x$nuZUvar - 1) + 1, ,
         drop = FALSE
       ]
-      mleRes4 <- mleRes[x$nXvar + (x$nuHvar - 1) + 2, ,
+      mleRes4 <- mleRes[x$nXvar + (x$nuZUvar - 1) + 2, ,
         drop = FALSE
       ]
-      mleRes5 <- mleRes[(x$nXvar + (x$nuHvar - 1) + 2 +
-        1):(x$nXvar + (x$nuHvar - 1) + 2 + x$nvHvar), ,
+      mleRes5 <- mleRes[(x$nXvar + (x$nuZUvar - 1) + 2 +
+        1):(x$nXvar + (x$nuZUvar - 1) + 2 + x$nvZVvar), ,
       drop = FALSE
       ]
     } else {
@@ -381,9 +377,9 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         drop = FALSE
       ]
       mleRes3 <- mleRes[(x$nXvar + x$nmuHvar + 1):(x$nXvar +
-        x$nmuHvar + x$nuHvar), , drop = FALSE]
-      mleRes4 <- mleRes[(x$nXvar + x$nmuHvar + x$nuHvar +
-        1):(x$nXvar + x$nmuHvar + x$nuHvar + x$nvHvar), ,
+        x$nmuHvar + x$nuZUvar), , drop = FALSE]
+      mleRes4 <- mleRes[(x$nXvar + x$nmuHvar + x$nuZUvar +
+        1):(x$nXvar + x$nmuHvar + x$nuZUvar + x$nvZVvar), ,
       drop = FALSE
       ]
     }
@@ -393,19 +389,19 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         drop = FALSE
       ]
       mleRes3 <- mleRes[(x$nXvar + x$nmuHvar + 1):(x$nXvar +
-        x$nmuHvar + x$nuHvar), , drop = FALSE]
-      mleRes4 <- mleRes[(x$nXvar + x$nmuHvar + x$nuHvar +
-        1):(x$nXvar + x$nmuHvar + x$nuHvar + x$nvHvar), ,
+        x$nmuHvar + x$nuZUvar), , drop = FALSE]
+      mleRes4 <- mleRes[(x$nXvar + x$nmuHvar + x$nuZUvar +
+        1):(x$nXvar + x$nmuHvar + x$nuZUvar + x$nvZVvar), ,
       drop = FALSE
       ]
     } else {
-      mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + x$nuHvar), ,
+      mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + x$nuZUvar), ,
         drop = FALSE
       ]
-      mleRes3 <- mleRes[(x$nXvar + x$nuHvar + 1):(x$nXvar +
-        x$nuHvar + x$nvHvar), , drop = FALSE]
+      mleRes3 <- mleRes[(x$nXvar + x$nuZUvar + 1):(x$nXvar +
+        x$nuZUvar + x$nvZVvar), , drop = FALSE]
       if (x$udist %in% c("gamma", "weibull", "tslaplace")) {
-        mleRes4 <- mleRes[x$nXvar + x$nuHvar + x$nvHvar +
+        mleRes4 <- mleRes[x$nXvar + x$nuZUvar + x$nvZVvar +
           1, , drop = FALSE]
       }
     }
@@ -553,7 +549,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
       format = "f"
     ), "\n")
   }
-  if (x$nuHvar > 1 || x$nvHvar > 1) {
+  if (x$nuZUvar > 1 || x$nvZVvar > 1) {
     cat("Variances averaged over observations \n")
   }
   cat(paste0(rep("-", lengthSum + 2), collapse = ""), "\n")
@@ -1134,11 +1130,8 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
 }
 
 # summary for lcmcross ----------
-#' @rdname summary
-#' @aliases summary.lcmcross
-#' @export
-summary.lcmcross <- function(object, grad = FALSE, ci = FALSE,
-                             ...) {
+
+summary.lcmcross <- function(object, grad = FALSE, ci = FALSE, ...) {
   if (length(grad) != 1 || !is.logical(grad[1])) {
     stop("argument 'grad' must be a single logical value",
       call. = FALSE
@@ -1149,9 +1142,9 @@ summary.lcmcross <- function(object, grad = FALSE, ci = FALSE,
       call. = FALSE
     )
   }
-  object$AIC <- ic.lcmcross(object, IC = "AIC")
-  object$BIC <- ic.lcmcross(object, IC = "BIC")
-  object$HQIC <- ic.lcmcross(object, IC = "HQIC")
+  object$AIC <- -2 * object$mleLoglik + 2 * object$nParm
+  object$BIC <- -2 * object$mleLoglik + log(object$Nobs) * object$nParm
+  object$HQIC <- -2 * object$mleLoglik + 2 * log(log(object$Nobs)) * object$nParm
   # MLE estimates and stder, p-values, CI, Gradient
   if (grad && ci) {
     mleRes <- matrix(nrow = object$nParm, ncol = 7)
@@ -1220,7 +1213,7 @@ summary.lcmcross <- function(object, grad = FALSE, ci = FALSE,
   object$mleRes <- mleRes
   # object$chisq <- 2 * (object$mleLoglik - object$olsLoglik)
   object$df <- object$nParm - object$nClasses * object$nXvar -
-    object$nClasses * object$nvHvar - object$nZvar *
+    object$nClasses * object$nvZVvar - object$nZHvar *
     (object$nClasses - 1)
   class(object) <- "summary.lcmcross"
   return(object)
@@ -1228,9 +1221,7 @@ summary.lcmcross <- function(object, grad = FALSE, ci = FALSE,
 
 
 # print summary for lcmcross ----------
-#' @rdname summary
-#' @aliases print.summary.lcmcross
-#' @export
+
 print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), ...) {
   mleRes <- x$mleRes
   if (dim(mleRes)[2] == 4) {
@@ -1332,9 +1323,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     flag = "-"
   )
   mleRes1 <- mleRes[1:x$nXvar, ]
-  mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + x$nuHvar), , drop = FALSE]
-  mleRes3 <- mleRes[(x$nXvar + x$nuHvar + 1):(x$nXvar + x$nuHvar +
-    x$nvHvar), , drop = FALSE]
+  mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + x$nuZUvar), , drop = FALSE]
+  mleRes3 <- mleRes[(x$nXvar + x$nuZUvar + 1):(x$nXvar + x$nuZUvar +
+    x$nvZVvar), , drop = FALSE]
   sfaModel <- "Normal-Half Normal Latent Class Stochastic Frontier Model"
   lengthSum <- nchar(sfaModel) # + 10
   dimCoefTable <- as.character(dim(x$mleRes)[2])
@@ -1444,7 +1435,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  printCoefmat(mleRes[(x$nXvar + 1):(x$nXvar + x$nuHvar), ,
+  printCoefmat(mleRes[(x$nXvar + 1):(x$nXvar + x$nuZUvar), ,
     drop = FALSE
   ], P.values = TRUE, digits = digits, signif.legend = FALSE)
   cat(
@@ -1464,8 +1455,8 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  printCoefmat(mleRes[(x$nXvar + x$nuHvar + 1):(x$nXvar + x$nuHvar +
-    x$nvHvar), , drop = FALSE],
+  printCoefmat(mleRes[(x$nXvar + x$nuZUvar + 1):(x$nXvar + x$nuZUvar +
+    x$nvZVvar), , drop = FALSE],
   P.values = TRUE, digits = digits,
   signif.legend = FALSE
   )
@@ -1486,8 +1477,8 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  printCoefmat(mleRes[(x$nXvar + x$nuHvar + x$nvHvar + 1):(2 *
-    x$nXvar + x$nuHvar + x$nvHvar), , drop = FALSE],
+  printCoefmat(mleRes[(x$nXvar + x$nuZUvar + x$nvZVvar + 1):(2 *
+    x$nXvar + x$nuZUvar + x$nvZVvar), , drop = FALSE],
   P.values = TRUE,
   digits = digits, signif.legend = FALSE
   )
@@ -1508,8 +1499,8 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  printCoefmat(mleRes[(2 * x$nXvar + x$nuHvar + x$nvHvar +
-    1):(2 * x$nXvar + 2 * x$nuHvar + x$nvHvar), , drop = FALSE],
+  printCoefmat(mleRes[(2 * x$nXvar + x$nuZUvar + x$nvZVvar +
+    1):(2 * x$nXvar + 2 * x$nuZUvar + x$nvZVvar), , drop = FALSE],
   P.values = TRUE, digits = digits, signif.legend = FALSE
   )
   cat(
@@ -1529,8 +1520,8 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuHvar + x$nvHvar +
-    1):(2 * x$nXvar + 2 * x$nuHvar + 2 * x$nvHvar), , drop = FALSE],
+  printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuZUvar + x$nvZVvar +
+    1):(2 * x$nXvar + 2 * x$nuZUvar + 2 * x$nvZVvar), , drop = FALSE],
   P.values = TRUE, digits = digits, signif.legend = FALSE
   )
   cat(
@@ -1551,9 +1542,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
       )), collapse = ""),
       "\n"
     )
-    printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuHvar + 2 *
-      x$nvHvar + 1):(2 * x$nXvar + 2 * x$nuHvar + 2 * x$nvHvar +
-      x$nZvar), , drop = FALSE],
+    printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuZUvar + 2 *
+      x$nvZVvar + 1):(2 * x$nXvar + 2 * x$nuZUvar + 2 * x$nvZVvar +
+      x$nZHvar), , drop = FALSE],
     P.values = TRUE, digits = digits,
     signif.legend = TRUE
     )
@@ -1576,9 +1567,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuHvar +
-        2 * x$nvHvar + 1):(3 * x$nXvar + 2 * x$nuHvar +
-        2 * x$nvHvar), , drop = FALSE],
+      printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuZUvar +
+        2 * x$nvZVvar + 1):(3 * x$nXvar + 2 * x$nuZUvar +
+        2 * x$nvZVvar), , drop = FALSE],
       P.values = TRUE,
       digits = digits, signif.legend = FALSE
       )
@@ -1599,9 +1590,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes[(3 * x$nXvar + 2 * x$nuHvar +
-        2 * x$nvHvar + 1):(3 * x$nXvar + 3 * x$nuHvar +
-        2 * x$nvHvar), , drop = FALSE],
+      printCoefmat(mleRes[(3 * x$nXvar + 2 * x$nuZUvar +
+        2 * x$nvZVvar + 1):(3 * x$nXvar + 3 * x$nuZUvar +
+        2 * x$nvZVvar), , drop = FALSE],
       P.values = TRUE,
       digits = digits, signif.legend = FALSE
       )
@@ -1622,9 +1613,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuHvar +
-        2 * x$nvHvar + 1):(3 * x$nXvar + 3 * x$nuHvar +
-        3 * x$nvHvar), , drop = FALSE],
+      printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuZUvar +
+        2 * x$nvZVvar + 1):(3 * x$nXvar + 3 * x$nuZUvar +
+        3 * x$nvZVvar), , drop = FALSE],
       P.values = TRUE,
       digits = digits, signif.legend = FALSE
       )
@@ -1645,9 +1636,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuHvar +
-        3 * x$nvHvar + 1):(3 * x$nXvar + 3 * x$nuHvar +
-        3 * x$nvHvar + 2 * x$nZvar), , drop = FALSE],
+      printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuZUvar +
+        3 * x$nvZVvar + 1):(3 * x$nXvar + 3 * x$nuZUvar +
+        3 * x$nvZVvar + 2 * x$nZHvar), , drop = FALSE],
       P.values = TRUE, digits = digits, signif.legend = TRUE
       )
       cat(
@@ -1672,9 +1663,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuHvar +
-          2 * x$nvHvar + 1):(3 * x$nXvar + 2 * x$nuHvar +
-          2 * x$nvHvar), , drop = FALSE],
+        printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuZUvar +
+          2 * x$nvZVvar + 1):(3 * x$nXvar + 2 * x$nuZUvar +
+          2 * x$nvZVvar), , drop = FALSE],
         P.values = TRUE,
         digits = digits, signif.legend = FALSE
         )
@@ -1698,9 +1689,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes[(3 * x$nXvar + 2 * x$nuHvar +
-          2 * x$nvHvar + 1):(3 * x$nXvar + 3 * x$nuHvar +
-          2 * x$nvHvar), , drop = FALSE],
+        printCoefmat(mleRes[(3 * x$nXvar + 2 * x$nuZUvar +
+          2 * x$nvZVvar + 1):(3 * x$nXvar + 3 * x$nuZUvar +
+          2 * x$nvZVvar), , drop = FALSE],
         P.values = TRUE,
         digits = digits, signif.legend = FALSE
         )
@@ -1724,9 +1715,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuHvar +
-          2 * x$nvHvar + 1):(3 * x$nXvar + 3 * x$nuHvar +
-          3 * x$nvHvar), , drop = FALSE],
+        printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuZUvar +
+          2 * x$nvZVvar + 1):(3 * x$nXvar + 3 * x$nuZUvar +
+          3 * x$nvZVvar), , drop = FALSE],
         P.values = TRUE,
         digits = digits, signif.legend = FALSE
         )
@@ -1750,9 +1741,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuHvar +
-          3 * x$nvHvar + 1):(4 * x$nXvar + 3 * x$nuHvar +
-          3 * x$nvHvar), , drop = FALSE],
+        printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuZUvar +
+          3 * x$nvZVvar + 1):(4 * x$nXvar + 3 * x$nuZUvar +
+          3 * x$nvZVvar), , drop = FALSE],
         P.values = TRUE,
         digits = digits, signif.legend = FALSE
         )
@@ -1776,9 +1767,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes[(4 * x$nXvar + 3 * x$nuHvar +
-          3 * x$nvHvar + 1):(4 * x$nXvar + 4 * x$nuHvar +
-          3 * x$nvHvar), , drop = FALSE],
+        printCoefmat(mleRes[(4 * x$nXvar + 3 * x$nuZUvar +
+          3 * x$nvZVvar + 1):(4 * x$nXvar + 4 * x$nuZUvar +
+          3 * x$nvZVvar), , drop = FALSE],
         P.values = TRUE,
         digits = digits, signif.legend = FALSE
         )
@@ -1802,9 +1793,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes[(4 * x$nXvar + 4 * x$nuHvar +
-          3 * x$nvHvar + 1):(4 * x$nXvar + 4 * x$nuHvar +
-          4 * x$nvHvar), , drop = FALSE],
+        printCoefmat(mleRes[(4 * x$nXvar + 4 * x$nuZUvar +
+          3 * x$nvZVvar + 1):(4 * x$nXvar + 4 * x$nuZUvar +
+          4 * x$nvZVvar), , drop = FALSE],
         P.values = TRUE,
         digits = digits, signif.legend = FALSE
         )
@@ -1828,9 +1819,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes[(4 * x$nXvar + 4 * x$nuHvar +
-          4 * x$nvHvar + 1):(4 * x$nXvar + 4 * x$nuHvar +
-          4 * x$nvHvar + 3 * x$nZvar), , drop = FALSE],
+        printCoefmat(mleRes[(4 * x$nXvar + 4 * x$nuZUvar +
+          4 * x$nvZVvar + 1):(4 * x$nXvar + 4 * x$nuZUvar +
+          4 * x$nvZVvar + 3 * x$nZHvar), , drop = FALSE],
         P.values = TRUE, digits = digits, signif.legend = TRUE
         )
         cat(
@@ -1854,9 +1845,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuHvar +
-            2 * x$nvHvar + 1):(3 * x$nXvar + 2 * x$nuHvar +
-            2 * x$nvHvar), , drop = FALSE],
+          printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuZUvar +
+            2 * x$nvZVvar + 1):(3 * x$nXvar + 2 * x$nuZUvar +
+            2 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
           digits = digits, signif.legend = FALSE
           )
@@ -1878,9 +1869,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(3 * x$nXvar + 2 * x$nuHvar +
-            2 * x$nvHvar + 1):(3 * x$nXvar + 3 * x$nuHvar +
-            2 * x$nvHvar), , drop = FALSE],
+          printCoefmat(mleRes[(3 * x$nXvar + 2 * x$nuZUvar +
+            2 * x$nvZVvar + 1):(3 * x$nXvar + 3 * x$nuZUvar +
+            2 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
           digits = digits, signif.legend = FALSE
           )
@@ -1902,9 +1893,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuHvar +
-            2 * x$nvHvar + 1):(3 * x$nXvar + 3 * x$nuHvar +
-            3 * x$nvHvar), , drop = FALSE],
+          printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuZUvar +
+            2 * x$nvZVvar + 1):(3 * x$nXvar + 3 * x$nuZUvar +
+            3 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
           digits = digits, signif.legend = FALSE
           )
@@ -1926,9 +1917,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuHvar +
-            3 * x$nvHvar + 1):(4 * x$nXvar + 3 * x$nuHvar +
-            3 * x$nvHvar), , drop = FALSE],
+          printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuZUvar +
+            3 * x$nvZVvar + 1):(4 * x$nXvar + 3 * x$nuZUvar +
+            3 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
           digits = digits, signif.legend = FALSE
           )
@@ -1950,9 +1941,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(4 * x$nXvar + 3 * x$nuHvar +
-            3 * x$nvHvar + 1):(4 * x$nXvar + 4 * x$nuHvar +
-            3 * x$nvHvar), , drop = FALSE],
+          printCoefmat(mleRes[(4 * x$nXvar + 3 * x$nuZUvar +
+            3 * x$nvZVvar + 1):(4 * x$nXvar + 4 * x$nuZUvar +
+            3 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
           digits = digits, signif.legend = FALSE
           )
@@ -1974,9 +1965,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(4 * x$nXvar + 4 * x$nuHvar +
-            3 * x$nvHvar + 1):(4 * x$nXvar + 4 * x$nuHvar +
-            4 * x$nvHvar), , drop = FALSE],
+          printCoefmat(mleRes[(4 * x$nXvar + 4 * x$nuZUvar +
+            3 * x$nvZVvar + 1):(4 * x$nXvar + 4 * x$nuZUvar +
+            4 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
           digits = digits, signif.legend = FALSE
           )
@@ -1998,9 +1989,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(4 * x$nXvar + 4 * x$nuHvar +
-            4 * x$nvHvar + 1):(5 * x$nXvar + 4 * x$nuHvar +
-            4 * x$nvHvar), , drop = FALSE],
+          printCoefmat(mleRes[(4 * x$nXvar + 4 * x$nuZUvar +
+            4 * x$nvZVvar + 1):(5 * x$nXvar + 4 * x$nuZUvar +
+            4 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
           digits = digits, signif.legend = FALSE
           )
@@ -2022,9 +2013,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(5 * x$nXvar + 4 * x$nuHvar +
-            4 * x$nvHvar + 1):(5 * x$nXvar + 5 * x$nuHvar +
-            4 * x$nvHvar), , drop = FALSE],
+          printCoefmat(mleRes[(5 * x$nXvar + 4 * x$nuZUvar +
+            4 * x$nvZVvar + 1):(5 * x$nXvar + 5 * x$nuZUvar +
+            4 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
           digits = digits, signif.legend = FALSE
           )
@@ -2046,9 +2037,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(5 * x$nXvar + 5 * x$nuHvar +
-            4 * x$nvHvar + 1):(5 * x$nXvar + 5 * x$nuHvar +
-            5 * x$nvHvar), , drop = FALSE],
+          printCoefmat(mleRes[(5 * x$nXvar + 5 * x$nuZUvar +
+            4 * x$nvZVvar + 1):(5 * x$nXvar + 5 * x$nuZUvar +
+            5 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
           digits = digits, signif.legend = FALSE
           )
@@ -2070,9 +2061,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(5 * x$nXvar + 5 * x$nuHvar +
-            5 * x$nvHvar + 1):(5 * x$nXvar + 5 * x$nuHvar +
-            5 * x$nvHvar + 4 * x$nZvar), , drop = FALSE],
+          printCoefmat(mleRes[(5 * x$nXvar + 5 * x$nuZUvar +
+            5 * x$nvZVvar + 1):(5 * x$nXvar + 5 * x$nuZUvar +
+            5 * x$nvZVvar + 4 * x$nZHvar), , drop = FALSE],
           P.values = TRUE, digits = digits, signif.legend = TRUE
           )
           cat(paste0(rep("-", lengthSum + 2 + switch(dimCoefTable,

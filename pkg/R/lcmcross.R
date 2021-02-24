@@ -72,15 +72,15 @@ lcmcross <- function(formula, uhet, vhet, thet, data, subset,
   mtuH <- delete.response(terms(formula, data = data, rhs = 2))
   uHvar <- model.matrix(mtuH, mc)
   uHvar <- uHvar[validObs, , drop = FALSE]
-  nuHvar <- ncol(uHvar)
+  nuZUvar <- ncol(uHvar)
   mtvH <- delete.response(terms(formula, data = data, rhs = 3))
   vHvar <- model.matrix(mtvH, mc)
   vHvar <- vHvar[validObs, , drop = FALSE]
-  nvHvar <- ncol(vHvar)
+  nvZVvar <- ncol(vHvar)
   mtZ <- delete.response(terms(formula, data = data, rhs = 4))
   Zvar <- model.matrix(mtZ, mc)
   Zvar <- Zvar[validObs, , drop = FALSE]
-  nZvar <- ncol(Zvar)
+  nZHvar <- ncol(Zvar)
   # Check other supplied options -------
   if (length(S) != 1 || !(S %in% c(-1L, 1L))) {
     stop("argument 'S' must equal either 1 or -1: 1 for production or profit frontier
@@ -109,8 +109,8 @@ lcmcross <- function(formula, uhet, vhet, thet, data, subset,
     )
   }
   # Number of parameters -------
-  nParm <- lcmClasses * (nXvar + nuHvar + nvHvar) + (lcmClasses -
-    1) * nZvar
+  nParm <- lcmClasses * (nXvar + nuZUvar + nvZVvar) + (lcmClasses -
+    1) * nZHvar
   # Checking starting values when provided -------
   if (!is.null(start)) {
     if (length(start) != nParm) {
@@ -266,8 +266,8 @@ lcmcross <- function(formula, uhet, vhet, thet, data, subset,
   # Step 2: MLE arguments -------
   FunArgs <- list(
     start = start, olsParam = olsParam, dataTable = dataTable,
-    nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar, uHvar = uHvar,
-    vHvar = vHvar, Yvar = Yvar, Zvar = Zvar, nZvar = nZvar,
+    nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
+    vHvar = vHvar, Yvar = Yvar, Zvar = Zvar, nZHvar = nZHvar,
     Xvar = Xvar, S = S, method = method, printInfo = printInfo,
     itermax = itermax, stepmax = stepmax, tol = tol, gradtol = gradtol,
     hessianType = hessianType, qac = qac, initStart = initStart,
@@ -349,7 +349,7 @@ lcmcross <- function(formula, uhet, vhet, thet, data, subset,
   # quick renaming -------
   names(mleList$startVal) <- fName_lcmcross(
     Xvar = Xvar, uHvar = uHvar,
-    vHvar = vHvar, Zvar = Zvar, nZvar = nZvar, lcmClasses = lcmClasses
+    vHvar = vHvar, Zvar = Zvar, nZHvar = nZHvar, lcmClasses = lcmClasses
   )
   names(mleList$mleParam) <- names(mleList$startVal)
   rownames(mleList$invHessian) <- colnames(mleList$invHessian) <- names(mleList$mleParam)
@@ -364,65 +364,65 @@ lcmcross <- function(formula, uhet, vhet, thet, data, subset,
     matrix(mleList$mleParam[1:nXvar]), t(Xvar)
   ))
   dataTable$mleResiduals_c2 <- Yvar - as.numeric(crossprod(
-    matrix(mleList$mleParam[(nXvar + nuHvar + nvHvar + 1):(2 * nXvar +
-      nuHvar + nvHvar)]), t(Xvar)
+    matrix(mleList$mleParam[(nXvar + nuZUvar + nvZVvar + 1):(2 * nXvar +
+      nuZUvar + nvZVvar)]), t(Xvar)
   ))
   dataTable$mleFitted_c2 <- as.numeric(crossprod(
-    matrix(mleList$mleParam[(nXvar + nuHvar + nvHvar + 1):(2 * nXvar +
-      nuHvar + nvHvar)]), t(Xvar)
+    matrix(mleList$mleParam[(nXvar + nuZUvar + nvZVvar + 1):(2 * nXvar +
+      nuZUvar + nvZVvar)]), t(Xvar)
   ))
   if (lcmClasses == 3) {
     dataTable$mleResiduals_c3 <- Yvar - as.numeric(crossprod(
-      matrix(mleList$mleParam[(2 * nXvar + 2 * nuHvar + 2 * nvHvar + 1):(3 *
-        nXvar + 2 * nuHvar + 2 * nvHvar)]), t(Xvar)
+      matrix(mleList$mleParam[(2 * nXvar + 2 * nuZUvar + 2 * nvZVvar + 1):(3 *
+        nXvar + 2 * nuZUvar + 2 * nvZVvar)]), t(Xvar)
     ))
     dataTable$mleFitted_c3 <- as.numeric(crossprod(
-      matrix(mleList$mleParam[(2 * nXvar + 2 * nuHvar + 2 * nvHvar + 1):(3 *
-        nXvar + 2 * nuHvar + 2 * nvHvar)]), t(Xvar)
+      matrix(mleList$mleParam[(2 * nXvar + 2 * nuZUvar + 2 * nvZVvar + 1):(3 *
+        nXvar + 2 * nuZUvar + 2 * nvZVvar)]), t(Xvar)
     ))
   } else {
     if (lcmClasses == 4) {
       dataTable$mleResiduals_c3 <- Yvar - as.numeric(crossprod(
-        matrix(mleList$mleParam[(2 * nXvar + 2 * nuHvar + 2 * nvHvar + 1):(3 *
-          nXvar + 2 * nuHvar + 2 * nvHvar)]), t(Xvar)
+        matrix(mleList$mleParam[(2 * nXvar + 2 * nuZUvar + 2 * nvZVvar + 1):(3 *
+          nXvar + 2 * nuZUvar + 2 * nvZVvar)]), t(Xvar)
       ))
       dataTable$mleFitted_c3 <- as.numeric(crossprod(
-        matrix(mleList$mleParam[(2 * nXvar + 2 * nuHvar + 2 * nvHvar + 1):(3 *
-          nXvar + 2 * nuHvar + 2 * nvHvar)]), t(Xvar)
+        matrix(mleList$mleParam[(2 * nXvar + 2 * nuZUvar + 2 * nvZVvar + 1):(3 *
+          nXvar + 2 * nuZUvar + 2 * nvZVvar)]), t(Xvar)
       ))
       dataTable$mleResiduals_c4 <- Yvar - as.numeric(crossprod(
-        matrix(mleList$mleParam[(3 * nXvar + 3 * nuHvar + 3 * nvHvar + 1):(4 *
-          nXvar + 3 * nuHvar + 3 * nvHvar)]), t(Xvar)
+        matrix(mleList$mleParam[(3 * nXvar + 3 * nuZUvar + 3 * nvZVvar + 1):(4 *
+          nXvar + 3 * nuZUvar + 3 * nvZVvar)]), t(Xvar)
       ))
       dataTable$mleFitted_c4 <- as.numeric(crossprod(
-        matrix(mleList$mleParam[(3 * nXvar + 3 * nuHvar + 3 * nvHvar + 1):(4 *
-          nXvar + 3 * nuHvar + 3 * nvHvar)]), t(Xvar)
+        matrix(mleList$mleParam[(3 * nXvar + 3 * nuZUvar + 3 * nvZVvar + 1):(4 *
+          nXvar + 3 * nuZUvar + 3 * nvZVvar)]), t(Xvar)
       ))
     } else {
       if (lcmClasses == 5) {
         dataTable$mleResiduals_c3 <- Yvar - as.numeric(crossprod(
-          matrix(mleList$mleParam[(2 * nXvar + 2 * nuHvar + 2 * nvHvar + 1):(3 *
-            nXvar + 2 * nuHvar + 2 * nvHvar)]), t(Xvar)
+          matrix(mleList$mleParam[(2 * nXvar + 2 * nuZUvar + 2 * nvZVvar + 1):(3 *
+            nXvar + 2 * nuZUvar + 2 * nvZVvar)]), t(Xvar)
         ))
         dataTable$mleFitted_c3 <- as.numeric(crossprod(
-          matrix(mleList$mleParam[(2 * nXvar + 2 * nuHvar + 2 * nvHvar + 1):(3 *
-            nXvar + 2 * nuHvar + 2 * nvHvar)]), t(Xvar)
+          matrix(mleList$mleParam[(2 * nXvar + 2 * nuZUvar + 2 * nvZVvar + 1):(3 *
+            nXvar + 2 * nuZUvar + 2 * nvZVvar)]), t(Xvar)
         ))
         dataTable$mleResiduals_c4 <- Yvar - as.numeric(crossprod(
-          matrix(mleList$mleParam[(3 * nXvar + 3 * nuHvar + 3 * nvHvar + 1):(4 *
-            nXvar + 3 * nuHvar + 3 * nvHvar)]), t(Xvar)
+          matrix(mleList$mleParam[(3 * nXvar + 3 * nuZUvar + 3 * nvZVvar + 1):(4 *
+            nXvar + 3 * nuZUvar + 3 * nvZVvar)]), t(Xvar)
         ))
         dataTable$mleFitted_c4 <- as.numeric(crossprod(
-          matrix(mleList$mleParam[(3 * nXvar + 3 * nuHvar + 3 * nvHvar + 1):(4 *
-            nXvar + 3 * nuHvar + 3 * nvHvar)]), t(Xvar)
+          matrix(mleList$mleParam[(3 * nXvar + 3 * nuZUvar + 3 * nvZVvar + 1):(4 *
+            nXvar + 3 * nuZUvar + 3 * nvZVvar)]), t(Xvar)
         ))
         dataTable$mleResiduals_c5 <- Yvar - as.numeric(crossprod(
-          matrix(mleList$mleParam[(4 * nXvar + 4 * nuHvar + 4 * nvHvar + 1):(5 *
-            nXvar + 4 * nuHvar + 4 * nvHvar)]), t(Xvar)
+          matrix(mleList$mleParam[(4 * nXvar + 4 * nuZUvar + 4 * nvZVvar + 1):(5 *
+            nXvar + 4 * nuZUvar + 4 * nvZVvar)]), t(Xvar)
         ))
         dataTable$mleFitted_c5 <- as.numeric(crossprod(
-          matrix(mleList$mleParam[(4 * nXvar + 4 * nuHvar + 4 * nvHvar + 1):(5 *
-            nXvar + 4 * nuHvar + 4 * nvHvar)]), t(Xvar)
+          matrix(mleList$mleParam[(4 * nXvar + 4 * nuZUvar + 4 * nvZVvar + 1):(5 *
+            nXvar + 4 * nuZUvar + 4 * nvZVvar)]), t(Xvar)
         ))
       }
     }
@@ -435,10 +435,10 @@ lcmcross <- function(formula, uhet, vhet, thet, data, subset,
   returnObj$typeSfa <- typeSfa
   returnObj$Nobs <- N
   returnObj$nXvar <- nXvar
-  returnObj$nZHvar <- nZvar
+  returnObj$nZHvar <- nZHvar
   returnObj$logDepVar <- logDepVar
-  returnObj$nuZUvar <- nuHvar
-  returnObj$nvZVvar <- nvHvar
+  returnObj$nuZUvar <- nuZUvar
+  returnObj$nvZVvar <- nvZVvar
   returnObj$nParm <- nParm
   returnObj$udist <- udist
   returnObj$startVal <- mleList$startVal
@@ -490,8 +490,7 @@ lcmcross <- function(formula, uhet, vhet, thet, data, subset,
 
 # print for lcmcross ----------
 
-print.lcmcross <- function(x, digits = max(3, getOption("digits") - 2),
-                           ...) {
+print.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), ...) {
   cat("\nCall:\n")
   cat(deparse(x$call))
   cat("\n\n")
@@ -504,5 +503,3 @@ print.lcmcross <- function(x, digits = max(3, getOption("digits") - 2),
   )
   invisible(x)
 }
-
-
