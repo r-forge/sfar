@@ -26,10 +26,10 @@ coef.sfacross <- function(object, extraPar = FALSE, ...) {
           t(uHvar[, -1])))
         Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
       } else {
-        delta <- object$mleParam[(object$nXvar + object$nmuHvar +
-          1):(object$nXvar + object$nmuHvar + object$nuZUvar)]
-        phi <- object$mleParam[(object$nXvar + object$nmuHvar +
-          object$nuZUvar + 1):(object$nXvar + object$nmuHvar +
+        delta <- object$mleParam[(object$nXvar + object$nmuZUvar +
+          1):(object$nXvar + object$nmuZUvar + object$nuZUvar)]
+        phi <- object$mleParam[(object$nXvar + object$nmuZUvar +
+          object$nuZUvar + 1):(object$nXvar + object$nmuZUvar +
           object$nuZUvar + object$nvZVvar)]
         uHvar <- model.matrix(object$formula, data = object$dataTable,
           rhs = 3)
@@ -40,10 +40,10 @@ coef.sfacross <- function(object, extraPar = FALSE, ...) {
       }
     } else {
       if (object$udist == "lognormal") {
-        delta <- object$mleParam[(object$nXvar + object$nmuHvar +
-          1):(object$nXvar + object$nmuHvar + object$nuZUvar)]
-        phi <- object$mleParam[(object$nXvar + object$nmuHvar +
-          object$nuZUvar + 1):(object$nXvar + object$nmuHvar +
+        delta <- object$mleParam[(object$nXvar + object$nmuZUvar +
+          1):(object$nXvar + object$nmuZUvar + object$nuZUvar)]
+        phi <- object$mleParam[(object$nXvar + object$nmuZUvar +
+          object$nuZUvar + 1):(object$nXvar + object$nmuZUvar +
           object$nuZUvar + object$nvZVvar)]
         uHvar <- model.matrix(object$formula, data = object$dataTable,
           rhs = 3)
@@ -66,7 +66,7 @@ coef.sfacross <- function(object, extraPar = FALSE, ...) {
     }
     if (object$udist == "lognormal" || (object$udist == "tnormal" &
       object$scaling == FALSE)) {
-      if (object$nuZUvar > 1 || object$nvZVvar > 1 || object$nmuHvar >
+      if (object$nuZUvar > 1 || object$nvZVvar > 1 || object$nmuZUvar >
         1)
         cat("Variances averaged over observations     \n\n")
     } else {

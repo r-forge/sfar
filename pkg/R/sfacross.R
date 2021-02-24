@@ -80,24 +80,24 @@ sfacross <- function(formula, muhet, uhet, vhet, data, subset,
     ))
     muHvar <- model.matrix(mtmuH, mc)
     muHvar <- muHvar[validObs, , drop = FALSE]
-    nmuHvar <- ncol(muHvar)
+    nmuZUvar <- ncol(muHvar)
     mtuH <- delete.response(terms(formula, data = data, rhs = 3))
     uHvar <- model.matrix(mtuH, mc)
     uHvar <- uHvar[validObs, , drop = FALSE]
-    nuHvar <- ncol(uHvar)
+    nuZUvar <- ncol(uHvar)
     mtvH <- delete.response(terms(formula, data = data, rhs = 4))
     vHvar <- model.matrix(mtvH, mc)
     vHvar <- vHvar[validObs, , drop = FALSE]
-    nvHvar <- ncol(vHvar)
+    nvZVvar <- ncol(vHvar)
   } else {
     mtuH <- delete.response(terms(formula, data = data, rhs = 2))
     uHvar <- model.matrix(mtuH, mc)
     uHvar <- uHvar[validObs, , drop = FALSE]
-    nuHvar <- ncol(uHvar)
+    nuZUvar <- ncol(uHvar)
     mtvH <- delete.response(terms(formula, data = data, rhs = 3))
     vHvar <- model.matrix(mtvH, mc)
     vHvar <- vHvar[validObs, , drop = FALSE]
-    nvHvar <- ncol(vHvar)
+    nvZVvar <- ncol(vHvar)
   }
   # Check other supplied options -------
   if (length(S) != 1 || !(S %in% c(-1L, 1L))) {
@@ -122,7 +122,7 @@ sfacross <- function(formula, muhet, uhet, vhet, data, subset,
         call. = FALSE
       )
     }
-    if (nuHvar != nmuHvar) {
+    if (nuZUvar != nmuZUvar) {
       stop("argument 'muhet' and 'uhet' must have the same length",
         call. = FALSE
       )
@@ -132,7 +132,7 @@ sfacross <- function(formula, muhet, uhet, vhet, data, subset,
         call. = FALSE
       )
     }
-    if (nuHvar == 1 || nmuHvar == 1) {
+    if (nuZUvar == 1 || nmuZUvar == 1) {
       if (attr(terms(muhet), "intercept") == 1 || attr(
         terms(uhet),
         "intercept"
@@ -155,21 +155,21 @@ sfacross <- function(formula, muhet, uhet, vhet, data, subset,
         terms(uhet),
         "intercept"
       ) == 1) {
-        nXvar + (nmuHvar - 1) + 2 + nvHvar
+        nXvar + (nmuZUvar - 1) + 2 + nvZVvar
       } else {
-        nXvar + nmuHvar + 2 + nvHvar
+        nXvar + nmuZUvar + 2 + nvZVvar
       }
     } else {
-      nXvar + nmuHvar + nuHvar + nvHvar
+      nXvar + nmuZUvar + nuZUvar + nvZVvar
     }
   } else {
     if (udist == "lognormal") {
-      nXvar + nmuHvar + nuHvar + nvHvar
+      nXvar + nmuZUvar + nuZUvar + nvZVvar
     } else {
       if (udist %in% c("gamma", "weibull", "tslaplace")) {
-        nXvar + nuHvar + nvHvar + 1
+        nXvar + nuZUvar + nvZVvar + 1
       } else {
-        nXvar + nuHvar + nvHvar
+        nXvar + nuZUvar + nvZVvar
       }
     }
   }
@@ -358,7 +358,7 @@ sfacross <- function(formula, muhet, uhet, vhet, data, subset,
     if (scaling) {
       list(
         start = start, olsParam = olsParam, dataTable = dataTable,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S, method = method, printInfo = printInfo,
         itermax = itermax, stepmax = stepmax, tol = tol,
@@ -368,8 +368,8 @@ sfacross <- function(formula, muhet, uhet, vhet, data, subset,
     } else {
       list(
         start = start, olsParam = olsParam, dataTable = dataTable,
-        nXvar = nXvar, nmuHvar = nmuHvar, nuHvar = nuHvar,
-        nvHvar = nvHvar, muHvar = muHvar, uHvar = uHvar,
+        nXvar = nXvar, nmuZUvar = nmuZUvar, nuZUvar = nuZUvar,
+        nvZVvar = nvZVvar, muHvar = muHvar, uHvar = uHvar,
         vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S,
         method = method, printInfo = printInfo, itermax = itermax,
         stepmax = stepmax, tol = tol, gradtol = gradtol,
@@ -380,8 +380,8 @@ sfacross <- function(formula, muhet, uhet, vhet, data, subset,
     if (udist == "lognormal") {
       list(
         start = start, olsParam = olsParam, dataTable = dataTable,
-        nXvar = nXvar, nmuHvar = nmuHvar, nuHvar = nuHvar,
-        nvHvar = nvHvar, muHvar = muHvar, uHvar = uHvar,
+        nXvar = nXvar, nmuZUvar = nmuZUvar, nuZUvar = nuZUvar,
+        nvZVvar = nvZVvar, muHvar = muHvar, uHvar = uHvar,
         vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S,
         N = N, FiMat = FiMat, method = method, printInfo = printInfo,
         itermax = itermax, stepmax = stepmax, tol = tol,
@@ -392,7 +392,7 @@ sfacross <- function(formula, muhet, uhet, vhet, data, subset,
       if (udist %in% c("gamma", "weibull")) {
         list(
           start = start, olsParam = olsParam, dataTable = dataTable,
-          nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+          nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
           uHvar = uHvar, vHvar = vHvar, Yvar = Yvar,
           Xvar = Xvar, S = S, N = N, FiMat = FiMat, method = method,
           printInfo = printInfo, itermax = itermax, stepmax = stepmax,
@@ -402,7 +402,7 @@ sfacross <- function(formula, muhet, uhet, vhet, data, subset,
       } else {
         list(
           start = start, olsParam = olsParam, dataTable = dataTable,
-          nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
+          nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
           uHvar = uHvar, vHvar = vHvar, Yvar = Yvar,
           Xvar = Xvar, S = S, method = method, printInfo = printInfo,
           itermax = itermax, stepmax = stepmax, tol = tol,
@@ -533,12 +533,12 @@ sfacross <- function(formula, muhet, uhet, vhet, data, subset,
   returnObj$Nobs <- N
   returnObj$nXvar <- nXvar
   if (udist %in% c("tnormal", "lognormal")) {
-    returnObj$nmuHvar <- nmuHvar
+    returnObj$nmuZUvar <- nmuZUvar
   }
   returnObj$scaling <- scaling
   returnObj$logDepVar <- logDepVar
-  returnObj$nuHvar <- nuHvar
-  returnObj$nvHvar <- nvHvar
+  returnObj$nuZUvar <- nuZUvar
+  returnObj$nvZVvar <- nvZVvar
   returnObj$nParm <- nParm
   returnObj$udist <- udist
   returnObj$startVal <- mleList$startVal

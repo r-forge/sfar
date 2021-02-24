@@ -83,11 +83,11 @@ csLCMfhalfnorm4C <- function(olsObj, epsiRes, nXvar, nuZUvar,
   printInfo, tol) {
   cat("Initialization: SFA + halfnormal - normal distribution...\n")
   initHalf <- maxLik(logLik = chalfnormlike, start = csthalfnorm(olsObj = olsObj,
-    epsiRes = epsiRes, S = S, nuHvar = 1, uHvar = as.matrix(uHvar[,
-      1]), nvHvar = 1, vHvar = as.matrix(vHvar[, 1])),
+    epsiRes = epsiRes, S = S, nuZUvar = 1, uHvar = as.matrix(uHvar[,
+      1]), nvZVvar = 1, vHvar = as.matrix(vHvar[, 1])),
     grad = cgradhalfnormlike, method = "BFGS", control = list(iterlim = itermax,
       printLevel = if (printInfo) 2 else 0, reltol = tol),
-    nXvar = nXvar, nuHvar = 1, nvHvar = 1, uHvar = as.matrix(uHvar[,
+    nXvar = nXvar, nuZUvar = 1, nvZVvar = 1, uHvar = as.matrix(uHvar[,
       1]), vHvar = as.matrix(vHvar[, 1]), Yvar = Yvar,
     Xvar = Xvar, S = S)
   Esti <- initHalf$estimate

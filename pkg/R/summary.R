@@ -39,11 +39,11 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE, ...) {
       )
     } else {
       omega <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-        object$nmuHvar)]
-      delta <- object$mleParam[(object$nXvar + object$nmuHvar +
-        1):(object$nXvar + object$nmuHvar + object$nuZUvar)]
-      phi <- object$mleParam[(object$nXvar + object$nmuHvar +
-        object$nuZUvar + 1):(object$nXvar + object$nmuHvar +
+        object$nmuZUvar)]
+      delta <- object$mleParam[(object$nXvar + object$nmuZUvar +
+        1):(object$nXvar + object$nmuZUvar + object$nuZUvar)]
+      phi <- object$mleParam[(object$nXvar + object$nmuZUvar +
+        object$nuZUvar + 1):(object$nXvar + object$nmuZUvar +
         object$nuZUvar + object$nvZVvar)]
       muHvar <- model.matrix(object$formula,
         data = object$dataTable,
@@ -61,11 +61,11 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE, ...) {
   } else {
     if (object$udist == "lognormal") {
       omega <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-        object$nmuHvar)]
-      delta <- object$mleParam[(object$nXvar + object$nmuHvar +
-        1):(object$nXvar + object$nmuHvar + object$nuZUvar)]
-      phi <- object$mleParam[(object$nXvar + object$nmuHvar +
-        object$nuZUvar + 1):(object$nXvar + object$nmuHvar +
+        object$nmuZUvar)]
+      delta <- object$mleParam[(object$nXvar + object$nmuZUvar +
+        1):(object$nXvar + object$nmuZUvar + object$nuZUvar)]
+      phi <- object$mleParam[(object$nXvar + object$nmuZUvar +
+        object$nuZUvar + 1):(object$nXvar + object$nmuZUvar +
         object$nuZUvar + object$nvZVvar)]
       muHvar <- model.matrix(object$formula,
         data = object$dataTable,
@@ -373,25 +373,25 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
       drop = FALSE
       ]
     } else {
-      mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + x$nmuHvar), ,
+      mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + x$nmuZUvar), ,
         drop = FALSE
       ]
-      mleRes3 <- mleRes[(x$nXvar + x$nmuHvar + 1):(x$nXvar +
-        x$nmuHvar + x$nuZUvar), , drop = FALSE]
-      mleRes4 <- mleRes[(x$nXvar + x$nmuHvar + x$nuZUvar +
-        1):(x$nXvar + x$nmuHvar + x$nuZUvar + x$nvZVvar), ,
+      mleRes3 <- mleRes[(x$nXvar + x$nmuZUvar + 1):(x$nXvar +
+        x$nmuZUvar + x$nuZUvar), , drop = FALSE]
+      mleRes4 <- mleRes[(x$nXvar + x$nmuZUvar + x$nuZUvar +
+        1):(x$nXvar + x$nmuZUvar + x$nuZUvar + x$nvZVvar), ,
       drop = FALSE
       ]
     }
   } else {
     if (x$udist == "lognormal") {
-      mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + x$nmuHvar), ,
+      mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + x$nmuZUvar), ,
         drop = FALSE
       ]
-      mleRes3 <- mleRes[(x$nXvar + x$nmuHvar + 1):(x$nXvar +
-        x$nmuHvar + x$nuZUvar), , drop = FALSE]
-      mleRes4 <- mleRes[(x$nXvar + x$nmuHvar + x$nuZUvar +
-        1):(x$nXvar + x$nmuHvar + x$nuZUvar + x$nvZVvar), ,
+      mleRes3 <- mleRes[(x$nXvar + x$nmuZUvar + 1):(x$nXvar +
+        x$nmuZUvar + x$nuZUvar), , drop = FALSE]
+      mleRes4 <- mleRes[(x$nXvar + x$nmuZUvar + x$nuZUvar +
+        1):(x$nXvar + x$nmuZUvar + x$nuZUvar + x$nvZVvar), ,
       drop = FALSE
       ]
     } else {

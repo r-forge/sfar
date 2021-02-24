@@ -7,13 +7,13 @@
 
 # Log-likelihood ----------
 
-clognormlike <- function(parm, nXvar, nmuHvar, nuHvar, nvHvar,
+clognormlike <- function(parm, nXvar, nmuZUvar, nuZUvar, nvZVvar,
   muHvar, uHvar, vHvar, Yvar, Xvar, S, N, FiMat) {
   beta <- parm[1:(nXvar)]
-  omega <- parm[(nXvar + 1):(nXvar + nmuHvar)]
-  delta <- parm[(nXvar + nmuHvar + 1):(nXvar + nmuHvar + nuHvar)]
-  phi <- parm[(nXvar + nmuHvar + nuHvar + 1):(nXvar + nmuHvar +
-    nuHvar + nvHvar)]
+  omega <- parm[(nXvar + 1):(nXvar + nmuZUvar)]
+  delta <- parm[(nXvar + nmuZUvar + 1):(nXvar + nmuZUvar + nuZUvar)]
+  phi <- parm[(nXvar + nmuZUvar + nuZUvar + 1):(nXvar + nmuZUvar +
+    nuZUvar + nvZVvar)]
   mu <- as.numeric(crossprod(matrix(omega), t(muHvar)))
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
   Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
@@ -29,8 +29,8 @@ clognormlike <- function(parm, nXvar, nmuHvar, nuHvar, nvHvar,
 
 # starting value for the log-likelihood ----------
 
-cstlognorm <- function(olsObj, epsiRes, S, nmuHvar, nuHvar, uHvar,
-  muHvar, nvHvar, vHvar) {
+cstlognorm <- function(olsObj, epsiRes, S, nmuZUvar, nuZUvar, uHvar,
+  muHvar, nvZVvar, vHvar) {
   m2 <- moment(epsiRes, order = 2)
   m3 <- moment(epsiRes, order = 3)
   varu <- tryCatch((nleqslv(x = 0.01, fn = function(x) -exp(9 *
@@ -46,30 +46,30 @@ cstlognorm <- function(olsObj, epsiRes, S, nmuHvar, nuHvar, uHvar,
   dep_u <- 1/2 * log((log(1/2 + sqrt(4 * ((epsiRes^2 - varv)^2)^(1/2))/2))^2)
   dep_v <- 1/2 * log((epsiRes^2 - exp(varu) * (exp(varu) -
     1))^2)
-  reg_hetu <- if (nuHvar == 1) {
+  reg_hetu <- if (nuZUvar == 1) {
     lm(log(varu) ~ 1)
   } else {
-    lm(dep_u ~ ., data = as.data.frame(uHvar[, 2:nuHvar]))
+    lm(dep_u ~ ., data = as.data.frame(uHvar[, 2:nuZUvar]))
   }
   if (any(is.na(reg_hetu$coefficients)))
     stop("At least one of the OLS coefficients of 'uhet' is NA: ",
       paste(colnames(uHvar)[is.na(reg_hetu$coefficients)],
         collapse = ", "), ". This may be due to a singular matrix due to potential perfect multicollinearity",
       call. = FALSE)
-  reg_hetv <- if (nvHvar == 1) {
+  reg_hetv <- if (nvZVvar == 1) {
     lm(log(varv) ~ 1)
   } else {
-    lm(dep_v ~ ., data = as.data.frame(vHvar[, 2:nvHvar]))
+    lm(dep_v ~ ., data = as.data.frame(vHvar[, 2:nvZVvar]))
   }
   if (any(is.na(reg_hetv$coefficients)))
     stop("at least one of the OLS coefficients of 'vhet' is NA: ",
       paste(colnames(vHvar)[is.na(reg_hetv$coefficients)],
         collapse = ", "), ". This may be due to a singular matrix due to potential perfect multicollinearity",
       call. = FALSE)
-  reg_hetmu <- if (nmuHvar == 1) {
+  reg_hetmu <- if (nmuZUvar == 1) {
     lm(epsiRes ~ 1)
   } else {
-    lm(epsiRes ~ ., data = as.data.frame(muHvar[, 2:nmuHvar]))
+    lm(epsiRes ~ ., data = as.data.frame(muHvar[, 2:nmuZUvar]))
   }
   if (any(is.na(reg_hetmu$coefficients)))
     stop("at least one of the OLS coefficients of 'muhet' is NA: ",
@@ -92,13 +92,13 @@ cstlognorm <- function(olsObj, epsiRes, S, nmuHvar, nuHvar, uHvar,
 
 # Gradient of the likelihood function ----------
 
-cgradlognormlike <- function(parm, nXvar, nmuHvar, nuHvar, nvHvar,
+cgradlognormlike <- function(parm, nXvar, nmuZUvar, nuZUvar, nvZVvar,
   muHvar, uHvar, vHvar, Yvar, Xvar, S, N, FiMat) {
   beta <- parm[1:(nXvar)]
-  omega <- parm[(nXvar + 1):(nXvar + nmuHvar)]
-  delta <- parm[(nXvar + nmuHvar + 1):(nXvar + nmuHvar + nuHvar)]
-  phi <- parm[(nXvar + nmuHvar + nuHvar + 1):(nXvar + nmuHvar +
-    nuHvar + nvHvar)]
+  omega <- parm[(nXvar + 1):(nXvar + nmuZUvar)]
+  delta <- parm[(nXvar + nmuZUvar + 1):(nXvar + nmuZUvar + nuZUvar)]
+  phi <- parm[(nXvar + nmuZUvar + nuZUvar + 1):(nXvar + nmuZUvar +
+    nuZUvar + nvZVvar)]
   mu <- as.numeric(crossprod(matrix(omega), t(muHvar)))
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
   Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
@@ -128,18 +128,18 @@ cgradlognormlike <- function(parm, nXvar, nmuHvar, nuHvar, nvHvar,
     gx[, k] <- apply(sweep(sigx1, MARGIN = 1, STATS = Xvar[,
       k], FUN = "*"), 1, sum)/WvdqFi
   }
-  gmu <- matrix(nrow = N, ncol = nmuHvar)
-  for (k in 1:nmuHvar) {
+  gmu <- matrix(nrow = N, ncol = nmuZUvar)
+  for (k in 1:nmuZUvar) {
     gmu[, k] <- apply(sweep(sigx2, MARGIN = 1, STATS = -(S *
       muHvar[, k]), FUN = "*"), 1, sum)/WvdqFi
   }
-  gu <- matrix(nrow = N, ncol = nuHvar)
-  for (k in 1:nuHvar) {
+  gu <- matrix(nrow = N, ncol = nuZUvar)
+  for (k in 1:nuZUvar) {
     gu[, k] <- apply(sweep(sigx3, MARGIN = 1, STATS = -(0.5 *
       (S * uHvar[, k])), FUN = "*"), 1, sum)/WvdqFi
   }
-  gv <- matrix(nrow = N, ncol = nvHvar)
-  for (k in 1:nvHvar) {
+  gv <- matrix(nrow = N, ncol = nvZVvar)
+  for (k in 1:nvZVvar) {
     gv[, k] <- apply(sweep(sigx5, MARGIN = 1, STATS = vHvar[,
       k], FUN = "*"), 1, sum)/WvdqFi
   }
@@ -150,15 +150,15 @@ cgradlognormlike <- function(parm, nXvar, nmuHvar, nuHvar, nvHvar,
 # Optimization using different algorithms ----------
 
 lognormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
-  muHvar, nmuHvar, N, FiMat, uHvar, nuHvar, vHvar, nvHvar,
+  muHvar, nmuZUvar, N, FiMat, uHvar, nuZUvar, vHvar, nvZVvar,
   Yvar, Xvar, method, printInfo, itermax, stepmax, tol, gradtol,
   hessianType, qac) {
   startVal <- if (!is.null(start))
     start else cstlognorm(olsObj = olsParam, epsiRes = dataTable[["olsResiduals"]],
-    S = S, uHvar = uHvar, nuHvar = nuHvar, vHvar = vHvar,
-    nvHvar = nvHvar, nmuHvar = nmuHvar, muHvar = muHvar)
+    S = S, uHvar = uHvar, nuZUvar = nuZUvar, vHvar = vHvar,
+    nvZVvar = nvZVvar, nmuZUvar = nmuZUvar, muHvar = muHvar)
   startLoglik <- sum(clognormlike(startVal, nXvar = nXvar,
-    nuHvar = nuHvar, nvHvar = nvHvar, nmuHvar = nmuHvar,
+    nuZUvar = nuZUvar, nvZVvar = nvZVvar, nmuZUvar = nmuZUvar,
     muHvar = muHvar, uHvar = uHvar, vHvar = vHvar, Yvar = Yvar,
     Xvar = Xvar, S = S, N = N, FiMat = FiMat))
   if (method %in% c("bfgs", "bhhh", "nr", "nm")) {
@@ -169,11 +169,11 @@ lognormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
   }
   mleObj <- switch(method, ucminf = ucminf(par = startVal,
     fn = function(parm) -sum(clognormlike(parm, nXvar = nXvar,
-      nuHvar = nuHvar, nvHvar = nvHvar, nmuHvar = nmuHvar,
+      nuZUvar = nuZUvar, nvZVvar = nvZVvar, nmuZUvar = nmuZUvar,
       muHvar = muHvar, uHvar = uHvar, vHvar = vHvar, Yvar = Yvar,
       Xvar = Xvar, S = S, N = N, FiMat = FiMat)), gr = function(parm) -colSums(cgradlognormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
-      nmuHvar = nmuHvar, muHvar = muHvar, uHvar = uHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
+      nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
       FiMat = FiMat)), hessian = 0, control = list(trace = printInfo,
       maxeval = itermax, stepmax = stepmax, xtol = tol,
@@ -181,60 +181,60 @@ lognormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
     grad = cgradlognormlike, start = startVal, finalHessian = if (hessianType ==
       2) "bhhh" else TRUE, control = list(printLevel = if (printInfo) 2 else 0,
       iterlim = itermax, reltol = tol, tol = tol, qac = qac),
-    nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar, nmuHvar = nmuHvar,
+    nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar, nmuZUvar = nmuZUvar,
     muHvar = muHvar, uHvar = uHvar, vHvar = vHvar, Yvar = Yvar,
     Xvar = Xvar, S = S, N = N, FiMat = FiMat), sr1 = trust.optim(x = startVal,
     fn = function(parm) -sum(clognormlike(parm, nXvar = nXvar,
-      nuHvar = nuHvar, nvHvar = nvHvar, nmuHvar = nmuHvar,
+      nuZUvar = nuZUvar, nvZVvar = nvZVvar, nmuZUvar = nmuZUvar,
       muHvar = muHvar, uHvar = uHvar, vHvar = vHvar, Yvar = Yvar,
       Xvar = Xvar, S = S, N = N, FiMat = FiMat)), gr = function(parm) -colSums(cgradlognormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
-      nmuHvar = nmuHvar, muHvar = muHvar, uHvar = uHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
+      nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
       FiMat = FiMat)), method = "SR1", control = list(maxit = itermax,
       cgtol = gradtol, stop.trust.radius = tol, prec = tol,
       report.level = if (printInfo) 4L else 0, report.precision = 1L)),
     sparse = trust.optim(x = startVal, fn = function(parm) -sum(clognormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
-      nmuHvar = nmuHvar, muHvar = muHvar, uHvar = uHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
+      nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
       FiMat = FiMat)), gr = function(parm) -colSums(cgradlognormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
-      nmuHvar = nmuHvar, muHvar = muHvar, uHvar = uHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
+      nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
       FiMat = FiMat)), hs = function(parm) as(jacobian(function(parm) -colSums(cgradlognormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
-      nmuHvar = nmuHvar, muHvar = muHvar, uHvar = uHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
+      nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
       FiMat = FiMat)), parm), "dgCMatrix"), method = "Sparse",
       control = list(maxit = itermax, cgtol = gradtol,
         stop.trust.radius = tol, prec = tol, report.level = if (printInfo) 4L else 0,
         report.precision = 1L, preconditioner = 1L)),
     mla = mla(b = startVal, fn = function(parm) -sum(clognormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
-      nmuHvar = nmuHvar, muHvar = muHvar, uHvar = uHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
+      nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
       FiMat = FiMat)), gr = function(parm) -colSums(cgradlognormlike(parm,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
-      nmuHvar = nmuHvar, muHvar = muHvar, uHvar = uHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
+      nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
       FiMat = FiMat)), print.info = printInfo, maxiter = itermax,
       epsa = gradtol, epsb = gradtol), nlminb = nlminb(start = startVal,
       objective = function(parm) -sum(clognormlike(parm,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
-        nmuHvar = nmuHvar, muHvar = muHvar, uHvar = uHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
+        nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
         vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S,
         N = N, FiMat = FiMat)), gradient = function(parm) -colSums(cgradlognormlike(parm,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
-        nmuHvar = nmuHvar, muHvar = muHvar, uHvar = uHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
+        nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
         vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S,
         N = N, FiMat = FiMat)), control = list(iter.max = itermax,
         trace = printInfo, eval.max = itermax, rel.tol = tol,
         x.tol = tol)))
   if (method %in% c("ucminf", "nlminb")) {
     mleObj$gradient <- colSums(cgradlognormlike(mleObj$par,
-      nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
-      nmuHvar = nmuHvar, muHvar = muHvar, uHvar = uHvar,
+      nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
+      nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
       FiMat = FiMat))
   }
@@ -257,23 +257,23 @@ lognormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
   if (hessianType != 2) {
     if (method %in% c("ucminf", "nlminb"))
       mleObj$hessian <- jacobian(function(parm) colSums(cgradlognormlike(parm,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
-        nmuHvar = nmuHvar, muHvar = muHvar, uHvar = uHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
+        nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
         vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S,
         N = N, FiMat = FiMat)), mleObj$par)
     if (method == "sr1")
       mleObj$hessian <- jacobian(function(parm) colSums(cgradlognormlike(parm,
-        nXvar = nXvar, nuHvar = nuHvar, nvHvar = nvHvar,
-        nmuHvar = nmuHvar, muHvar = muHvar, uHvar = uHvar,
+        nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
+        nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
         vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S,
         N = N, FiMat = FiMat)), mleObj$solution)
   }
   mleObj$logL_OBS <- clognormlike(parm = mleParam, nXvar = nXvar,
-    nuHvar = nuHvar, nvHvar = nvHvar, nmuHvar = nmuHvar,
+    nuZUvar = nuZUvar, nvZVvar = nvZVvar, nmuZUvar = nmuZUvar,
     muHvar = muHvar, uHvar = uHvar, vHvar = vHvar, Yvar = Yvar,
     Xvar = Xvar, S = S, N = N, FiMat = FiMat)
   mleObj$gradL_OBS <- cgradlognormlike(parm = mleParam, nXvar = nXvar,
-    nuHvar = nuHvar, nvHvar = nvHvar, nmuHvar = nmuHvar,
+    nuZUvar = nuZUvar, nvZVvar = nvZVvar, nmuZUvar = nmuZUvar,
     muHvar = muHvar, uHvar = uHvar, vHvar = vHvar, Yvar = Yvar,
     Xvar = Xvar, S = S, N = N, FiMat = FiMat)
   return(list(startVal = startVal, startLoglik = startLoglik,
@@ -300,11 +300,11 @@ fnCondEffLogNorm <- function(u, sigmaU, sigmaV, mu, epsilon,
 clognormeff <- function(object, level) {
   beta <- object$mleParam[1:(object$nXvar)]
   omega <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-    object$nmuHvar)]
-  delta <- object$mleParam[(object$nXvar + object$nmuHvar +
-    1):(object$nXvar + object$nmuHvar + object$nuHvar)]
-  phi <- object$mleParam[(object$nXvar + object$nmuHvar + object$nuHvar +
-    1):(object$nXvar + object$nmuHvar + object$nuHvar + object$nvHvar)]
+    object$nmuZUvar)]
+  delta <- object$mleParam[(object$nXvar + object$nmuZUvar +
+    1):(object$nXvar + object$nmuZUvar + object$nuZUvar)]
+  phi <- object$mleParam[(object$nXvar + object$nmuZUvar + object$nuZUvar +
+    1):(object$nXvar + object$nmuZUvar + object$nuZUvar + object$nvZVvar)]
   Xvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 1)
   muHvar <- model.matrix(object$formula, data = object$dataTable,
@@ -341,18 +341,18 @@ clognormeff <- function(object, level) {
 
 cmarglognorm_Eu <- function(object) {
   omega <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-    object$nmuHvar)]
-  delta <- object$mleParam[(object$nXvar + object$nmuHvar +
-    1):(object$nXvar + object$nmuHvar + object$nuHvar)]
+    object$nmuZUvar)]
+  delta <- object$mleParam[(object$nXvar + object$nmuZUvar +
+    1):(object$nXvar + object$nmuZUvar + object$nuZUvar)]
   muHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 2)
   uHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 3)
   mu <- as.numeric(crossprod(matrix(omega), t(muHvar)))
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
-  mu_mat <- kronecker(matrix(omega[2:object$nmuHvar], nrow = 1),
+  mu_mat <- kronecker(matrix(omega[2:object$nmuZUvar], nrow = 1),
     matrix(exp(mu + exp(Wu)/2), ncol = 1))
-  Wu_mat <- kronecker(matrix(delta[2:object$nuHvar], nrow = 1),
+  Wu_mat <- kronecker(matrix(delta[2:object$nuZUvar], nrow = 1),
     matrix(exp(mu + exp(Wu)/2 + Wu)/2, ncol = 1))
   idTRUE_mu <- substring(names(omega)[-1], 5) %in% substring(names(delta)[-1],
     4)
@@ -367,18 +367,18 @@ cmarglognorm_Eu <- function(object) {
 
 cmarglognorm_Vu <- function(object) {
   omega <- object$mleParam[(object$nXvar + 1):(object$nXvar +
-    object$nmuHvar)]
-  delta <- object$mleParam[(object$nXvar + object$nmuHvar +
-    1):(object$nXvar + object$nmuHvar + object$nuHvar)]
+    object$nmuZUvar)]
+  delta <- object$mleParam[(object$nXvar + object$nmuZUvar +
+    1):(object$nXvar + object$nmuZUvar + object$nuZUvar)]
   muHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 2)
   uHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 3)
   mu <- as.numeric(crossprod(matrix(omega), t(muHvar)))
   Wu <- as.numeric(crossprod(matrix(delta), t(uHvar)))
-  mu_mat <- kronecker(matrix(omega[2:object$nmuHvar], nrow = 1),
+  mu_mat <- kronecker(matrix(omega[2:object$nmuZUvar], nrow = 1),
     matrix(2 * (exp(Wu) - 1) * exp(2 * mu + exp(Wu)), ncol = 1))
-  Wu_mat <- kronecker(matrix(delta[2:object$nuHvar], nrow = 1),
+  Wu_mat <- kronecker(matrix(delta[2:object$nuZUvar], nrow = 1),
     matrix(exp(Wu) * exp(2 * mu + exp(Wu) + Wu), ncol = 1))
   idTRUE_mu <- substring(names(omega)[-1], 5) %in% substring(names(delta)[-1],
     4)
