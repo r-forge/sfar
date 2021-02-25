@@ -7,8 +7,7 @@
 
 \description{
 This method returns the fitted frontier values from classic or latent class 
-stochastic frontier models estimated respectively with \code{\link{sfacross}} or
-\code{\link{lcmcross}}.
+stochastic frontier models estimated with \code{\link{sfacross}} or \code{\link{lcmcross}}.
 }
 
 \usage{
@@ -19,17 +18,17 @@ stochastic frontier models estimated respectively with \code{\link{sfacross}} or
 
 \arguments{
 \item{object}{A classic or a latent class stochastic frontier model returned by
-\code{\link{sfacross}} or \code{\link{lcmcross}}, respectively.}
+\code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
 \item{...}{Currently ignored.}
 }
 
 \value{
 \code{\link{fitted}} returns a vector of fitted values in the case of object
-of class \code{sfacross}.
+of class \code{'sfacross'}.
 
 \code{\link{fitted}} returns a data frame containing the fitted values for each 
- class in the case of object of class \code{lcmcross}.
+ class in the case of object of class \code{'lcmcross'}.
 
 The fitted values are ordered in the same way as the corresponding observations
 in the dataset used for the estimation.

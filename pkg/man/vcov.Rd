@@ -8,8 +8,8 @@
 
 \description{
 Extract the variance-covariance matrix of the maximum likelihood (ML) 
-coefficients of clasic or latent class stochastic frontier models estimated by 
-(\code{\link{sfacross}} or \code{\link{lcmcross}}, respectively).
+coefficients of classic or latent class stochastic frontier models estimated by 
+\code{\link{sfacross}} or \code{\link{lcmcross}}.
 }
 
 \usage{
@@ -19,10 +19,10 @@ coefficients of clasic or latent class stochastic frontier models estimated by
 }
 
 \arguments{
-\item{object}{A classic or latent class stochastic frontier model respectively 
+\item{object}{A classic or latent class stochastic frontier model 
 returned by \code{\link{sfacross}} or \code{\link{lcmcross}}}
 
-\item{extraPar}{Logical. Only available for objects of class \code{"sfacross"}. 
+\item{extraPar}{Logical. Only available for objects of class \code{'sfacross'}. 
 Default = \code{FALSE}. If \code{TRUE}, variances and covariances of additional 
 parameters are returned:
 
@@ -55,10 +55,10 @@ coefficients.
 \details{
 The variance-covariance matrix is obtained by the inversion of the
 negative hessian matrix. Depending on the distribution and the
-\code{"hessianType"} option the analytical/numeric hessian or the bhhh
+\code{"hessianType"} option, the analytical/numeric hessian or the bhhh
 hessian or the robust hessian matrix is evaluated.
 
-So far, the argument \code{extraPar}, is only available for objects of class \code{'sfacross'}. 
+The argument \code{extraPar}, is currently available for objects of class \code{'sfacross'}. 
 When \code{"extraPar = TRUE"}, the variance-covariance of the additional 
 parameters is obtained using the delta method.
 }
@@ -67,7 +67,7 @@ parameters is obtained using the delta method.
 ## Data on Spanish dairy farms
 # Cobb Douglas (production function) half normal distribution
 cb_s_h <- sfacross(formula = YIT ~ X1 + X2 + X3 + X4, udist = "hnormal", 
-          data = dairyspain, S = 1, method = "bfgs")
+    data = dairyspain, S = 1, method = "bfgs")
   vcov(cb_s_h)
   vcov(cb_s_h, extraPar = TRUE)
 
@@ -75,7 +75,7 @@ cb_s_h <- sfacross(formula = YIT ~ X1 + X2 + X3 + X4, udist = "hnormal",
 ## Data on eighty-two countries production (DGP)
 # LCM Cobb Douglas (production function) half normal distribution
 cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal",
-           data = worldprod, uhet = ~ initStat, S = 1, method = "ucminf")
+    data = worldprod, uhet = ~ initStat, S = 1, method = "ucminf")
   vcov(cb_2c_h)
 }
 

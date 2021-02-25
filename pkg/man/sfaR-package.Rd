@@ -11,24 +11,24 @@ MLE and maximum simulated likelihood - MSL) for various specifications of
 stochastic frontier analysis (SFA).
 
 Two categories of important functions are available:
-\code{sfacross} and \code{lcmcross}, which estimate different
-type of frontiers and offer nine alternative optimization algorithms
+\code{\link{sfacross}} and \code{\link{lcmcross}}, which estimate different
+types of frontiers and offer nine alternative optimization algorithms
 (i.e. "bfgs", "bhhh", "nr", "nm", "ucminf", "mla", "sr1", "sparse" and
 "nlminb").}
 
 \section{sfacross}{
 \code{\link{sfacross}} estimates the frontier for cross/pooled sectional data
 and allows for ten different distributions for the one-sided error term.
-These distributions comprise the exponential, the gamma, the generalized
+These distributions include the exponential, the gamma, the generalized
 exponential, the half normal, the lognormal, the truncated normal, the
 truncated skewed Laplace, the rayleigh, the uniform and the weibull distributions. 
 In the case of the gamma, lognormal and weibull distributions, maximum simulated
-likelihood is used with the possibility of four specific distributions to
+likelihood (MSL) is used with the possibility of four specific distributions to
 construct the draws: halton, generalized halton, sobol and uniform.
-Heteroscedasticity in both error terms can be accommodated, in addition to
+Heteroscedasticity in both error terms can be implemented, in addition to
 heterogeneity in the truncated mean parameter in the case of the truncated
-normal and lognormal distributions. In the case of the truncated normal
-distribution, the scaling property can also be estimated.
+normal and lognormal distributions. In addition, in the case of the truncated normal
+distribution, the scaling property can be estimated.
 }
 
 \section{lcmcross}{
@@ -44,6 +44,6 @@ of classes can be guided by several information criteria (AIC, BIC or HQIC).
 
 \author{K Hervé Dakpo, Yann Desjeux and Laure Latruffe}
 
-\section{bugreport}{Any bug or suggestion can be reported using the \code{sfaR}'\code{s} 
-tracker facilities at \url{https://r-forge.r-project.org/projects/sfar/}
+\section{Bugreport}{Any bug or suggestion can be reported using the \code{sfaR}'\code{s} 
+tracker facilities at: \url{https://r-forge.r-project.org/projects/sfar/}
 }

@@ -7,7 +7,7 @@
 
 \description{
 This method returns information criterion from classic or latent class stochastic frontier 
-models estimated with \code{\link{sfacross}} or \code{\link{lcmcross}, respectively.}
+models estimated with \code{\link{sfacross}} or \code{\link{lcmcross}.}
 }
 
 \usage{
@@ -20,11 +20,11 @@ models estimated with \code{\link{sfacross}} or \code{\link{lcmcross}, respectiv
 \item{object}{A classic or latent class stochastic frontier model returned by
 \code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
-\item{IC}{Charater string. Information criterion measure. Three criteria are available:
+\item{IC}{Character string. Information criterion measure. Three criteria are available:
 \itemize{
-\item \code{"AIC"} for Akaike information criterion (default).
-\item \code{"BIC"} for Bayesian information criterion.
-\item \code{"HQIC"} for Hannan-Quinn information criterion.
+\item \code{"AIC"} for Akaike information criterion (default)
+\item \code{"BIC"} for Bayesian information criterion
+\item \code{"HQIC"} for Hannan-Quinn information criterion
 }}
 
 \item{...}{Currently ignored.}

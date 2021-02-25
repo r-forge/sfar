@@ -89,16 +89,16 @@ difference between the stochastic frontier and the OLS.}
 ## United States
 # Translog SFA (cost function) truncated normal with scaling property
 tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
-log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
-I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
-udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
-scaling = TRUE, method = "mla")
+    log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
+    I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
+    udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
+    scaling = TRUE, method = "mla")
   summary(tl_u_ts)
 
 ## Using data on eighty-two countries production (DGP)
 # LCM Cobb Douglas (production function) half normal distribution
 cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", data =
-worldprod, S = 1, method = "ucminf")
+    worldprod, S = 1, method = "ucminf")
   summary(cb_2c_h, grad = TRUE, ci = TRUE)
 }
 
