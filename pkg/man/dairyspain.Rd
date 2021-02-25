@@ -49,7 +49,8 @@ The data have been normalized so that the logs of the inputs sum to zero over th
 \source{\url{http://pages.stern.nyu.edu/~wgreene/Econometrics/oldPanelDataSets.htm}}
 
 \references{
-Alvarez, A., C. Arias, and W. Greene. 2004. Accounting for unobservables in production models: management and inefficiency. \emph{Econometric Society}, n°341, 1--20.
+Alvarez, A., C. Arias, and W. Greene. 2004. Accounting for unobservables in production models: 
+management and inefficiency. \emph{Econometric Society}, \bold{341}:1--20.
 }
 \examples{
 str(dairyspain)

@@ -32,7 +32,7 @@ of (in-)efficiency confidence intervals (defaut = \code{0.95}). Only when \code{
 A dataframe that contains individual (in-)efficiency estimates. These are ordered in 
 the same way as the corresponding observations in the dataset used for the estimation.
 
-\bold{- For object of class \code{"sfacross"} the following elements are
+\bold{- For object of class \code{'sfacross'} the following elements are
 returned:}
 
 \item{u}{Conditional inefficiency. In the case argument \code{udist} of
@@ -51,7 +51,7 @@ following Jondrow \emph{et al.} (1982), and \code{u2} which is obtained when
 \code{"exponential"}, \code{"tnormal"} or \code{"uniform"}.}
 
 \item{teJLMS}{\eqn{\exp{(-u)}}. When the argument \code{udist} of
-\link{sfacross} is set to \code{"uniform"} \code{teJLMS1} = \eqn{\exp{(-u1)}}
+\link{sfacross} is set to \code{"uniform"}, \code{teJLMS1} = \eqn{\exp{(-u1)}}
 and \code{teJLMS2} = \eqn{\exp{(-u2)}}. Only when \code{logDepVar = TRUE}.}
 
 \item{m}{Conditional model. Only when the argument \code{udist} of
@@ -81,7 +81,7 @@ efficiency. Only when, in the function \link{sfacross}, \code{logDepVar =
 TRUE} and \code{udist = "hnormal"}, \code{"exponential"},
 \code{"tnormal"}, or \code{"uniform"}.}
 
-\bold{- For object of class \code{"lcmcross"} the following elements are
+\bold{- For object of class \code{'lcmcross'} the following elements are
 returned:}
 
 \item{u_c}{Conditional inefficiency of the most probable class given the
@@ -105,12 +105,13 @@ posterior probability.}
 The conditional inefficiency is obtained following Jondrow \emph{et
 al.} (1982) and the conditional efficiency is computed following Battese
 and Coelli (1988). In some cases the conditional mode is also returned
-(Jondrow \emph{et al.} 1982). In other cases the confidence interval is
-computed following Horrace and Schmidt (1996) but also Hjalmarsson \emph{et
-al.} (1996) and Berra and Sharma (1999) (see \bold{Value} section).
+(Jondrow \emph{et al.} 1982). The confidence interval is computed following 
+Horrace and Schmidt (1996), Hjalmarsson \emph{et al.} (1996), or Berra and 
+Sharma (1999) (see \sQuote{Value} section).
 
-In the case of the half normal distribution for the one-sided error term (for notation, 
-see the \bold{Details} section of \code{\link{sfacross}} or \code{\link{lcmcross}}):
+In the case of the half normal distribution for the one-sided error term the formulae 
+are as follows(for notations, see the \sQuote{Details} section of 
+\code{\link{sfacross}} or \code{\link{lcmcross}}):
 
 \itemize{
 \item The conditional inefficiency is
@@ -144,21 +145,21 @@ and
 \item The confidence intervals are obtained by:
 }
 
-\deqn{\mu_{i*} + Z_L\sigma_* \leq E\left[u_i|\epsilon_i\right] \leq \mu_{i*} + Z_U\sigma_*}
+\deqn{\mu_{i*} + I_L\sigma_* \leq E\left[u_i|\epsilon_i\right] \leq \mu_{i*} + I_U\sigma_*}
 
-with \eqn{L_i = \mu_{i*} + Z_L\sigma_*} and \eqn{U_i = \mu_{i*} + Z_U\sigma_*}
-
-and
-
-\deqn{Z_L = \Phi^{-1}\left\{1 - \left(1-\frac{\alpha}{2}\right)\left[1-\Phi\left(-\frac{\mu_{i*}}{\sigma_*}\right)\right]\right\}}
+with \eqn{LB_i = \mu_{i*} + I_L\sigma_*} and \eqn{UB_i = \mu_{i*} + I_U\sigma_*}
 
 and
 
-\deqn{Z_U = \Phi^{-1}\left\{1-\frac{\alpha}{2}\left[1-\Phi\left(-\frac{\mu_{i*}}{\sigma_*}\right)\right]\right\}}
+\deqn{I_L = \Phi^{-1}\left\{1 - \left(1-\frac{\alpha}{2}\right)\left[1-\Phi\left(-\frac{\mu_{i*}}{\sigma_*}\right)\right]\right\}}
+
+and
+
+\deqn{I_U = \Phi^{-1}\left\{1-\frac{\alpha}{2}\left[1-\Phi\left(-\frac{\mu_{i*}}{\sigma_*}\right)\right]\right\}}
 
 Thus
 
-\deqn{\exp{\left(-U_i\right)} \leq E\left[\exp{\left(-u_i\right)}|\epsilon_i\right] \leq \exp{\left(-L_i\right)}}
+\deqn{\exp{\left(-UB_i\right)} \leq E\left[\exp{\left(-u_i\right)}|\epsilon_i\right] \leq \exp{\left(-LB_i\right)}}
 }
 
 \examples{
@@ -166,9 +167,9 @@ Thus
 ## United States
 # Translog SFA (cost function) truncated normal with scaling property
 tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) + log(wl/wf) + 
-log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) + I(log(wl/wf) * 
-log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)), udist = "tnormal", 
-muhet = ~ regu, uhet = ~ regu, data = utility, S = -1, scaling = TRUE, method = "mla")
+    log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) + I(log(wl/wf) * 
+    log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)), udist = "tnormal", 
+    muhet = ~ regu, uhet = ~ regu, data = utility, S = -1, scaling = TRUE, method = "mla")
   efficiencies(tl_u_ts)
   efficiencies(tl_u_ts, level= 0.99)
 }

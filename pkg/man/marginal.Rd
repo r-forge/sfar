@@ -9,7 +9,7 @@
 \description{
 This function returns marginal effects of the inefficiency drivers 
 from classic or latent class stochastic frontier models estimated with
-\code{\link{sfacross}} or \code{\link{lcmcross}, respectively.}
+\code{\link{sfacross}} or \code{\link{lcmcross}.}
 }
 
 \usage{
@@ -19,15 +19,15 @@ from classic or latent class stochastic frontier models estimated with
 }
 
 \arguments{
-\item{object}{A classic or a latent class stochastic frontier model respectively 
-returned by \code{\link{sfacross}} or \code{\link{lcmcross}}.}
+\item{object}{A classic or a latent class stochastic frontier model returned 
+by \code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
 \item{...}{Currently ignored.}
 }
 
 \details{
-The function \code{marginal} operates in the presence of exogenous
-variables that explain inefficiency (\eqn{uhet = ~ Z_u} or \eqn{muhet = ~
+\code{\link{marginal}} operates in the presence of exogenous variables that 
+explain inefficiency, namely the inefficiency drivers (\eqn{uhet = ~ Z_u} or \eqn{muhet = ~
  Z_{mu}}).
 
 Two components are computed for each variable: the marginal effects on the
@@ -35,10 +35,10 @@ expected inefficiency (\eqn{\frac{\partial E[u]}{\partial Z_{(m)u}}}) and the
 marginal effects on the variance of inefficiency (\eqn{\frac{\partial
   V[u]}{\partial Z_{(m)u}}}).
 
-The model also accommodates the Wang (2002) parametrization of
+The model also allows the Wang (2002) parametrization of
 \eqn{\mu} and \eqn{\sigma_u^2} by the same vector of exogenous variables.
 This double parameterization accounts for non-monotonic relationships
-between the inefficiency and its determinants.
+between the inefficiency and its drivers.
 }
 
 \value{
@@ -47,7 +47,7 @@ on the expected inefficiency (each variable has the prefix \code{"Eu_"})
 and on the variance of the inefficiency (each variable has the prefix
 \code{"Vu_"}) is returned.
 
-In the case of the latent class model, each variable terminates with the
+In the case of the latent class model (LCM), each variable terminates with the
 suffix \code{"_c#"} where \code{"#"} is the class number.
 }
 
@@ -56,17 +56,17 @@ suffix \code{"_c#"} where \code{"#"} is the class number.
 ## United States
 # Translog SFA (cost function) truncated normal with scaling property
 tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
-log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
-I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
-udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
-scaling = TRUE, method = "mla")
+    log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
+    I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
+    udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
+    scaling = TRUE, method = "mla")
   mar <- marginal(tl_u_ts)
   head(mar)
 
 ## Using data on eighty-two countries production (DGP)
 # LCM Cobb Douglas (production function) half normal distribution
 cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal",
-           data = worldprod, uhet = ~ initStat, S = 1, method = "ucminf")
+    data = worldprod, uhet = ~ initStat, S = 1, method = "ucminf")
   mar <- marginal(cb_2c_h)
   head(mar)
 }

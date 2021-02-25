@@ -6,14 +6,14 @@
 \alias{coef.sfacross}
 \alias{coef.lcmcross}
 
-\title{coef methods for class \code{summary} of frontier objects}
+\title{coef methods for class \code{'summary'} of frontier objects}
 
 \description{
 Extract the coefficients, their standard errors, z-values, and
 (asymptotic) P-values from models returned by the \code{summary} methods
-for objects of class \code{sfacross} or \code{lcmcross}.
+for objects of class \code{'sfacross'} or \code{'lcmcross'}.
 
-\code{coef} extracts coefficients for the likelihood estimation
+\code{\link{coef}} extracts coefficients for the likelihood estimation.
 }
 \usage{
 \method{coef}{summary.sfacross}(object, ...)
@@ -26,13 +26,13 @@ for objects of class \code{sfacross} or \code{lcmcross}.
 }
 
 \arguments{
-\item{object}{A (latent class) stochastic frontier model returned by
+\item{object}{A classic or latent class stochastic frontier model returned by
 \code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
 \item{...}{Currently ignored.}
 
-\item{extraPar}{Logical (default = \code{FALSE}). If \code{TRUE} additional parameters are also
-returned:
+\item{extraPar}{Logical (default = \code{FALSE}). If \code{TRUE}, additional parameters 
+are returned:
 
 \code{sigmaSq} = \code{sigmauSq} + \code{sigmavSq}
 
@@ -52,13 +52,13 @@ returned:
 
 \code{gamma} = \code{sigmauSq}/(\code{sigmauSq} + \code{sigmavSq})
 
-In the case of object of class \code{lcmcross}, each additional
-parameter terminates with \code{"#"} that represents the class
-number.}
+In the case of object of class \code{'lcmcross'}, each additional
+parameter terminates with \code{"#"} that represents the class number.}
 }
+
 \value{
-The \code{coef} method for objects of class summary.sfacross or
-summary.lcmcross returns a matrix with four. These columns contain the estimated
+The \code{coef} method for objects of class \code{'summary.sfacross'} or
+\code{'summary.lcmcross'} returns a matrix with four columns. Namely, the estimated
 coefficients, their standard errors, z-values, and (asymptotic) P-values.
 }
 
@@ -67,10 +67,10 @@ coefficients, their standard errors, z-values, and (asymptotic) P-values.
 ## United States
 # Translog SFA (cost function) truncated normal with scaling property
 tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
-log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
-I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
-udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
-scaling = TRUE, method = "mla")
+    log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
+    I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
+    udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
+    scaling = TRUE, method = "mla")
   coef(tl_u_ts, extraPar = TRUE)
   coef(summary(tl_u_ts))
 }

@@ -12,14 +12,14 @@ cross-sectional or pooled cross section data. The model is estimated using
 maximum likelihood (ML). See Orea and Kumbhakar (2004), Parmeter and
 Kumbhakar (2014, p282)
 
-Only the half-normal distribution is considered for the one-sided error term.
+Only the half-normal distribution is possible for the one-sided error term.
 Nine optimization algorithms are available.
 
 The function also accounts for heteroscedasticity in both one-sided and
 two-sided error terms, as in Reifschneider and Stevenson (1991), Caudill and
 Ford (1993), Caudill \emph{et al.} (1995) and Hadri (1999).
 
-Finally, the model can estimate up to five classes.
+The model can estimate up to five classes.
 }
 
 \usage{
@@ -36,22 +36,21 @@ lcmcross(formula, uhet, vhet, thet, data, subset, S = 1L, udist = "hnormal",
 \item{formula}{A symbolic description of the model to be estimated based on
 the generic function \code{formula} (see section \sQuote{Details}).}
 
-\item{uhet}{A one-part formula to consider heteroscedasticity in the
+\item{uhet}{A one-part formula to account for heteroscedasticity in the
 one-sided error variance (see section \sQuote{Details}).}
 
-\item{vhet}{A one-part formula to consider heteroscedasticity in the
+\item{vhet}{A one-part formula to account for heteroscedasticity in the
 two-sided error variance (see section \sQuote{Details}).}
 
-\item{thet}{A one-part formula to consider technological heterogeneity in the
+\item{thet}{A one-part formula to account for technological heterogeneity in the
 construction of the classes.}
 
-\item{data}{An optional data frame containing the data or the the variables
-in the model.}
+\item{data}{The data frame containing the data.}
 
 \item{subset}{An optional vector specifying a subset of observations to be
 used in the optimization process.}
 
-\item{S}{If \code{1} (default) a production (profit) frontier is
+\item{S}{If \code{S = 1} (default), a production (profit) frontier is
 estimated: \eqn{\epsilon_i = v_i-u_i}. If \code{S = -1}, a cost frontier is
 estimated: \eqn{\epsilon_i = v_i+u_i}.}
 
@@ -90,10 +89,10 @@ Marquardt-Levenberg algorithm (\code{\link[marqLevAlg:marqLevAlg]{mla}})
 (\code{\link[stats]{nlminb}})
 }}
 
-\item{hessianType}{Integer. If \code{1} (default) analytic hessian is
+\item{hessianType}{Integer. If \code{1} (default), analytic hessian is
 returned for all the distributions except \code{"gamma"},
 \code{"lognormal"} and \code{"weibull"} for which the numeric hessian is
-returned. If \code{2} bhhh hessian is estimated (\eqn{g'g}).If \code{3}
+returned. If \code{2}, bhhh hessian is estimated (\eqn{g'g}). If \code{3}, 
 robust hessian is computed (\eqn{H^{-1}GH^{-1}}).}
 
 \item{itermax}{Maximum number of iterations allowed for optimization. 
@@ -132,7 +131,7 @@ for the jump-start algorithm. Default = \code{0.5}.}
 starting value should be multiplied to define the upper bounds 
 for the jump-start algorithm. Default = \code{1.5}.}
 
-\item{x}{An object of class \code{lcmcross} returned by \code{\link{lcmcross}}.}
+\item{x}{An object of class \code{'lcmcross'} returned by \code{\link{lcmcross}}.}
 
 \item{digits}{Number of digits displayed in values.}
 
@@ -176,8 +175,8 @@ using a logit specification:
 with \eqn{Z_h} the covariates, \eqn{\theta} the coefficients estimated for 
 the covariates, and \eqn{\exp(\theta_J'Z_h)=1}.
 
-The unconditional likelihood of observation i is simply the average over
-the J classes:
+The unconditional likelihood of observation \eqn{i} is simply the average over
+the \eqn{J} classes:
 
 \eqn{P(i) = \sum_{m=1}^{J}\pi(i,m)P(i|m)}
 
@@ -185,7 +184,7 @@ The number of classes can be retained based on information criterion (see
 for instance \code{\link[=ic.lcmcross]{ic}}).
 
 Class assignment is based on the largest posterior probability. This probability is 
-obtained using Bayes' rule and for class j we have
+obtained using Bayes' rule and for class \eqn{j} we have
 \deqn{w\left(j|i\right)=\frac{P\left(i|j\right)\pi\left(i,
 j\right)}{\sum_{m=1}^JP\left(i|m\right)\pi\left(i, m\right)}}
 
@@ -194,7 +193,7 @@ terms, a single part (right) formula can also be specified. To impose the
 positivity on these parameters, the variances are modelled respectively as:
 \eqn{\sigma^2_{u|j} = \exp{(\delta_j'Z_u)}} and \eqn{\sigma^2_{v|j} = \exp{(\phi_j'Z_v)}}, 
 where \eqn{Z_u} and \eqn{Z_v} are the heteroscedasticity variables (inefficiency 
-drivers in the case of \eqn{Z_u} and`\eqn{\delta} and \eqn{\phi} the coefficients). 
+drivers in the case of \eqn{Z_u}) and \eqn{\delta} and \eqn{\phi} the coefficients. 
 In the case of heterogeneity in the truncated mean \eqn{\mu}, it is modelled
 as \eqn{\mu=\omega'Z_{\mu}}.
 }
@@ -207,7 +206,7 @@ the following elements:
 
 \item{formula}{Multi parts formula describing the estimated model.}
 
-\item{S}{The argument \code{'S'}. See the section \bold{Arguments}.}
+\item{S}{The argument \code{'S'}. See the section \sQuote{Arguments}.}
 
 \item{typeSfa}{Character string. "Latent Class Production/Profit Frontier, 
 e = v - u" when \code{S = 1} and "Latent Class Cost Frontier, e = v + u" when \code{S = -1}.}
@@ -217,9 +216,9 @@ e = v - u" when \code{S = 1} and "Latent Class Cost Frontier, e = v + u" when \c
 \item{nXvar}{Number of main explanatory variables.}
 
 \item{nZHvar}{Number of variables in the logit specification of the
-finite mixture model (i.e. number of covariatesor separating variables).}
+finite mixture model (i.e. number of covariates).}
 
-\item{logDepVar}{The argument \code{'logDepVar'}. See the section \bold{Arguments}.}
+\item{logDepVar}{The argument \code{'logDepVar'}. See the section \sQuote{Arguments}.}
 
 \item{nuZUvar}{Number of variables explaining heteroscedasticity in
 the one-sided error term.}
@@ -229,7 +228,7 @@ the two-sided error term.}
 
 \item{nParm}{Total number of parameters estimated.}
 
-\item{udist}{The argument \code{'udist'}. See the section \bold{Arguments}.}
+\item{udist}{The argument \code{'udist'}. See the section \sQuote{Arguments}.}
 
 \item{startVal}{Numeric vector. Starting value for ML estimation.}
 
@@ -268,14 +267,14 @@ the ML estimation.}
 \item{invHessian}{The covariance matrix of the parameters obtained from
 the ML estimation.}
 
-\item{hessianType}{The argument \code{'hessianType'}. See the section \bold{Arguments}.}
+\item{hessianType}{The argument \code{'hessianType'}. See the section \sQuote{Arguments}.}
 
 \item{mleDate}{Date and time of the estimated model.}
 }
 
 \note{
 In the case of panel data, \code{\link{lcmcross}} estimates a pooled cross section
-where the probability of beloging to a class a priori is not permanent (not fixed over time).
+where the probability of belonging to a class a priori is not permanent (not fixed over time).
 }
 
 \references{
@@ -329,8 +328,7 @@ frontier: A framework for the analysis of firm inefficiency.
 
   \code{\link[=residuals.lcmcross]{residuals}} for extracting residuals of the estimation.
 
-  \code{\link[=vcov.lcmcross]{vcov}} for extracting the variance-covariance matrix
-of the coefficients.
+  \code{\link[=vcov.lcmcross]{vcov}} for extracting the variance-covariance matrix of the coefficients.
 }
 
 \examples{
@@ -338,27 +336,32 @@ of the coefficients.
 # Cobb Douglas (production function) half normal distribution
 # Only the intercept is used as the separating variables
 cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", 
-           data = worldprod, S = 1, method = "ucminf")
+    data = worldprod, S = 1, method = "ucminf")
   summary(cb_2c_h)
 
 # summary of the initial MLE model
   summary(cb_2c_h$InitHalf)
 
 # same result by jump-starting the estimation
-cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", 
-           data = worldprod, S = 1, method = "bfgs", initStart = TRUE)
-  summary(cb_2c_h)
+cb_2c_h2 <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", 
+    data = worldprod, S = 1, method = "bfgs", initStart = TRUE)
+  summary(cb_2c_h2)
 
 # Intercept and initStat used as separating variables
-cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", 
-           thet = ~initStat, data = worldprod, S = 1, method = "ucminf")
-  summary(cb_2c_h)
+cb_2c_h3 <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", 
+    thet = ~initStat, data = worldprod, S = 1, method = "ucminf")
+  summary(cb_2c_h3)
 
 # Only the intercept is used as the separating variables and inefficiency
 # drivers are estimated with variables initStat
-cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", 
-           uhet = ~initStat, data = worldprod, S = 1, method = "ucminf")
-  summary(cb_2c_h)
+cb_2c_h4 <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", 
+    uhet = ~initStat, data = worldprod, S = 1, method = "ucminf")
+  summary(cb_2c_h4)
+
+## Using data on Swiss railway
+cb_2c_u <- lcmcross(formula = LNCT ~ LNQ2 + LNQ3 + LNNET + LNPK + LNPL, 
+    udist = "hnormal", uhet = ~ 1, data = swissrailways, S = -1, method = "ucminf")
+  summary(cb_2c_u)
 }
 
 \author{K Hervé Dakpo, Yann Desjeux and Laure Latruffe}

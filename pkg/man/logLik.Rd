@@ -8,8 +8,7 @@
 
 \description{
 This method extracts the log-likelihood value(s) from classic or latent class 
-stochastic frontier models estimated with \code{\link{sfacross}} or \code{\link{lcmcross}, 
-respectively}.
+stochastic frontier models estimated with \code{\link{sfacross}} or \code{\link{lcmcross}}.
 }
 
 \usage{
@@ -19,7 +18,7 @@ respectively}.
 }
 
 \arguments{
-\item{object}{A (latent class) stochastic frontier model returned by
+\item{object}{A classic or a latent class stochastic frontier model returned by
 \code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
 \item{individual}{Logical. If \code{TRUE}, a vector of individual likelihood is
@@ -43,16 +42,16 @@ or a numeric vector (the log-likelihood of each observation when
 ## United States
 # Translog SFA (cost function) truncated normal with scaling property
 tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
-log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
-I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
-udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
-scaling = TRUE, method = "mla")
+    log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
+    I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
+    udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
+    scaling = TRUE, method = "mla")
   logLik(tl_u_ts)
 
 ## Using data on eighty-two countries production (DGP)
 # LCM Cobb Douglas (production function) half normal distribution
 cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", data = worldprod, 
-           S = 1, method = "ucminf")
+    S = 1, method = "ucminf")
   logLik(cb_2c_h, individual = TRUE)
 }
 

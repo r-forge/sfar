@@ -1,24 +1,20 @@
 \name{skewnessTest}
-
 \alias{skewnessTest}
-\alias{skewnessTest.sfacross}
 
-\title{Skewness test for object of class \code{"sfacross"}}
+\title{Skewness test for object of class \code{'sfacross'}}
 
-\description{Skewness test for object of class \code{"sfacross"}.}
+\description{Skewness test for object of class \code{'sfacross'}.}
 
 \usage{
-\method{skewnessTest}{sfacross}(object, test = "agostino", ...)
+skewnessTest(object, test = "agostino")
 }
 
 \arguments{
-\item{object}{An object of class \code{"sfacross"}, returned by \code{\link{sfacross}}.}
+\item{object}{An object of class \code{'sfacross'}, returned by \code{\link{sfacross}}.}
 
 \item{test}{A character string specifying the test to implement. If \code{"agostino"} 
-(default), then D'agostino skewness test is implemented (D'Agostino et Pearson, 1973). 
+(default), D'agostino skewness test is implemented (D'Agostino et Pearson, 1973). 
 If \code{"coelli"}, Coelli skewness test is implemented (Coelli, 1995).}
-
-\item{...}{Currently ignored.}
 }
 
 \value{
@@ -27,7 +23,7 @@ Coelli's skewness test.
 }
 
 \note{
-\code{skewnessTest} is only available for object of class \code{"sfacross"}.
+\code{\link{skewnessTest}} is currently only available for object of class \code{'sfacross'}.
 }
 
 \examples{
@@ -35,10 +31,10 @@ Coelli's skewness test.
 ## United States
 # Translog SFA (cost function) truncated normal with scaling property
 tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
-log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
-I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
-udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
-scaling = TRUE, method = "mla")
+    log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
+    I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
+    udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
+    scaling = TRUE, method = "mla")
   skewnessTest(tl_u_ts)
 }
 

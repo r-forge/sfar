@@ -9,10 +9,10 @@
 for the estimation of stochastic frontier models in the case of cross-sectional 
 or pooled cross section data, using maximum (simulated) likelihood - M(S)L.
 
-Ten distributions are considered for the one-sided error term and nine
+Ten distributions are possible for the one-sided error term and nine
 optimization algorithms are available.
 
-The function also accounts for heteroscedasticity in both one-sided and
+The function accounts for heteroscedasticity in both one-sided and
 two-sided error terms as in Reifschneider and Stevenson (1991), Caudill and
 Ford (1993), Caudill \emph{et al.} (1995) and Hadri (1999), but also
 heterogeneity in the mean of the pre-truncated distribution as in Kumbhakar
@@ -45,32 +45,31 @@ one-sided error variance (see section \sQuote{Details}).}
 \item{vhet}{A one-part formula to consider heteroscedasticity in the
 two-sided error variance (see section \sQuote{Details}).}
 
-\item{data}{An optional data frame containing the data or the the variables
-in the model.}
+\item{data}{The data frame containing the data.}
 
 \item{subset}{An optional vector specifying a subset of observations to be
 used in the optimization process.}
 
-\item{S}{If \code{1} (default) a production (profit) frontier is
+\item{S}{If \code{S = 1} (default), a production (profit) frontier is
 estimated: \eqn{\epsilon_i = v_i-u_i}. If \code{S = -1}, a cost frontier is
 estimated: \eqn{\epsilon_i = v_i+u_i}.}
 
 \item{udist}{Character string. Default = \code{"hnormal"}. Distribution specification 
 for the one-sided error term. 10 different distributions are available:
 \itemize{
-\item \code{"hnormal"}, for the half normal distribution (Aigner \emph{et al.}
+  \item \code{"hnormal"}, for the half normal distribution (Aigner \emph{et al.}
 1977, Meeusen and Vandenbroeck 1977)
-\item \code{"exponential"}, for the exponential distribution
-\item \code{"tnormal"} for the truncated normal distribution (Stevenson 1980)
-\item \code{"rayleigh"}, for the rayleigh distribution (Hajargasht 2015)
-\item \code{"uniform"}, for the uniform distribution (Li 1996, Nguyen 2010)
-\item \code{"gamma"}, for the gamma distribution (Greene 2003)
-\item \code{"lognormal"}, for the log normal distribution (Migon and Medici
+  \item \code{"exponential"}, for the exponential distribution
+  \item \code{"tnormal"} for the truncated normal distribution (Stevenson 1980)
+  \item \code{"rayleigh"}, for the rayleigh distribution (Hajargasht 2015)
+  \item \code{"uniform"}, for the uniform distribution (Li 1996, Nguyen 2010)
+  \item \code{"gamma"}, for the gamma distribution (Greene 2003)
+  \item \code{"lognormal"}, for the log normal distribution (Migon and Medici
 2001, Wang and Ye 2020)
-\item \code{"weibull"}, for the weibull distribution (Tsionas 2007)
-\item \code{"genexponential"}, for the generalized exponential distribution
+  \item \code{"weibull"}, for the weibull distribution (Tsionas 2007)
+  \item \code{"genexponential"}, for the generalized exponential distribution
 (Papadopoulos 2020)
-\item \code{"tslaplace"}, for the truncated skewed Laplace distribution (Wang
+  \item \code{"tslaplace"}, for the truncated skewed Laplace distribution (Wang
 2012).
 }}
 
@@ -109,27 +108,27 @@ Marquardt-Levenberg algorithm (\code{\link[marqLevAlg:marqLevAlg]{mla}})
 \item{hessianType}{Integer. If \code{1} (Default), analytic hessian is
 returned for all the distributions except \code{"gamma"},
 \code{"lognormal"} and \code{"weibull"} for which the numeric hessian is
-returned. If \code{2}, bhhh hessian is estimated (\eqn{g'g}). If \code{3}
+returned. If \code{2}, bhhh hessian is estimated (\eqn{g'g}). If \code{3}, 
 robust hessian is computed (\eqn{H^{-1}GH^{-1}}).}
 
-\item{simType}{Character string. If \code{simType = "halton"} (Default), Halton draws are use
-for maximum simulated likelihood (MSL). If \code{simType = "ghalton"}, 
-Generalized-Halton draws are use for MSL. If \code{simType = "sobol"}, Sobol
-draws are use for MSL. If \code{simType = "uniform"}, uniform draws are use
+\item{simType}{Character string. If \code{simType = "halton"} (Default), Halton 
+draws are used for maximum simulated likelihood (MSL). If \code{simType = "ghalton"}, 
+Generalized-Halton draws are used for MSL. If \code{simType = "sobol"}, Sobol
+draws are used for MSL. If \code{simType = "uniform"}, uniform draws are used
 for MSL. (see section \sQuote{Details}).}
 
-\item{Nsim}{Number for draws for MSL.}
+\item{Nsim}{Number of draws for MSL.}
 
 \item{prime}{Prime number considered for Halton and
 Generalized-Halton draws. Default = \code{2}.}
 
 \item{burn}{Number of the first observations discarded in the case
-of the Halton draws. Default = \code{10}.}
+of Halton draws. Default = \code{10}.}
 
 \item{antithetics}{Logical. Default = \code{FALSE}. If \code{TRUE}, antithetics counterpart
 of the uniform draws is computed. (see section \sQuote{Details}).}
 
-\item{seed}{Numeric. Seed considered for the random draws.}
+\item{seed}{Numeric. Seed for the random draws.}
 
 \item{itermax}{Maximum number of iterations allowed for
 optimization. Default = \code{2000}.}
@@ -149,7 +148,7 @@ the direction is kept. If \code{"marquardt"} (default), the step length is decre
 while also moving closer to the pure gradient direction. See \code{\link[maxLik:maxNR]{maxBHHH}} and
 \code{\link[maxLik]{maxNR}}.}
 
-\item{x}{An object of class \code{sfacross} returned by \code{\link{sfacross}}.}
+\item{x}{An object of class \code{'sfacross'} returned by \code{\link{sfacross}}.}
 
 \item{digits}{Number of digits displayed in values.}
 
@@ -159,7 +158,7 @@ while also moving closer to the pure gradient direction. See \code{\link[maxLik:
 \details{
 The stochastic frontier model is defined as:
 \deqn{y_i = \alpha + \mathbf{x}'_i\beta + v_i - Su_i}
-\deqn{\epsilon_i = v_i -Su_i}.
+\deqn{\epsilon_i = v_i -Su_i}
 
 where \eqn{i} is the observation, \eqn{j} is the class, \eqn{y} is the output 
 (cost, revenue, profit), \eqn{x} is the vector of main explanatory variables 
@@ -177,12 +176,12 @@ of uniform draws, antithetics can also be computed: first \code{Nsim/2} draws
 are obtained, then the \code{Nsim/2} other draws are obtained as
 counterpart of one (\code{1-draw}).
 
-To accommodate heteroscedasticity in the variance parameters of the error
+To account for heteroscedasticity in the variance parameters of the error
 terms, a single part (right) formula can also be specified. To impose the
 positivity to these parameters, the variances are modelled as:
 \eqn{\sigma^2_u = \exp{(\delta'Z_u)}} or \eqn{\sigma^2_v = \exp{(\phi'Z_v)}}, 
 where \eqn{Z_u} and \eqn{Z_v} are the heteroscedasticity variables (inefficiency 
-drivers in the case of \eqn{Z_u} and`\eqn{\delta} and \eqn{\phi} the coefficients). 
+drivers in the case of \eqn{Z_u}) and\eqn{\delta} and \eqn{\phi} the coefficients. 
 In the case of heterogeneity in the truncated mean \eqn{\mu}, it is modelled
 as \eqn{\mu=\omega'Z_{\mu}}. The scaling property can be applied for the
 truncated normal distribution: \eqn{u \sim h(Z_u, \delta)u} where \eqn{u}
@@ -216,7 +215,7 @@ the following elements:
 
 \item{formula}{The estimated model.}
 
-\item{S}{The argument \code{'S'}. See the section \bold{Arguments}.}
+\item{S}{The argument \code{'S'}. See the section \sQuote{Arguments}.}
 
 \item{typeSfa}{Character string. "Stochastic Production/Profit
 Frontier, e = v - u" when \code{S = 1} and "Stochastic Cost
@@ -224,14 +223,14 @@ Frontier, e = v + u" when \code{S = -1}.}
 
 \item{Nobs}{Number of observations used for optimization.}
 
-\item{nXvar}{Number of explanatory variables in the production (or cost) frontier.}
+\item{nXvar}{Number of explanatory variables in the production or cost frontier.}
 
 \item{nmuZUvar}{Number of variables explaining heterogeneity in the truncated
 mean, only if \code{udist = "tnormal"} or \code{"lognormal"}.}
 
-\item{scaling}{The argument \code{'scaling'}. See the section \bold{Arguments}.}
+\item{scaling}{The argument \code{'scaling'}. See the section \sQuote{Arguments}.}
 
-\item{logDepVar}{The argument \code{'logDepVar'}. See the section \bold{Arguments}.}
+\item{logDepVar}{The argument \code{'logDepVar'}. See the section \sQuote{Arguments}.}
 
 \item{nuZUvar}{Number of variables explaining heteroscedasticity in
 the one-sided error term.}
@@ -241,7 +240,7 @@ the two-sided error term.}
 
 \item{nParm}{Total number of parameters estimated.}
 
-\item{udist}{The argument \code{'udist'}. See the section \bold{Arguments}.}
+\item{udist}{The argument \code{'udist'}. See the section \sQuote{Arguments}.}
 
 \item{startVal}{Numeric vector. Starting value for M(S)L estimation.}
 
@@ -290,18 +289,21 @@ the M(S)L estimation.}
 \item{invHessian}{Covariance matrix of the parameters obtained from
 the M(S)L estimation.}
 
-\item{hessianType}{The argument \code{'hessianType'}. See the section \bold{Arguments}.}
+\item{hessianType}{The argument \code{'hessianType'}. See the section \sQuote{Arguments}.}
 
 \item{mleDate}{Date and time of the estimated model.}
 
-\item{simDist}{The argument \code{'simDist'}. See the section \bold{Arguments}.}
+\item{simDist}{The argument \code{'simDist'}, only if \code{udist = "gamma"}, 
+\code{"lognormal"} or , \code{"weibull"}. See the section \sQuote{Arguments}.}
 
-\item{Nsim}{The argument \code{'Nsim'}. See the section \bold{Arguments}.}
+\item{Nsim}{The argument \code{'Nsim'}, only if \code{udist = "gamma"}, 
+\code{"lognormal"} or , \code{"weibull"}. See the section \sQuote{Arguments}.}
 
-\item{FiMat}{Matrix of random draws used for MSL.}
+\item{FiMat}{Matrix of random draws used for MSL, only if \code{udist = "gamma"}, 
+\code{"lognormal"} or , \code{"weibull"}.}
 }
 
-\note{For the Halton draws, we have adapted the code from the \pkg{mlogit} package.}
+\note{For the Halton draws, the code is adapted from the \pkg{mlogit} package.}
 
 
 \references{
@@ -404,6 +406,8 @@ frontier analysis. Master thesis, Western Kentucky University, May.
   \code{\link[=residuals.sfacross]{residuals}} for extracting residuals of the estimation.
 
   \code{\link[=vcov.sfacross]{vcov}} for extracting the variance-covariance matrix of the coefficients.
+  
+  \code{\link{skewnessTest}} for implementing Skewness test.
 }
 
 \examples{
@@ -411,36 +415,39 @@ frontier analysis. Master thesis, Western Kentucky University, May.
 ## the United States
 # Translog (cost function) half normal with heteroscedasticity
 tl_u_h <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
-log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
-I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
-udist = 'hnormal', uhet = ~ regu, data = utility, S = -1, method = 'sparse')
+    log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
+    I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
+    udist = 'hnormal', uhet = ~ regu, data = utility, S = -1, method = 'sparse')
   summary(tl_u_h)
 
 # Translog (cost function) truncated normal with heteroscedasticity
 tl_u_t <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
-log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
-I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
-udist = 'tnormal', muhet = ~ regu, data = utility, S = -1, method = 'ucminf')
+    log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
+    I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
+    udist = 'tnormal', muhet = ~ regu, data = utility, S = -1, method = 'ucminf')
   summary(tl_u_t)
 
 # Translog (cost function) truncated normal with scaling property
 tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
-log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
-I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
-udist = 'tnormal', muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
-scaling = TRUE, method = 'mla')
+    log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
+    I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
+    udist = 'tnormal', muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
+    scaling = TRUE, method = 'mla')
   summary(tl_u_ts)
 
 ## Data on Philippine rice producers
 # Cobb Douglas (production function) generalized exponential, and weibull distributions
-cb_p_ge <- sfacross(formula = log(PROD) ~ log(AREA) + log(LABOR) + log(NPK) +
-log(OTHER), udist = 'genexponential', data = ricephil, S = 1, method = 'bfgs')
+    cb_p_ge <- sfacross(formula = log(PROD) ~ log(AREA) + log(LABOR) + log(NPK) +
+    log(OTHER), udist = 'genexponential', data = ricephil, S = 1, method = 'bfgs')
   summary(cb_p_ge)
 
-cb_p_w <- sfacross(formula = log(PROD) ~ log(AREA) + log(LABOR) + log(NPK) +
-log(OTHER), udist = 'weibull', data = ricephil, S = 1, method = 'bfgs',
-hessianType = 2, simType = 'halton', Nsim = 150)
-  summary(cb_p_w)
+## Data on U.S. electric utility industry
+# Cost frontier gamma distribution
+tl_u_g <- sfacross(formula = log(cost/fprice) ~ log(output) + I(log(output)^2) + 
+    I(log(lprice/fprice)) + I(log(cprice/fprice)), udist = "gamma", uhet = ~ 1, 
+    data = electricity, S = -1, method = "bfgs", simType = "halton", Nsim = 200, 
+    hessianType = 2) 
+  summary(tl_u_g)
 }
 
 \author{K Hervé Dakpo, Yann Desjeux and Laure Latruffe}
