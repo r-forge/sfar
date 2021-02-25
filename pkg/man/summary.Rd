@@ -56,11 +56,11 @@ or \code{'summary.lcmcross'} that contains the same elements as an object return
 \item{sigmavSq}{For \code{object} of class \code{'sfacross'}. Variance of the two-sided error
 term (\eqn{\sigma_v^2}).}
 
-\item{sigmauSq}{For \code{object} of class \code{'sfacross'}. Variance of the one-sided error
-term (\eqn{\sigma_u^2}).}
+\item{sigmauSq}{For \code{object} of class \code{'sfacross'}. Parametrization of the variance 
+of the one-sided error term (\eqn{\sigma_u^2}).}
 
 \item{theta}{For \code{object} of class \code{'sfacross'} with \code{"udist = uniform"}.
-\code{theta} value in the case the unifom distribution is defined as: \eqn{u_i \in [0, \Theta]}.}
+\code{theta} value in the case the uniform distribution is defined as: \eqn{u_i \in [0, \Theta]}.}
 
 \item{Varu}{For \code{object} of class \code{'sfacross'}. Variance of the one-sided error term.}
 
