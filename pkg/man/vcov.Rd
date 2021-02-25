@@ -58,8 +58,9 @@ negative hessian matrix. Depending on the distribution and the
 \code{"hessianType"} option the analytical/numeric hessian or the bhhh
 hessian or the robust hessian matrix is evaluated.
 
+So far, the argument \code{extraPar}, is only available for objects of class \code{'sfacross'}. 
 When \code{"extraPar = TRUE"}, the variance-covariance of the additional 
-parameters (in the case of \code{\link{sfacross}}) is obtained using the delta method.
+parameters is obtained using the delta method.
 }
 
 \examples{

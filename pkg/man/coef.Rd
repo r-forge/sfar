@@ -34,21 +34,21 @@ for objects of class \code{sfacross} or \code{lcmcross}.
 \item{extraPar}{Logical (default = \code{FALSE}). If \code{TRUE} additional parameters are also
 returned:
 
-\code{sigmaSq} = \code{sigmauSq} + \code{sigmavSq},
+\code{sigmaSq} = \code{sigmauSq} + \code{sigmavSq}
 
-\code{lambdaSq} = \code{sigmauSq}/\code{sigmavSq},
+\code{lambdaSq} = \code{sigmauSq}/\code{sigmavSq}
 
-\code{sigmauSq} = \eqn{\exp{(Wu)}},
+\code{sigmauSq} = \eqn{\exp{(Wu)}}
 
-\code{sigmavSq} = \eqn{\exp{(Wv)}},
+\code{sigmavSq} = \eqn{\exp{(Wv)}}
 
-\code{sigma} = \code{sigmaSq}^0.5,
+\code{sigma} = \code{sigmaSq}^0.5
 
-\code{lambda} = \code{lambdaSq}^0.5,
+\code{lambda} = \code{lambdaSq}^0.5
 
-\code{sigmau} = \code{sigmauSq}^0.5,
+\code{sigmau} = \code{sigmauSq}^0.5
 
-\code{sigmav} = \code{sigmavSq}^0.5,
+\code{sigmav} = \code{sigmavSq}^0.5
 
 \code{gamma} = \code{sigmauSq}/(\code{sigmauSq} + \code{sigmavSq})
 

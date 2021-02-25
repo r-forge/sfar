@@ -159,7 +159,6 @@ while also moving closer to the pure gradient direction. See \code{\link[maxLik:
 \details{
 The stochastic frontier model is defined as:
 \deqn{y_i = \alpha + \mathbf{x}'_i\beta + v_i - Su_i}
-
 \deqn{\epsilon_i = v_i -Su_i}.
 
 where \eqn{i} is the observation, \eqn{j} is the class, \eqn{y} is the output 
@@ -447,4 +446,3 @@ hessianType = 2, simType = 'halton', Nsim = 150)
 \author{K Hervé Dakpo, Yann Desjeux and Laure Latruffe}
 
 \keyword{models}
-\keyword{optimize}
