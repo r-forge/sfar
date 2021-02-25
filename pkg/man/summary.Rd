@@ -60,7 +60,7 @@ term (\eqn{\sigma_v^2}).}
 term (\eqn{\sigma_u^2}).}
 
 \item{theta}{For \code{object} of class \code{'sfacross'} with \code{"udist = uniform"}.
-\code{theta} value in the case the unifom distribution is defined as: \eqn{u_i \in [0, \theta]}.}
+\code{theta} value in the case the unifom distribution is defined as: \eqn{u_i \in [0, \Theta]}.}
 
 \item{Varu}{For \code{object} of class \code{'sfacross'}. Variance of the one-sided error term.}
 
