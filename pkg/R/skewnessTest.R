@@ -1,6 +1,9 @@
 # skewness test for sfacross ----------
 
-skewnessTest.sfacross <- function(object, test = "agostino", ...) {
+skewnessTest <- function(object, test = "agostino") {
+if (! inherits(object,"sfacross")) {
+        stop("Argument 'object' must be a of class 'sfacross'")
+}
   if (test == "agostino") {
     object$AgostinoTest
   } else {
