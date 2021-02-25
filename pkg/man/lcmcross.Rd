@@ -364,4 +364,3 @@ cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal",
 \author{K Hervé Dakpo, Yann Desjeux and Laure Latruffe}
 
 \keyword{models}
-\keyword{optimize}
