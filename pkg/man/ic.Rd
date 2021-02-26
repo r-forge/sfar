@@ -6,7 +6,7 @@
 \title{Information criteria}
 
 \description{
-This method returns information criterion from classic or latent class stochastic frontier 
+\code{\link{ic}} returns information criterion from classic or latent class stochastic frontier 
 models estimated with \code{\link{sfacross}} or \code{\link{lcmcross}.}
 }
 

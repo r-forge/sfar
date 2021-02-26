@@ -7,7 +7,7 @@
 \title{Extract Log-Likelihood Value}
 
 \description{
-This method extracts the log-likelihood value(s) from classic or latent class 
+\code{\link{logLik}} extracts the log-likelihood value(s) from classic or latent class 
 stochastic frontier models estimated with \code{\link{sfacross}} or \code{\link{lcmcross}}.
 }
 
@@ -22,7 +22,7 @@ stochastic frontier models estimated with \code{\link{sfacross}} or \code{\link{
 \code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
 \item{individual}{Logical. If \code{TRUE}, a vector of individual likelihood is
-returned. If \code{FALSE} (Default), the sum of all observations likelihood is
+returned. If \code{FALSE} (default), the sum of all observations likelihood is
 returned.}
 
 \item{...}{Currently ignored.}
@@ -32,8 +32,8 @@ returned.}
 \code{\link{logLik}} returns an object of class \code{'logLik'}, which is either a
 numeric scalar (the log-likelihood value when \code{individual = FALSE}), 
 or a numeric vector (the log-likelihood of each observation when 
-\code{individual = TRUE}) with 2 attributes: 
-\item{Nobs}{Total number of observations in all equations.}
+\code{individual = TRUE}) with the following 2 attributes: 
+\item{Nobs}{Total number of observations.}
 \item{df}{Number of free parameters, i.e. length of the coefficient vector.}
 }
 

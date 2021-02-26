@@ -22,9 +22,9 @@ coefficients of classic or latent class stochastic frontier models estimated by
 \item{object}{A classic or latent class stochastic frontier model 
 returned by \code{\link{sfacross}} or \code{\link{lcmcross}}}
 
-\item{extraPar}{Logical. Only available for objects of class \code{'sfacross'}. 
-Default = \code{FALSE}. If \code{TRUE}, variances and covariances of additional 
-parameters are returned:
+\item{extraPar}{Logical. Only available for non heteroscedastic models 
+returned by \code{\link{sfacross}}. Default = \code{FALSE}. If \code{TRUE}, v
+ariances and covariances of additional parameters are returned:
 
 \code{sigmaSq} = \code{sigmauSq} + \code{sigmavSq}
 
@@ -48,15 +48,14 @@ parameters are returned:
 }
 
 \value{
-\code{\link{vcov}} returns the covariance matrix of the maximum likelihood
-coefficients.
+The covariance matrix of the maximum likelihood coefficients is returned.
 }
 
 \details{
 The variance-covariance matrix is obtained by the inversion of the
-negative hessian matrix. Depending on the distribution and the
-\code{"hessianType"} option, the analytical/numeric hessian or the bhhh
-hessian or the robust hessian matrix is evaluated.
+negative Hessian matrix. Depending on the distribution and the
+\code{"hessianType"} option, the analytical/numeric Hessian or the bhhh
+Hessian or the robust Hessian matrix is evaluated.
 
 The argument \code{extraPar}, is currently available for objects of class \code{'sfacross'}. 
 When \code{"extraPar = TRUE"}, the variance-covariance of the additional 

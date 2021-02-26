@@ -7,7 +7,7 @@
 \title{Returning conditional (in-)efficiency estimates}
 
 \description{
-This method returns (in-)efficiency estimates from classic or latent class stochastic 
+\code{\link{efficiencies}} returns (in-)efficiency estimates from classic or latent class stochastic 
 frontier models estimated with \code{\link{sfacross}} or \code{\link{lcmcross}.}
 }
 
@@ -22,14 +22,15 @@ frontier models estimated with \code{\link{sfacross}} or \code{\link{lcmcross}.}
 \code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
 \item{level}{A number between between 0 and 0.9999 used for the computation
-of (in-)efficiency confidence intervals (defaut = \code{0.95}). Only when \code{udist} is
-\code{"hnormal"}, \code{"exponential"}, \code{"tnormal"} or \code{"uniform"}.}
+of (in-)efficiency confidence intervals (defaut = \code{0.95}). Only used when \code{udist} =
+\code{"hnormal"}, \code{"exponential"}, \code{"tnormal"} or \code{"uniform"} in 
+\code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
 \item{...}{Currently ignored.}
 }
 
 \value{
-A dataframe that contains individual (in-)efficiency estimates. These are ordered in 
+A data frame that contains individual (in-)efficiency estimates. These are ordered in 
 the same way as the corresponding observations in the dataset used for the estimation.
 
 \bold{- For object of class \code{'sfacross'} the following elements are

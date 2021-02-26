@@ -8,11 +8,13 @@ if (! inherits(object,"sfacross")) {
     object$AgostinoTest
   } else {
     if (test == "coelli") {
-      object$CoelliM3Test
+        cat("## Coelli's test ##\n", sep = "")
+        cat("\nTest Results:\n", sep = "")
+        cat("  STATISTIC (z):", round(object$CoelliM3Test["z"], digits = 4), "\n")
+        cat("  P.VALUE:", format.pval(object$CoelliM3Test["p.value"], digits = 4), "\n")
     } else {
       stop("argument 'test' must be either 'agostino', or 'coelli'",
            call. = FALSE)
     }
   }
 }
-

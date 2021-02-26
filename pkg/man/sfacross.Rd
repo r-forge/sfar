@@ -5,12 +5,10 @@
 
 \title{Stochastic frontier estimation using cross-section data}
 
-\description{\code{\link{sfacross}} is a symbolic formula-based function 
+\description{
+\code{\link{sfacross}} is a symbolic formula-based function 
 for the estimation of stochastic frontier models in the case of cross-sectional 
 or pooled cross section data, using maximum (simulated) likelihood - M(S)L.
-
-Ten distributions are possible for the one-sided error term and nine
-optimization algorithms are available.
 
 The function accounts for heteroscedasticity in both one-sided and
 two-sided error terms as in Reifschneider and Stevenson (1991), Caudill and
@@ -18,14 +16,17 @@ Ford (1993), Caudill \emph{et al.} (1995) and Hadri (1999), but also
 heterogeneity in the mean of the pre-truncated distribution as in Kumbhakar
 \emph{et al.} (1991), Huang and Liu (1994), Battese and Coelli (1995).
 
+Ten distributions are possible for the one-sided error term and nine
+optimization algorithms are available.
+
 The truncated normal - normal distribution with scaling property as
 in Wang and Schmidt (2002) is also implemented.
 }
 
 \usage{
-sfacross(formula, muhet, uhet, vhet, data, subset, S = 1L, udist = "hnormal",
-  scaling = FALSE, start = NULL, logDepVar = TRUE, method = "bfgs", hessianType = 1L,
-  simType = "halton", Nsim = 100, prime = 2L, burn = 10, antithetics = FALSE,
+sfacross(formula, muhet, uhet, vhet, logDepVar = TRUE, data, subset, S = 1, 
+  udist = "hnormal", scaling = FALSE, start = NULL, method = "bfgs", hessianType = 1,
+  simType = "halton", Nsim = 100, prime = 2, burn = 10, antithetics = FALSE,
   seed = 12345, itermax = 2000, printInfo = FALSE, tol = 1e-12, gradtol = 1e-06,
   stepmax = 0.1, qac = "marquardt")
 
@@ -45,6 +46,9 @@ one-sided error variance (see section \sQuote{Details}).}
 \item{vhet}{A one-part formula to consider heteroscedasticity in the
 two-sided error variance (see section \sQuote{Details}).}
 
+\item{logDepVar}{Logical. Informs whether the dependent variable is logged 
+(\code{TRUE}) or not (\code{FALSE}). Default = \code{TRUE}.}
+
 \item{data}{The data frame containing the data.}
 
 \item{subset}{An optional vector specifying a subset of observations to be
@@ -61,12 +65,12 @@ for the one-sided error term. 10 different distributions are available:
 1977, Meeusen and Vandenbroeck 1977)
   \item \code{"exponential"}, for the exponential distribution
   \item \code{"tnormal"} for the truncated normal distribution (Stevenson 1980)
-  \item \code{"rayleigh"}, for the rayleigh distribution (Hajargasht 2015)
+  \item \code{"rayleigh"}, for the Rayleigh distribution (Hajargasht 2015)
   \item \code{"uniform"}, for the uniform distribution (Li 1996, Nguyen 2010)
-  \item \code{"gamma"}, for the gamma distribution (Greene 2003)
+  \item \code{"gamma"}, for the Gamma distribution (Greene 2003)
   \item \code{"lognormal"}, for the log normal distribution (Migon and Medici
 2001, Wang and Ye 2020)
-  \item \code{"weibull"}, for the weibull distribution (Tsionas 2007)
+  \item \code{"weibull"}, for the Weibull distribution (Tsionas 2007)
   \item \code{"genexponential"}, for the generalized exponential distribution
 (Papadopoulos 2020)
   \item \code{"tslaplace"}, for the truncated skewed Laplace distribution (Wang
@@ -80,36 +84,32 @@ estimated. Default = \code{FALSE}. (see section \sQuote{Details}).}
 \item{start}{Numeric vector. Optional starting values for the maximum
 likelihood (ML) estimation.}
 
-\item{logDepVar}{Logical. Informs whether the dependent variable is logged 
-(\code{TRUE}) or not (\code{FALSE}). Default = \code{TRUE}.}
-
-\item{method}{Character string. Optimization algorithm used for the
-estimation. Default = \code{"bfgs"}. 9 algorithms are available:
+\item{method}{Optimization algorithm used for the estimation. 
+Default = \code{"bfgs"}. 9 algorithms are available:
 \itemize{
   \item \code{"bfgs"}, for Broyden-Fletcher-Goldfarb-Shanno
-(\code{\link[maxLik:maxNR]{maxBFGS}})
+(see \code{\link[maxLik:maxNR]{maxBFGS}})
   \item \code{"bhhh"}, for Berndt-Hall-Hall-Hausman
-(\code{\link[maxLik:maxNR]{maxBHHH}})
-  \item \code{"nr"}, for Newton-Raphson (\code{\link[maxLik]{maxNR}})
-  \item \code{"nm"}, for Nelder-Mead (\code{\link[maxLik:maxBFGS]{maxNM}})
+(see \code{\link[maxLik:maxNR]{maxBHHH}})
+  \item \code{"nr"}, for Newton-Raphson (see \code{\link[maxLik]{maxNR}})
+  \item \code{"nm"}, for Nelder-Mead (see \code{\link[maxLik:maxBFGS]{maxNM}})
   \item \code{"ucminf"}, implements a quasi-Newton type with BFGS updating of the
 inverse Hessian and soft line search with a trust region type monitoring of
-the input to the line search algorithm (\code{\link[ucminf]{ucminf}})
+the input to the line search algorithm (see \code{\link[ucminf]{ucminf}})
   \item \code{"mla"}, for general-purpose optimization based on
-Marquardt-Levenberg algorithm (\code{\link[marqLevAlg:marqLevAlg]{mla}})
-  \item \code{"sr1"}, for Symmetric Rank 1
-(\code{\link[trustOptim]{trust.optim}})
+Marquardt-Levenberg algorithm (see \code{\link[marqLevAlg:marqLevAlg]{mla}})
+  \item \code{"sr1"}, for Symmetric Rank 1 (see \code{\link[trustOptim]{trust.optim}})
   \item \code{"sparse"}, for trust regions and sparse Hessian
-(\code{\link[trustOptim]{trust.optim}})
+(see \code{\link[trustOptim]{trust.optim}})
   \item \code{"nlminb"}, for optimization using PORT routines
-(\code{\link[stats]{nlminb}})
+(see \code{\link[stats]{nlminb}})
 }}
 
-\item{hessianType}{Integer. If \code{1} (Default), analytic hessian is
+\item{hessianType}{Integer. If \code{1} (Default), analytic Hessian is
 returned for all the distributions except \code{"gamma"},
-\code{"lognormal"} and \code{"weibull"} for which the numeric hessian is
-returned. If \code{2}, bhhh hessian is estimated (\eqn{g'g}). If \code{3}, 
-robust hessian is computed (\eqn{H^{-1}GH^{-1}}).}
+\code{"lognormal"} and \code{"weibull"} for which the numeric Hessian is
+returned. If \code{2}, bhhh Hessian is estimated (\eqn{g'g}). If \code{3}, 
+robust Hessian is computed (\eqn{H^{-1}GH^{-1}}).}
 
 \item{simType}{Character string. If \code{simType = "halton"} (Default), Halton 
 draws are used for maximum simulated likelihood (MSL). If \code{simType = "ghalton"}, 
@@ -165,11 +165,12 @@ where \eqn{i} is the observation, \eqn{j} is the class, \eqn{y} is the output
 (inputs and other control variables), \eqn{u} is the one-sided error term with 
 variance \eqn{\sigma_{u}^2}, and \eqn{v} is the two-sided error term with 
 variance \eqn{\sigma_{v}^2}.
+
 \code{S = 1} in the case of production (profit) frontier function and 
 \code{S = -1} in the case of cost frontier function.
 
 The model is estimated using maximum likelihood (ML) for most distributions
-except the gamma, weibull and log-normal distributions for which maximum
+except the Gamma, Weibull and log-normal distributions for which maximum
 simulated likelihood (MSL) is used. For this latter, several draws can be
 implemented namely Halton, Generalized Halton, Sobol and uniform. In the case
 of uniform draws, antithetics can also be computed: first \code{Nsim/2} draws
@@ -395,11 +396,11 @@ frontier analysis. Master thesis, Western Kentucky University, May.
 
   \code{\link[=efficiencies.sfacross]{efficiencies}} for calculating efficiency estimates.
 
-  \code{\link[=fitted.sfacross]{fitted}} for obtaining the fitted frontier value.
+  \code{\link[=fitted.sfacross]{fitted}} for obtaining the fitted frontier values.
 
   \code{\link[=ic.sfacross]{ic}} for computing information criteria.
 
-  \code{\link[=logLik.sfacross]{logLik}} for extracting log-likelihood value of the estimation.
+  \code{\link[=logLik.sfacross]{logLik}} for extracting log-likelihood value(s) of the estimation.
 
   \code{\link[=marginal.sfacross]{marginal}} for calculating marginal effects of Z-variables on inefficiency.
 
@@ -436,13 +437,13 @@ tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
   summary(tl_u_ts)
 
 ## Data on Philippine rice producers
-# Cobb Douglas (production function) generalized exponential, and weibull distributions
+# Cobb Douglas (production function) generalized exponential, and Weibull distributions
     cb_p_ge <- sfacross(formula = log(PROD) ~ log(AREA) + log(LABOR) + log(NPK) +
     log(OTHER), udist = 'genexponential', data = ricephil, S = 1, method = 'bfgs')
   summary(cb_p_ge)
 
 ## Data on U.S. electric utility industry
-# Cost frontier gamma distribution
+# Cost frontier Gamma distribution
 tl_u_g <- sfacross(formula = log(cost/fprice) ~ log(output) + I(log(output)^2) + 
     I(log(lprice/fprice)) + I(log(cprice/fprice)), udist = "gamma", uhet = ~ 1, 
     data = electricity, S = -1, method = "bfgs", simType = "halton", Nsim = 200, 

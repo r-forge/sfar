@@ -1,7 +1,7 @@
 \name{worldprod}
 \alias{worldprod}
 \docType{data}
-\title{Data on World production}
+\title{Data on world production}
 
 \description{This dataset provides information on production related variables for eighty-two countries 
 over the period 1960–1987.}

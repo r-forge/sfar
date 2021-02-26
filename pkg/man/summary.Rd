@@ -45,7 +45,7 @@ interval for the different parameters (OLS and ML estimates) is returned.}
 \value{
 The \code{\link{summary}} method returns a list of class \code{'summary.sfacross'}
 or \code{'summary.lcmcross'} that contains the same elements as an object returned by
-\code{\link{sfacross}} or \code{\link{lcmcross}} but the following additional elements:
+\code{\link{sfacross}} or \code{\link{lcmcross}} with the following additional elements:
 
 \item{AIC}{Akaike information criterion.}
 
@@ -95,19 +95,34 @@ tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
     scaling = TRUE, method = "mla")
   summary(tl_u_ts)
 
-## Using data on eighty-two countries production (DGP)
-# LCM Cobb Douglas (production function) half normal distribution
-cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", data =
-    worldprod, S = 1, method = "ucminf")
-  summary(cb_2c_h, grad = TRUE, ci = TRUE)
+## Using data on Swiss railway
+cb_2c_u <- lcmcross(formula = LNCT ~ LNQ2 + LNQ3 + LNNET + LNPK + LNPL, 
+    udist = "hnormal", uhet = ~ 1, data = swissrailways, S = -1, method = "ucminf")
+  summary(cb_2c_u, grad = TRUE, ci = TRUE)
 }
 
 \seealso{
-\code{\link{sfacross}}, for the stochastic frontier analysis model fitting
-function.
+  \code{\link{sfacross}}, for the stochastic frontier analysis model fitting function.
 
-\code{\link{lcmcross}}, for the latent class stochastic frontier analysis
-model fitting function.
+  \code{\link{lcmcross}}, for the latent class stochastic frontier analysis model fitting function.
+
+  \code{\link[=coef.sfacross]{coef}} for extracting coefficients of the estimation.
+
+  \code{\link[=efficiencies.sfacross]{efficiencies}} for calculating efficiency estimates.
+
+  \code{\link[=fitted.sfacross]{fitted}} for obtaining the fitted frontier values.
+
+  \code{\link[=ic.sfacross]{ic}} for computing information criteria.
+
+  \code{\link[=logLik.sfacross]{logLik}} for extracting log-likelihood value(s) of the estimation.
+
+  \code{\link[=marginal.sfacross]{marginal}} for calculating marginal effects of Z-variables on inefficiency.
+
+  \code{\link[=residuals.sfacross]{residuals}} for extracting residuals of the estimation.
+
+  \code{\link[=vcov.sfacross]{vcov}} for extracting the variance-covariance matrix of the coefficients.
+  
+  \code{\link{skewnessTest}} for implementing Skewness test of objects of class \code{'sfacross'}.
 }
 
 \keyword{methods}
