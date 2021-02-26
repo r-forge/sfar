@@ -1,8 +1,8 @@
 # SFA estimation for cross sectional data ----------
 
-sfacross <- function(formula, muhet, uhet, vhet, data, subset,
+sfacross <- function(formula, muhet, uhet, vhet, logDepVar = TRUE, data, subset,
                      S = 1L, udist = "hnormal", scaling = FALSE, start = NULL,
-                     logDepVar = TRUE, method = "bfgs", hessianType = 1L, simType = "halton",
+                     method = "bfgs", hessianType = 1L, simType = "halton",
                      Nsim = 100, prime = 2L, burn = 10, antithetics = FALSE, seed = 12345,
                      itermax = 2000, printInfo = FALSE, tol = 1e-12, gradtol = 1e-06,
                      stepmax = 0.1, qac = "marquardt") {
@@ -352,7 +352,8 @@ sfacross <- function(formula, muhet, uhet, vhet, data, subset,
   ) / sqrt(6 * moment(dataTable[["olsResiduals"]],
     order = 2
   )^3 / N))))
-  AgostinoTest <- dagoTest(dataTable[["olsResiduals"]])@test
+  AgostinoTest <- dagoTest(dataTable[["olsResiduals"]])
+    class(AgostinoTest) <- "dagoTest"
   # Step 2: MLE arguments -------
   FunArgs <- if (udist == "tnormal") {
     if (scaling) {

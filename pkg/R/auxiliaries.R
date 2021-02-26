@@ -510,6 +510,56 @@ ic <- function(object, ...) {
   UseMethod("ic")
 }
 
-skewnessTest <- function(object, ...) {
-  UseMethod("skewnessTest")
-}
+
+setClass("dagoTest",
+    representation(
+        call = "call",
+        data = "list",
+        test = "list",
+        title = "character")
+)
+
+setMethod("show", "dagoTest",
+      function(object)
+{  # Unlike print the argument for show is 'object'.
+    x = object
+
+    # Title:
+    cat("## ", x@title, " ##\n", sep = "")
+
+    # Test Results:
+    test = x@test
+    cat("\nTest Results:\n", sep = "")
+
+    # Statistic:
+    if (!is.null(test$statistic)) {
+        statistic = test$statistic
+        Names = names(statistic)
+        cat("  STATISTIC:\n")
+        for (i in 1:length(Names)) {
+            if (!is.na(statistic[i])) {
+                cat(paste("    ", Names[i], ": ",
+                    round(statistic[i], digits = 4), "\n", sep = "" ) )
+            }
+        }
+    }
+
+    # P-Value:
+    if (!is.null(test$p.value)) {
+        pval = test$p.value
+        Names = names(pval)
+        if (Names[1] == "") space = "" else space = ": "
+        cat("  P.VALUE:\n")
+        for (i in 1:length(Names)) {
+            if (!is.na(pval[i])) {
+                if (class(version) != "Sversion") {
+                    cat(paste("    ", Names[i], space,
+                    format.pval(pval[i], digits = 4), " \n", sep = "" ) )
+                } else {
+                    cat(paste("    ", Names[i], space,
+                    round(pval[i], digits = 4), " \n", sep = "" ) )
+                }
+            }
+        }
+    }
+})

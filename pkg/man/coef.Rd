@@ -9,11 +9,12 @@
 \title{coef methods for class \code{'summary'} of frontier objects}
 
 \description{
-Extract the coefficients, their standard errors, z-values, and
-(asymptotic) P-values from models returned by the \code{summary} methods
-for objects of class \code{'sfacross'} or \code{'lcmcross'}.
+From an object of class \code{'summary.sfacross'} or \code{'summary.lcmcross'}, 
+\code{\link{coef}} extracts the coefficients, their standard errors, z-values, and
+(asymptotic) P-values.
 
-\code{\link{coef}} extracts coefficients for the likelihood estimation.
+From on object of class \code{'sfacross'} or \code{'lcmcross'}, it extracts only the 
+estimated coefficients for the likelihood estimation.
 }
 \usage{
 \method{coef}{summary.sfacross}(object, ...)
@@ -38,9 +39,9 @@ are returned:
 
 \code{lambdaSq} = \code{sigmauSq}/\code{sigmavSq}
 
-\code{sigmauSq} = \eqn{\exp{(Wu)}}
+\code{sigmauSq} = \eqn{\exp{(Wu)}} = \eqn{\exp{(\delta Z_u)}}
 
-\code{sigmavSq} = \eqn{\exp{(Wv)}}
+\code{sigmavSq} = \eqn{\exp{(Wv)}} = \eqn{\exp{(\phi Z_v)}}
 
 \code{sigma} = \code{sigmaSq}^0.5
 
@@ -51,15 +52,19 @@ are returned:
 \code{sigmav} = \code{sigmavSq}^0.5
 
 \code{gamma} = \code{sigmauSq}/(\code{sigmauSq} + \code{sigmavSq})
-
-In the case of object of class \code{'lcmcross'}, each additional
-parameter terminates with \code{"#"} that represents the class number.}
+}
 }
 
 \value{
-The \code{coef} method for objects of class \code{'summary.sfacross'} or
-\code{'summary.lcmcross'} returns a matrix with four columns. Namely, the estimated
+For objects of class \code{'summary.sfacross'} or \code{'summary.lcmcross'}, 
+\code{\link{coef}} returns a matrix with four columns. Namely, the estimated
 coefficients, their standard errors, z-values, and (asymptotic) P-values.
+
+For objects of class \code{'sfacross'} or \code{'lcmcross'}, \code{\link{coef}} 
+returns a numeric vector of the estimated coefficients. If \code{extraPar = TRUE},
+additional parameters, detailed in the section \sQuote{Arguments}, are also returned.
+In the case of object of class \code{'lcmcross'}, each additional parameter terminates 
+with \code{"#"} that represents the class number.
 }
 
 \examples{

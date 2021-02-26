@@ -42,7 +42,7 @@ between the inefficiency and its drivers.
 }
 
 \value{
-A dataframe containing the marginal effects of the \eqn{Z_u} variables
+\code{\link{marginal}} returns a data frame containing the marginal effects of the \eqn{Z_u} variables
 on the expected inefficiency (each variable has the prefix \code{"Eu_"})
 and on the variance of the inefficiency (each variable has the prefix
 \code{"Vu_"}) is returned.
@@ -61,12 +61,12 @@ tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
     udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
     scaling = TRUE, method = "mla")
   mar <- marginal(tl_u_ts)
-  head(mar)
+  summary(mar)
 
 ## Using data on eighty-two countries production (DGP)
 # LCM Cobb Douglas (production function) half normal distribution
 cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal",
-    data = worldprod, uhet = ~ initStat, S = 1, method = "ucminf")
+    data = worldprod, uhet = ~ initStat + h, S = 1, method = "ucminf")
   mar <- marginal(cb_2c_h)
   head(mar)
 }

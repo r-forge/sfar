@@ -13,12 +13,12 @@ in the Tarlac region of the Philippines between 1990 and 1997.}
       \item{FARMERCODE}{Farmer code (1, ..., 43).}
       \item{PROD}{Output (tonnes of freshly threshed rice).}
       \item{AREA}{Area planted (hectares).}
-      \item{LABOR}{Labour used (man-days of family and hired labour).}
+      \item{LABOR}{Labor used (man-days of family and hired labor).}
       \item{NPK}{Fertiliser used (kg of active ingredients).}
       \item{OTHER}{Other inputs used (Laspeyres index = 100 for Farm 17 in 1991).}
       \item{PRICE}{Output price (pesos per kg).}
       \item{AREAP}{Rental price of land (pesos per hectare).}
-      \item{LABORP}{Labour price (pesos per hired man-day).}
+      \item{LABORP}{Labor price (pesos per hired man-day).}
       \item{NPKP}{Fertiliser price (pesos per kg of active ingredient).}
       \item{OTHERP}{Price of other inputs (implicit price index).}
       \item{AGE}{Age of the household head (years).}
@@ -37,8 +37,6 @@ The survey is described in Pandey \emph{et al.} (1999).
 \source{
 Supplementary files for Coelli \emph{et al.} (2005),
 \url{http://www.uq.edu.au/economics/cepa/crob2005/software/CROB2005.zip}. 
-
-See also \code{\link[frontier]{riceProdPhil}}.
 }
 \references{
 Coelli, T. J., Rao, D. S. P., O'Donnell, C. J., and Battese, G. E. 2005. \emph{An Introduction to Efficiency and Productivity Analysis},

@@ -1,8 +1,8 @@
 # LCM estimation for cross sectional data ----------
 
-lcmcross <- function(formula, uhet, vhet, thet, data, subset,
+lcmcross <- function(formula, uhet, vhet, thet, logDepVar = TRUE, data, subset,
                      S = 1L, udist = "hnormal", start = NULL, lcmClasses = 2,
-                     logDepVar = TRUE, method = "bfgs", hessianType = 1, itermax = 2000L,
+                     method = "bfgs", hessianType = 1, itermax = 2000L,
                      printInfo = FALSE, tol = 1e-12, gradtol = 1e-06, stepmax = 0.1,
                      qac = "marquardt", initStart = FALSE, initAlg = "nlminb",
                      initIter = 100, initFactorLB = 0.5, initFactorUB = 1.5) {

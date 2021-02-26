@@ -6,11 +6,11 @@
 \title{Latent class stochastic frontier using cross-section data}
 
 \description{
-Function \code{lcmcross} is a symbolic formula based function for the
+\code{\link{lcmcross}} is a symbolic formula based function for the
 estimation of the latent class stochastic frontier model (LCM) in the case of
 cross-sectional or pooled cross section data. The model is estimated using
 maximum likelihood (ML). See Orea and Kumbhakar (2004), Parmeter and
-Kumbhakar (2014, p282)
+Kumbhakar (2014, p282).
 
 Only the half-normal distribution is possible for the one-sided error term.
 Nine optimization algorithms are available.
@@ -23,9 +23,9 @@ The model can estimate up to five classes.
 }
 
 \usage{
-lcmcross(formula, uhet, vhet, thet, data, subset, S = 1L, udist = "hnormal", 
-  start = NULL, lcmClasses = 2, logDepVar = TRUE, method = "bfgs", hessianType = 1,
-  itermax = 2000L, printInfo = FALSE, tol = 1e-12, gradtol = 1e-06, stepmax = 0.1, 
+lcmcross(formula, uhet, vhet, thet, logDepVar = TRUE, data, subset, S = 1, 
+  udist = "hnormal", start = NULL, lcmClasses = 2, method = "bfgs", hessianType = 1,
+  itermax = 2000, printInfo = FALSE, tol = 1e-12, gradtol = 1e-06, stepmax = 0.1, 
   qac = "marquardt", initStart = FALSE, initAlg = "nlminb", initIter = 100,
   initFactorLB = 0.5, initFactorUB = 1.5)
 
@@ -45,6 +45,9 @@ two-sided error variance (see section \sQuote{Details}).}
 \item{thet}{A one-part formula to account for technological heterogeneity in the
 construction of the classes.}
 
+\item{logDepVar}{Logical. Informs whether the dependent variable is logged 
+(\code{TRUE}) or not (\code{FALSE}). Default = \code{TRUE}.}
+
 \item{data}{The data frame containing the data.}
 
 \item{subset}{An optional vector specifying a subset of observations to be
@@ -62,38 +65,30 @@ Meeusen and Vandenbroeck, 1977) is currently implemented.}
 likelihood (ML) estimation.}
 
 \item{lcmClasses}{Number of classes to be estimated (default = \code{2}). 
-Maximum of five classes can be estimated.}
+A maximum of five classes can be estimated.}
 
-\item{logDepVar}{Logical. Informs whether the dependent variable is logged 
-(\code{TRUE}) or not (\code{FALSE}). Default = \code{TRUE}.}
-
-\item{method}{Character. Optimization algorithm used for the estimation.
+\item{method}{Optimization algorithm used for the estimation.
 Default = \code{"bfgs"}. 9 algorithms are available:
 \itemize{
-\item \code{"bfgs"}, for Broyden-Fletcher-Goldfarb-Shanno
-(\code{\link[maxLik:maxNR]{maxBFGS}})
-\item \code{"bhhh"}, for Berndt-Hall-Hall-Hausman
-(\code{\link[maxLik:maxNR]{maxBHHH}})
-\item \code{"nr"}, for Newton-Raphson (\code{\link[maxLik]{maxNR}})
-\item \code{"nm"}, for Nelder-Mead (\code{\link[maxLik:maxBFGS]{maxNM}})
-\item \code{"ucminf"}, implements a quasi-Newton type with BFGS updating of the
+  \item \code{"bfgs"}, for Broyden-Fletcher-Goldfarb-Shanno (see \code{\link[maxLik:maxNR]{maxBFGS}})
+  \item \code{"bhhh"}, for Berndt-Hall-Hall-Hausman (see \code{\link[maxLik:maxNR]{maxBHHH}})
+  \item \code{"nr"}, for Newton-Raphson (see \code{\link[maxLik]{maxNR}})
+  \item \code{"nm"}, for Nelder-Mead (see \code{\link[maxLik:maxBFGS]{maxNM}})
+  \item \code{"ucminf"}, implements a quasi-Newton type with BFGS updating of the
 inverse Hessian and soft line search with a trust region type monitoring of
-the input to the line search algorithm (\code{\link[ucminf]{ucminf}})
-\item \code{"mla"}, for general-purpose optimization based on
-Marquardt-Levenberg algorithm (\code{\link[marqLevAlg:marqLevAlg]{mla}})
-\item \code{"sr1"}, for Symmetric Rank 1
-(\code{\link[trustOptim]{trust.optim}})
-\item \code{"sparse"}, for trust regions and sparse Hessian
-(\code{\link[trustOptim]{trust.optim}})
-\item \code{"nlminb"}, for optimization using PORT routines
-(\code{\link[stats]{nlminb}})
+the input to the line search algorithm (see \code{\link[ucminf]{ucminf}})
+  \item \code{"mla"}, for general-purpose optimization based on
+Marquardt-Levenberg algorithm (see \code{\link[marqLevAlg:marqLevAlg]{mla}})
+  \item \code{"sr1"}, for Symmetric Rank 1 (see \code{\link[trustOptim]{trust.optim}})
+  \item \code{"sparse"}, for trust regions and sparse Hessian (see \code{\link[trustOptim]{trust.optim}})
+  \item \code{"nlminb"}, for optimization using PORT routines (see \code{\link[stats]{nlminb}})
 }}
 
-\item{hessianType}{Integer. If \code{1} (default), analytic hessian is
+\item{hessianType}{Integer. If \code{1} (default), analytic Hessian is
 returned for all the distributions except \code{"gamma"},
-\code{"lognormal"} and \code{"weibull"} for which the numeric hessian is
-returned. If \code{2}, bhhh hessian is estimated (\eqn{g'g}). If \code{3}, 
-robust hessian is computed (\eqn{H^{-1}GH^{-1}}).}
+\code{"lognormal"} and \code{"weibull"} for which the numeric Hessian is
+returned. If \code{2}, bhhh Hessian is estimated (\eqn{g'g}). If \code{3}, 
+robust Hessian is computed (\eqn{H^{-1}GH^{-1}}).}
 
 \item{itermax}{Maximum number of iterations allowed for optimization. 
 Default = \code{2000}.}
@@ -121,7 +116,7 @@ alternative algorithm (\code{"nlminb"}) within certain bounds. Default =
 model. Only \code{"nlminb"} is currently available.}
 
 \item{initIter}{Maximum number of iterations for the algorihtm when
-\code{initStart} is \code{TRUE}. Default = \code{100}.}
+\code{initStart = TRUE}. Default = \code{100}.}
 
 \item{initFactorLB}{A numeric value indicating by which factor the
 starting value should be multiplied  to define the lower bounds 
@@ -150,6 +145,7 @@ where \eqn{i} is the observation, \eqn{j} is the class, \eqn{y} is the output
 (inputs and other control variables), \eqn{u} is the one-sided error term with 
 variance \eqn{\sigma_{u}^2}, and \eqn{v} is the two-sided error term with 
 variance \eqn{\sigma_{v}^2}.
+
 \code{S = 1} in the case of production (profit) frontier function and 
 \code{S = -1} in the case of cost frontier function.
 
@@ -318,11 +314,11 @@ frontier: A framework for the analysis of firm inefficiency.
 
   \code{\link[=efficiencies.lcmcross]{efficiencies}} for calculating efficiency estimates.
 
-  \code{\link[=fitted.lcmcross]{fitted}} for obtaining the fitted frontier value.
+  \code{\link[=fitted.lcmcross]{fitted}} for obtaining the fitted frontier values.
 
   \code{\link[=ic.lcmcross]{ic}} for computing information criteria.
 
-  \code{\link[=logLik.lcmcross]{logLik}} for extracting log-likelihood value of the estimation.
+  \code{\link[=logLik.lcmcross]{logLik}} for extracting log-likelihood value(s) of the estimation.
 
   \code{\link[=marginal.lcmcross]{marginal}} for calculating marginal effects of Z-variables on inefficiency.
 
@@ -357,11 +353,6 @@ cb_2c_h3 <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal",
 cb_2c_h4 <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", 
     uhet = ~initStat, data = worldprod, S = 1, method = "ucminf")
   summary(cb_2c_h4)
-
-## Using data on Swiss railway
-cb_2c_u <- lcmcross(formula = LNCT ~ LNQ2 + LNQ3 + LNNET + LNPK + LNPL, 
-    udist = "hnormal", uhet = ~ 1, data = swissrailways, S = -1, method = "ucminf")
-  summary(cb_2c_u)
 }
 
 \author{K Hervé Dakpo, Yann Desjeux and Laure Latruffe}

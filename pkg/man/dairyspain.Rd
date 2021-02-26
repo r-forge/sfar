@@ -9,7 +9,7 @@ on one output (i.e. milk), and four inputs (i.e. cows, land, labor and feed).
 }
 \usage{dairyspain}
 \format{
-  A data frame with 1482 observations on the following 29 variables.
+  A data frame with 1,482 observations on the following 29 variables.
   \describe{
     \item{FARM}{Farm identification.}
     \item{AGEF}{Age of the farmer.}

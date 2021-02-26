@@ -7,7 +7,7 @@
 \title{Residuals of frontier estimation}
 
 \description{
-This method returns the residuals values from classic or latent class 
+It returns the residuals' values from classic or latent class 
 stochastic frontier models estimated with \code{\link{sfacross}} or
 \code{\link{lcmcross}}.
 }
@@ -31,9 +31,10 @@ returns a vector of residuals values.
 
 When the \code{object} is of class \code{'lcmcross'}, \code{link{residuals}} 
 returns a data frame containing the residuals values for each latent class.
+}
 
-The residuals values are ordered in the same way as the
-corresponding observations in the data set used for the estimation.
+\note{The residuals values are ordered in the same way as the
+corresponding observations in the dataset used for the estimation.
 }
 
 \examples{
