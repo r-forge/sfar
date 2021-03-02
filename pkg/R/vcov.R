@@ -9,9 +9,9 @@ vcov.sfacross <- function(object, extraPar = FALSE, ...) {
   resCov <- object$invHessian
   if (extraPar) {
     if (object$udist %in% c("tnormal", "lognormal")) {
-      delta <- object$mleParam[(object$nXvar + object$nmuZUvar +
+      delta <- object$mlParam[(object$nXvar + object$nmuZUvar +
         1):(object$nXvar + object$nmuZUvar + object$nuZUvar)]
-      phi <- object$mleParam[(object$nXvar + object$nmuZUvar +
+      phi <- object$mlParam[(object$nXvar + object$nmuZUvar +
         object$nuZUvar + 1):(object$nXvar + object$nmuZUvar +
         object$nuZUvar + object$nvZVvar)]
       uHvar <- model.matrix(object$formula,
@@ -23,9 +23,9 @@ vcov.sfacross <- function(object, extraPar = FALSE, ...) {
         rhs = 4
       )
     } else {
-      delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+      delta <- object$mlParam[(object$nXvar + 1):(object$nXvar +
         object$nuZUvar)]
-      phi <- object$mleParam[(object$nXvar + object$nuZUvar +
+      phi <- object$mlParam[(object$nXvar + object$nuZUvar +
         1):(object$nXvar + object$nuZUvar + object$nvZVvar)]
       uHvar <- model.matrix(object$formula,
         data = object$dataTable,

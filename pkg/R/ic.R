@@ -5,13 +5,13 @@ ic.sfacross <- function(object, IC = "AIC", ...) {
     stop("Unknown information criteria: ", paste(IC), call. = FALSE)
   }
   if (IC == "AIC") {
-    obj <- -2 * object$mleLoglik + 2 * object$nParm
+    obj <- -2 * object$mlLoglik + 2 * object$nParm
   } else {
     if (IC == "BIC") {
-      obj <- -2 * object$mleLoglik + log(object$Nobs) * object$nParm
+      obj <- -2 * object$mlLoglik + log(object$Nobs) * object$nParm
     } else {
       if (IC == "HQIC") {
-       obj <- -2 * object$mleLoglik + 2 * log(log(object$Nobs)) * object$nParm
+       obj <- -2 * object$mlLoglik + 2 * log(log(object$Nobs)) * object$nParm
       }
     }
   }
@@ -25,13 +25,13 @@ ic.lcmcross <- function(object, IC = "AIC", ...) {
     stop("Unknown information criteria: ", paste(IC), call. = FALSE)
   }
   if (IC == "AIC") {
-    obj <- -2 * object$mleLoglik + 2 * object$nParm
+    obj <- -2 * object$mlLoglik + 2 * object$nParm
   } else {
     if (IC == "BIC") {
-      obj <- -2 * object$mleLoglik + log(object$Nobs) * object$nParm
+      obj <- -2 * object$mlLoglik + log(object$Nobs) * object$nParm
     } else {
       if (IC == "HQIC") {
-        obj <- -2 * object$mleLoglik + 2 * log(log(object$Nobs)) * object$nParm
+        obj <- -2 * object$mlLoglik + 2 * log(log(object$Nobs)) * object$nParm
       }
     }
   }

@@ -193,7 +193,7 @@ lognormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
       FiMat = FiMat)), method = "SR1", control = list(maxit = itermax,
       cgtol = gradtol, stop.trust.radius = tol, prec = tol,
-      report.level = if (printInfo) 4L else 0, report.precision = 1L)),
+      report.level = if (printInfo) 2 else 0, report.precision = 1L)),
     sparse = trust.optim(x = startVal, fn = function(parm) -sum(clognormlike(parm,
       nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
@@ -208,7 +208,7 @@ lognormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
       FiMat = FiMat)), parm), "dgCMatrix"), method = "Sparse",
       control = list(maxit = itermax, cgtol = gradtol,
-        stop.trust.radius = tol, prec = tol, report.level = if (printInfo) 4L else 0,
+        stop.trust.radius = tol, prec = tol, report.level = if (printInfo) 2 else 0,
         report.precision = 1L, preconditioner = 1L)),
     mla = mla(b = startVal, fn = function(parm) -sum(clognormlike(parm,
       nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
@@ -238,7 +238,7 @@ lognormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
       FiMat = FiMat))
   }
-  mleParam <- if (method %in% c("ucminf", "nlminb")) {
+  mlParam <- if (method %in% c("ucminf", "nlminb")) {
     mleObj$par
   } else {
     if (method == "maxLikAlgo") {
@@ -268,16 +268,16 @@ lognormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
         vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S,
         N = N, FiMat = FiMat)), mleObj$solution)
   }
-  mleObj$logL_OBS <- clognormlike(parm = mleParam, nXvar = nXvar,
+  mleObj$logL_OBS <- clognormlike(parm = mlParam, nXvar = nXvar,
     nuZUvar = nuZUvar, nvZVvar = nvZVvar, nmuZUvar = nmuZUvar,
     muHvar = muHvar, uHvar = uHvar, vHvar = vHvar, Yvar = Yvar,
     Xvar = Xvar, S = S, N = N, FiMat = FiMat)
-  mleObj$gradL_OBS <- cgradlognormlike(parm = mleParam, nXvar = nXvar,
+  mleObj$gradL_OBS <- cgradlognormlike(parm = mlParam, nXvar = nXvar,
     nuZUvar = nuZUvar, nvZVvar = nvZVvar, nmuZUvar = nmuZUvar,
     muHvar = muHvar, uHvar = uHvar, vHvar = vHvar, Yvar = Yvar,
     Xvar = Xvar, S = S, N = N, FiMat = FiMat)
   return(list(startVal = startVal, startLoglik = startLoglik,
-    mleObj = mleObj, mleParam = mleParam))
+    mleObj = mleObj, mlParam = mlParam))
 }
 
 # average efficiency (BC style) evaluation ----------
@@ -298,12 +298,12 @@ fnCondEffLogNorm <- function(u, sigmaU, sigmaV, mu, epsilon,
 # Conditional efficiencies estimation ----------
 
 clognormeff <- function(object, level) {
-  beta <- object$mleParam[1:(object$nXvar)]
-  omega <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  beta <- object$mlParam[1:(object$nXvar)]
+  omega <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     object$nmuZUvar)]
-  delta <- object$mleParam[(object$nXvar + object$nmuZUvar +
+  delta <- object$mlParam[(object$nXvar + object$nmuZUvar +
     1):(object$nXvar + object$nmuZUvar + object$nuZUvar)]
-  phi <- object$mleParam[(object$nXvar + object$nmuZUvar + object$nuZUvar +
+  phi <- object$mlParam[(object$nXvar + object$nmuZUvar + object$nuZUvar +
     1):(object$nXvar + object$nmuZUvar + object$nuZUvar + object$nvZVvar)]
   Xvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 1)
@@ -340,9 +340,9 @@ clognormeff <- function(object, level) {
 # Marginal effects on inefficiencies ----------
 
 cmarglognorm_Eu <- function(object) {
-  omega <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  omega <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     object$nmuZUvar)]
-  delta <- object$mleParam[(object$nXvar + object$nmuZUvar +
+  delta <- object$mlParam[(object$nXvar + object$nmuZUvar +
     1):(object$nXvar + object$nmuZUvar + object$nuZUvar)]
   muHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 2)
@@ -366,9 +366,9 @@ cmarglognorm_Eu <- function(object) {
 }
 
 cmarglognorm_Vu <- function(object) {
-  omega <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  omega <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     object$nmuZUvar)]
-  delta <- object$mleParam[(object$nXvar + object$nmuZUvar +
+  delta <- object$mlParam[(object$nXvar + object$nmuZUvar +
     1):(object$nXvar + object$nmuZUvar + object$nuZUvar)]
   muHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 2)
