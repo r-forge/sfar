@@ -181,7 +181,7 @@ uninormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
     gr = function(parm) -colSums(cgraduninormlike(parm, nXvar = nXvar,
       nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S)),
-    hessian = 0, control = list(trace = printInfo, maxeval = itermax,
+    hessian = 0, control = list(trace = if (printInfo) 1 else 0, maxeval = itermax,
       stepmax = stepmax, xtol = tol, grtol = gradtol)),
     maxLikAlgo = maxRoutine(fn = cuninormlike, grad = cgraduninormlike,
       hess = chessuninormlike, start = startVal, finalHessian = if (hessianType ==
@@ -230,7 +230,7 @@ uninormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
         S = S)), hessian = function(parm) -chessuninormlike(parm,
         nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
-        S = S), control = list(iter.max = itermax, trace = printInfo,
+        S = S), control = list(iter.max = itermax, trace = if (printInfo) 1 else 0,
         eval.max = itermax, rel.tol = tol, x.tol = tol)))
   if (method %in% c("ucminf", "nlminb")) {
     mleObj$gradient <- colSums(cgraduninormlike(mleObj$par,

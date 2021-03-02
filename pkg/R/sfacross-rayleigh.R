@@ -260,7 +260,7 @@ raynormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
     gr = function(parm) -colSums(cgradraynormlike(parm, nXvar = nXvar,
       nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S)),
-    hessian = 0, control = list(trace = printInfo, maxeval = itermax,
+    hessian = 0, control = list(trace = if (printInfo) 1 else 0, maxeval = itermax,
       stepmax = stepmax, xtol = tol, grtol = gradtol)),
     maxLikAlgo = maxRoutine(fn = craynormlike, grad = cgradraynormlike,
       hess = chessraynormlike, start = startVal, finalHessian = if (hessianType ==
@@ -309,7 +309,7 @@ raynormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
         S = S)), hessian = function(parm) -chessraynormlike(parm,
         nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
-        S = S), control = list(iter.max = itermax, trace = printInfo,
+        S = S), control = list(iter.max = itermax, trace = if (printInfo) 1 else 0,
         eval.max = itermax, rel.tol = tol, x.tol = tol)))
   if (method %in% c("ucminf", "nlminb")) {
     mleObj$gradient <- colSums(cgradraynormlike(mleObj$par,

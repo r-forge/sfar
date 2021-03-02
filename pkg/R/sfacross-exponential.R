@@ -218,7 +218,7 @@ exponormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
         S = S
       ))
     }, hessian = 0, control = list(
-      trace = printInfo,
+      trace = if (printInfo) 1 else 0,
       maxeval = itermax, stepmax = stepmax, xtol = tol,
       grtol = gradtol
     )
@@ -318,7 +318,7 @@ exponormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
         S = S
       )
     }, control = list(
-      iter.max = itermax, trace = printInfo,
+      iter.max = itermax, trace = if (printInfo) 1 else 0,
       eval.max = itermax, rel.tol = tol, x.tol = tol
     )
   )
