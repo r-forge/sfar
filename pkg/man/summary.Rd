@@ -59,10 +59,10 @@ term (\eqn{\sigma_v^2}).}
 \item{sigmauSq}{For \code{object} of class \code{'sfacross'}. Parametrization of the variance 
 of the one-sided error term (\eqn{\sigma_u^2}).}
 
-\item{theta}{For \code{object} of class \code{'sfacross'} with \code{"udist = uniform"}.
-\code{theta} value in the case the uniform distribution is defined as: \eqn{u_i \in [0, \Theta]}.}
-
 \item{Varu}{For \code{object} of class \code{'sfacross'}. Variance of the one-sided error term.}
+
+\item{THETA}{For \code{object} of class \code{'sfacross'} with \code{"udist = uniform"}.
+\code{THETA} value in the case the uniform distribution is defined as: \eqn{u_i \in [0, \Theta]}.}
 
 \item{Eu}{For \code{object} of class \code{'sfacross'}. Expected unconditional inefficiency.}
 
@@ -72,7 +72,7 @@ of the one-sided error term (\eqn{\sigma_u^2}).}
 standard errors, t-values, P-values, and when \code{ci = TRUE} their
 confidence intervals.}
 
-\item{mleRes}{Matrix of ML estimates, their standard errors, z-values,
+\item{mlRes}{Matrix of ML estimates, their standard errors, z-values,
 asymptotic P-values, and when \code{grad = TRUE} their
 gradient, \code{ci = TRUE} their confidence intervals.}
 
@@ -80,8 +80,6 @@ gradient, \code{ci = TRUE} their confidence intervals.}
 difference between the stochastic frontier and the OLS.}
 
 \item{df}{Degree of freedom for the inefficiency model.}
-
-\item{digits}{Number of digits displayed.}
 }
 
 \examples{
@@ -97,7 +95,7 @@ tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
 
 ## Using data on Swiss railway
 cb_2c_u <- lcmcross(formula = LNCT ~ LNQ2 + LNQ3 + LNNET + LNPK + LNPL, 
-    udist = "hnormal", uhet = ~ 1, data = swissrailways, S = -1, method = "ucminf")
+    udist = "hnormal", uhet = ~ 1, data = swissrailways, S = -1)
   summary(cb_2c_u, grad = TRUE, ci = TRUE)
 }
 

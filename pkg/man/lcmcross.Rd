@@ -28,8 +28,6 @@ lcmcross(formula, uhet, vhet, thet, logDepVar = TRUE, data, subset, S = 1,
   itermax = 2000, printInfo = FALSE, tol = 1e-12, gradtol = 1e-06, stepmax = 0.1, 
   qac = "marquardt", initStart = FALSE, initAlg = "nlminb", initIter = 100,
   initFactorLB = 0.5, initFactorUB = 1.5)
-
-\method{print}{lcmcross}(x, digits = max(3, getOption("digits") - 2), ...)
 }
 
 \arguments{
@@ -58,7 +56,7 @@ estimated: \eqn{\epsilon_i = v_i-u_i}. If \code{S = -1}, a cost frontier is
 estimated: \eqn{\epsilon_i = v_i+u_i}.}
 
 \item{udist}{Character string. Distribution specification for the one-sided
-error term. Only the half normal distribution (Aigner \emph{et al.}, 1977, 
+error term. Only the half normal distribution \code{"hnormal"} (Aigner \emph{et al.}, 1977, 
 Meeusen and Vandenbroeck, 1977) is currently implemented.}
 
 \item{start}{Numeric vector. Optional starting values for the maximum
@@ -70,7 +68,7 @@ A maximum of five classes can be estimated.}
 \item{method}{Optimization algorithm used for the estimation.
 Default = \code{"bfgs"}. 9 algorithms are available:
 \itemize{
-  \item \code{"bfgs"}, for Broyden-Fletcher-Goldfarb-Shanno (see \code{\link[maxLik:maxNR]{maxBFGS}})
+  \item \code{"bfgs"}, for Broyden-Fletcher-Goldfarb-Shanno (see \code{\link[maxLik:maxBFGS]{maxBFGS}})
   \item \code{"bhhh"}, for Berndt-Hall-Hall-Hausman (see \code{\link[maxLik:maxNR]{maxBHHH}})
   \item \code{"nr"}, for Newton-Raphson (see \code{\link[maxLik]{maxNR}})
   \item \code{"nm"}, for Nelder-Mead (see \code{\link[maxLik:maxBFGS]{maxNM}})
@@ -125,12 +123,6 @@ for the jump-start algorithm. Default = \code{0.5}.}
 \item{initFactorUB}{A numeric value indicating by which factor the
 starting value should be multiplied to define the upper bounds 
 for the jump-start algorithm. Default = \code{1.5}.}
-
-\item{x}{An object of class \code{'lcmcross'} returned by \code{\link{lcmcross}}.}
-
-\item{digits}{Number of digits displayed in values.}
-
-\item{...}{Currently ignored.}
 }
 
 \details{
@@ -228,10 +220,9 @@ the two-sided error term.}
 
 \item{startVal}{Numeric vector. Starting value for ML estimation.}
 
-\item{dataTable}{A data frame (tibble format) containing information on the dependent
-and explanatory variables used for optimization along with residuals and
-fitted values of the OLS and ML estimations, and the individual observation
-log-likelihood.}
+\item{dataTable}{A data frame (tibble format) containing information on data 
+used for optimization along with residuals and fitted values of the OLS and 
+ML estimations, and the individual observation log-likelihood.}
 
 \item{InitHalf}{Initial ML estimation with half normal distribution for the
 one-sided error term. Model to construct the starting values for the latent
@@ -248,9 +239,9 @@ returned.}
 
 \item{nClasses}{The number of classes estimated.}
 
-\item{mleLoglik}{Log-likelihood value of the ML estimation.}
+\item{mlLoglik}{Log-likelihood value of the ML estimation.}
 
-\item{mleParam}{Numeric vector. Parameters obtained from ML estimation.}
+\item{mlParam}{Numeric vector. Parameters obtained from ML estimation.}
 
 \item{gradient}{Numeric vector. Each variable gradient of the ML
 estimation.}
@@ -265,7 +256,7 @@ the ML estimation.}
 
 \item{hessianType}{The argument \code{'hessianType'}. See the section \sQuote{Arguments}.}
 
-\item{mleDate}{Date and time of the estimated model.}
+\item{mlDate}{Date and time of the estimated model.}
 }
 
 \note{
@@ -331,27 +322,24 @@ frontier: A framework for the analysis of firm inefficiency.
 ## Using data on eighty-two countries production (DGP)
 # Cobb Douglas (production function) half normal distribution
 # Only the intercept is used as the separating variables
-cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", 
-    data = worldprod, S = 1, method = "ucminf")
+cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, data = worldprod, method = "bfgs")
   summary(cb_2c_h)
 
 # summary of the initial MLE model
   summary(cb_2c_h$InitHalf)
 
 # same result by jump-starting the estimation
-cb_2c_h2 <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", 
-    data = worldprod, S = 1, method = "bfgs", initStart = TRUE)
+cb_2c_h2 <- lcmcross(formula = ly ~ lk + ll + yr, data = worldprod, method = "bfgs", 
+    initStart = TRUE)
   summary(cb_2c_h2)
 
 # Intercept and initStat used as separating variables
-cb_2c_h3 <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", 
-    thet = ~initStat, data = worldprod, S = 1, method = "ucminf")
+cb_2c_h3 <- lcmcross(formula = ly ~ lk + ll + yr, thet = ~initStat, data = worldprod)
   summary(cb_2c_h3)
 
 # Only the intercept is used as the separating variables and inefficiency
 # drivers are estimated with variables initStat
-cb_2c_h4 <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", 
-    uhet = ~initStat, data = worldprod, S = 1, method = "ucminf")
+cb_2c_h4 <- lcmcross(formula = ly ~ lk + ll + yr, uhet = ~initStat, data = worldprod)
   summary(cb_2c_h4)
 }
 

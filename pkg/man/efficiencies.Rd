@@ -171,8 +171,9 @@ tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) + log(wl
     log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) + I(log(wl/wf) * 
     log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)), udist = "tnormal", 
     muhet = ~ regu, uhet = ~ regu, data = utility, S = -1, scaling = TRUE, method = "mla")
-  efficiencies(tl_u_ts)
-  efficiencies(tl_u_ts, level= 0.99)
+  eff.tl_u_ts <- efficiencies(tl_u_ts)
+  head(eff.tl_u_ts)
+  summary(eff.tl_u_ts)
 }
 
 \references{

@@ -4,7 +4,7 @@
 \alias{marginal.sfacross}
 \alias{marginal.lcmcross}
 
-\title{Marginal effects of the inefficiency drivers}
+\title{Extract marginal effects of the inefficiency drivers}
 
 \description{
 This function returns marginal effects of the inefficiency drivers 
@@ -47,8 +47,8 @@ on the expected inefficiency (each variable has the prefix \code{"Eu_"})
 and on the variance of the inefficiency (each variable has the prefix
 \code{"Vu_"}) is returned.
 
-In the case of the latent class model (LCM), each variable terminates with the
-suffix \code{"_c#"} where \code{"#"} is the class number.
+In the case of the latent class model (LCM), each variable terminates with 
+\code{"_c#"} where \code{"#"} is the class number.
 }
 
 \examples{
@@ -60,15 +60,15 @@ tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
     I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
     udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
     scaling = TRUE, method = "mla")
-  mar <- marginal(tl_u_ts)
-  summary(mar)
+  marg.tl_u_ts <- marginal(tl_u_ts)
+  head(marg.tl_u_ts)
 
 ## Using data on eighty-two countries production (DGP)
 # LCM Cobb Douglas (production function) half normal distribution
 cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal",
-    data = worldprod, uhet = ~ initStat + h, S = 1, method = "ucminf")
-  mar <- marginal(cb_2c_h)
-  head(mar)
+    data = worldprod, uhet = ~ initStat + h, S = 1, method = "mla")
+  marg.cb_2c_h <- marginal(cb_2c_h)
+  summary(marg.cb_2c_h)
 }
 
 \references{
