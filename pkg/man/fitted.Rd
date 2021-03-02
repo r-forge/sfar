@@ -3,7 +3,7 @@
 \alias{fitted}
 \alias{fitted.sfacross}
 \alias{fitted.lcmcross}
-\title{Extract fitted frontier value}
+\title{Extract fitted frontier values of classic or latent class stochastic models}
 
 \description{
 \code{\link{fitted}} returns the fitted frontier values from classic or latent class 
@@ -17,7 +17,7 @@ stochastic frontier models estimated with \code{\link{sfacross}} or \code{\link{
 }
 
 \arguments{
-\item{object}{A classic or a latent class stochastic frontier model returned by
+\item{object}{A classic or latent class stochastic frontier model returned by
 \code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
 \item{...}{Currently ignored.}

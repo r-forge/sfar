@@ -6,7 +6,7 @@
 \alias{coef.sfacross}
 \alias{coef.lcmcross}
 
-\title{Extract classic or latent class stochastic models coefficients}
+\title{Extract coefficients of classic or latent class stochastic models}
 
 \description{
 From an object of class \code{'summary.sfacross'} or \code{'summary.lcmcross'}, 
@@ -14,7 +14,7 @@ From an object of class \code{'summary.sfacross'} or \code{'summary.lcmcross'},
 (asymptotic) P-values.
 
 From on object of class \code{'sfacross'} or \code{'lcmcross'}, it extracts only the 
-estimated coefficients for the likelihood estimation.
+estimated coefficients.
 }
 \usage{
 \method{coef}{summary.sfacross}(object, ...)
@@ -70,8 +70,7 @@ with \code{"#"} that represents the class number.
 }
 
 \examples{
-## Data on fossil fuel fired steam electric power generation plants in the
-## United States
+## Using data on fossil fuel fired steam electric power generation plants in the U.S.
 # Translog SFA (cost function) truncated normal with scaling property
 tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
     log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +

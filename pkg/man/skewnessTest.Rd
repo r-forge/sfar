@@ -1,9 +1,10 @@
 \name{skewnessTest}
 \alias{skewnessTest}
 
-\title{Skewness test for object of class \code{'sfacross'}}
+\title{Skewness test for stochastic frontier models}
 
-\description{Skewness test for object of class \code{'sfacross'}.}
+\description{\code{\link{skewnessTest}} computes skewness test for stochastic 
+frontier models (i.e. objects of class \code{'sfacross'}).}
 
 \usage{
 skewnessTest(object, test = "agostino")
@@ -13,7 +14,7 @@ skewnessTest(object, test = "agostino")
 \item{object}{An object of class \code{'sfacross'}, returned by \code{\link{sfacross}}.}
 
 \item{test}{A character string specifying the test to implement. If \code{"agostino"} 
-(default), D'agostino skewness test is implemented (D'Agostino et Pearson, 1973). 
+(default), D'Agostino skewness test is implemented (D'Agostino and Pearson, 1973). 
 If \code{"coelli"}, Coelli skewness test is implemented (Coelli, 1995).}
 }
 
@@ -27,8 +28,7 @@ Coelli's skewness test.
 }
 
 \examples{
-## Data on fossil fuel fired steam electric power generation plants in the
-## United States
+## Using data on fossil fuel fired steam electric power generation plants in the U.S.
 # Translog SFA (cost function) truncated normal with scaling property
 tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
     log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
@@ -36,6 +36,7 @@ tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
     udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
     scaling = TRUE, method = "mla")
   skewnessTest(tl_u_ts)
+  skewnessTest(tl_u_ts, test = "coelli")
 }
 
 \references{

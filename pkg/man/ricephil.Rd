@@ -1,7 +1,7 @@
 \name{ricephil}
 \alias{ricephil}
 \docType{data}
-\title{Rice Production in the Philippines}
+\title{Data on rice production in the Philippines}
 \description{This dataset contains annual data collected from 43 smallholder rice producers 
 in the Tarlac region of the Philippines between 1990 and 1997.}
 

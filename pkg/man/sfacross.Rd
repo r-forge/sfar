@@ -8,13 +8,13 @@
 \description{
 \code{\link{sfacross}} is a symbolic formula-based function 
 for the estimation of stochastic frontier models in the case of cross-sectional 
-or pooled cross section data, using maximum (simulated) likelihood - M(S)L.
+or pooled cross-section data, using maximum (simulated) likelihood - M(S)L.
 
 The function accounts for heteroscedasticity in both one-sided and
 two-sided error terms as in Reifschneider and Stevenson (1991), Caudill and
 Ford (1993), Caudill \emph{et al.} (1995) and Hadri (1999), but also
 heterogeneity in the mean of the pre-truncated distribution as in Kumbhakar
-\emph{et al.} (1991), Huang and Liu (1994), Battese and Coelli (1995).
+\emph{et al.} (1991), Huang and Liu (1994) and Battese and Coelli (1995).
 
 Ten distributions are possible for the one-sided error term and nine
 optimization algorithms are available.
@@ -174,7 +174,7 @@ terms, a single part (right) formula can also be specified. To impose the
 positivity to these parameters, the variances are modelled as:
 \eqn{\sigma^2_u = \exp{(\delta'Z_u)}} or \eqn{\sigma^2_v = \exp{(\phi'Z_v)}}, 
 where \eqn{Z_u} and \eqn{Z_v} are the heteroscedasticity variables (inefficiency 
-drivers in the case of \eqn{Z_u}) and\eqn{\delta} and \eqn{\phi} the coefficients. 
+drivers in the case of \eqn{Z_u}) and \eqn{\delta} and \eqn{\phi} the coefficients. 
 In the case of heterogeneity in the truncated mean \eqn{\mu}, it is modelled
 as \eqn{\mu=\omega'Z_{\mu}}. The scaling property can be applied for the
 truncated normal distribution: \eqn{u \sim h(Z_u, \delta)u} where \eqn{u}
@@ -251,7 +251,7 @@ M(S)L estimations, and the individual observation log-likelihood.}
 
 \item{olsSkew}{Numeric. Skewness of the residuals of the OLS estimation.}
 
-\item{olsM3Okay}{Logical. Indicating if the residuals of the OLS estimation
+\item{olsM3Okay}{Logical. Indicating whether the residuals of the OLS estimation
 have the expected skewness.}
 
 \item{CoelliM3Test}{Coelli's test for OLS residuals skewness. (See Coelli, 1995).}
@@ -385,26 +385,25 @@ frontier analysis. Master thesis, Western Kentucky University, May.
 
   \code{\link[=coef.sfacross]{coef}} for extracting coefficients of the estimation.
 
-  \code{\link[=efficiencies.sfacross]{efficiencies}} for calculating efficiency estimates.
+  \code{\link[=efficiencies.sfacross]{efficiencies}} for computing (in-)efficiency estimates.
 
-  \code{\link[=fitted.sfacross]{fitted}} for obtaining the fitted frontier values.
+  \code{\link[=fitted.sfacross]{fitted}} for extracting the fitted frontier values.
 
-  \code{\link[=ic.sfacross]{ic}} for computing information criteria.
+  \code{\link[=ic.sfacross]{ic}} for extracting information criteria.
 
   \code{\link[=logLik.sfacross]{logLik}} for extracting log-likelihood value(s) of the estimation.
 
-  \code{\link[=marginal.sfacross]{marginal}} for calculating marginal effects of Z-variables on inefficiency.
+  \code{\link[=marginal.sfacross]{marginal}} for computing marginal effects of inefficiency drivers.
 
   \code{\link[=residuals.sfacross]{residuals}} for extracting residuals of the estimation.
 
-  \code{\link[=vcov.sfacross]{vcov}} for extracting the variance-covariance matrix of the coefficients.
+  \code{\link[=vcov.sfacross]{vcov}} for computing the variance-covariance matrix of the coefficients.
   
-  \code{\link{skewnessTest}} for implementing Skewness test.
+  \code{\link{skewnessTest}} for implementing skewness test.
 }
 
 \examples{
-## Using data on fossil fuel fired steam electric power generation plants in
-## the United States
+## Using data on fossil fuel fired steam electric power generation plants in U.S.
 # Translog (cost function) half normal with heteroscedasticity
 tl_u_h <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
     log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
@@ -427,13 +426,13 @@ tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
     scaling = TRUE, method = 'mla')
   summary(tl_u_ts)
 
-## Data on Philippine rice producers
+## Using data on Philippine rice producers
 # Cobb Douglas (production function) generalized exponential, and Weibull distributions
     cb_p_ge <- sfacross(formula = log(PROD) ~ log(AREA) + log(LABOR) + log(NPK) +
     log(OTHER), udist = 'genexponential', data = ricephil, S = 1, method = 'bfgs')
   summary(cb_p_ge)
 
-## Data on U.S. electric utility industry
+## Using data on U.S. electric utility industry
 # Cost frontier Gamma distribution
 tl_u_g <- sfacross(formula = log(cost/fprice) ~ log(output) + I(log(output)^2) + 
     I(log(lprice/fprice)) + I(log(cprice/fprice)), udist = "gamma", uhet = ~ 1, 

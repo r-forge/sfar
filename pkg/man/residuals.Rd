@@ -4,10 +4,10 @@
 \alias{residuals.sfacross}
 \alias{residuals.lcmcross}
 
-\title{Extract classic or latent class stochastic models residuals}
+\title{Extract residuals of classic or latent class stochastic models}
 
 \description{
-It returns the residuals' values from classic or latent class 
+This function returns the residuals' values from classic or latent class 
 stochastic frontier models estimated with \code{\link{sfacross}} or
 \code{\link{lcmcross}}.
 }
@@ -19,17 +19,17 @@ stochastic frontier models estimated with \code{\link{sfacross}} or
 }
 
 \arguments{
-\item{object}{A classic or a latent class stochastic frontier model 
+\item{object}{A classic or latent class stochastic frontier model 
 returned by \code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
 \item{...}{Currently ignored.}
 }
 
 \value{
-When the \code{object} is of class \code{'sfacross'}, \code{link{residuals}} 
+When the \code{object} is of class \code{'sfacross'}, \code{\link{residuals}} 
 returns a vector of residuals values.
 
-When the \code{object} is of class \code{'lcmcross'}, \code{link{residuals}} 
+When the \code{object} is of class \code{'lcmcross'}, \code{\link{residuals}} 
 returns a data frame containing the residuals values for each latent class, 
 where each variable terminates with \code{"_c#"}, \code{"#"} being the class number.
 }
@@ -39,8 +39,7 @@ corresponding observations in the dataset used for the estimation.
 }
 
 \examples{
-## Data on fossil fuel fired steam electric power generation plants in the
-## United States
+## Using data on fossil fuel fired steam electric power generation plants in the U.S.
 # Translog SFA (cost function) truncated normal with scaling property
 tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
     log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +

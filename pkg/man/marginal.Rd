@@ -4,7 +4,7 @@
 \alias{marginal.sfacross}
 \alias{marginal.lcmcross}
 
-\title{Extract marginal effects of the inefficiency drivers}
+\title{Compute marginal effects of the inefficiency drivers in classic or latent class stochastic models}
 
 \description{
 This function returns marginal effects of the inefficiency drivers 
@@ -19,7 +19,7 @@ from classic or latent class stochastic frontier models estimated with
 }
 
 \arguments{
-\item{object}{A classic or a latent class stochastic frontier model returned 
+\item{object}{A classic or latent class stochastic frontier model returned 
 by \code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
 \item{...}{Currently ignored.}
@@ -52,16 +52,15 @@ In the case of the latent class model (LCM), each variable terminates with
 }
 
 \examples{
-## Data on fossil fuel fired steam electric power generation plants in the
-## United States
+## Using data on fossil fuel fired steam electric power generation plants in the U.S.
 # Translog SFA (cost function) truncated normal with scaling property
 tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
     log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
     I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
-    udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
+    udist = "tnormal", muhet = ~ regu + wl, uhet = ~ regu + wl, data = utility, S = -1,
     scaling = TRUE, method = "mla")
   marg.tl_u_ts <- marginal(tl_u_ts)
-  head(marg.tl_u_ts)
+  summary(marg.tl_u_ts)
 
 ## Using data on eighty-two countries production (DGP)
 # LCM Cobb Douglas (production function) half normal distribution
