@@ -250,7 +250,7 @@ exponormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
     }, method = "SR1", control = list(
       maxit = itermax,
       cgtol = gradtol, stop.trust.radius = tol, prec = tol,
-      report.level = if (printInfo) 4L else 0, report.precision = 1L
+      report.level = if (printInfo) 2 else 0, report.precision = 1L
     )
   ),
   sparse = trust.optim(x = startVal, fn = function(parm) {
@@ -274,7 +274,7 @@ exponormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
   }, method = "Sparse", control = list(
     maxit = itermax,
     cgtol = gradtol, stop.trust.radius = tol, prec = tol,
-    report.level = if (printInfo) 4L else 0, report.precision = 1L,
+    report.level = if (printInfo) 2 else 0, report.precision = 1L,
     preconditioner = 1L
   )), mla = mla(
     b = startVal, fn = function(parm) {
@@ -330,7 +330,7 @@ exponormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       S = S
     ))
   }
-  mleParam <- if (method %in% c("ucminf", "nlminb")) {
+  mlParam <- if (method %in% c("ucminf", "nlminb")) {
     mleObj$par
   } else {
     if (method == "maxLikAlgo") {
@@ -365,28 +365,28 @@ exponormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
     }
   }
   mleObj$logL_OBS <- cexponormlike(
-    parm = mleParam, nXvar = nXvar,
+    parm = mlParam, nXvar = nXvar,
     nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar, vHvar = vHvar,
     Yvar = Yvar, Xvar = Xvar, S = S
   )
   mleObj$gradL_OBS <- cgradexponormlike(
-    parm = mleParam, nXvar = nXvar,
+    parm = mlParam, nXvar = nXvar,
     nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar, vHvar = vHvar,
     Yvar = Yvar, Xvar = Xvar, S = S
   )
   return(list(
     startVal = startVal, startLoglik = startLoglik,
-    mleObj = mleObj, mleParam = mleParam
+    mleObj = mleObj, mlParam = mlParam
   ))
 }
 
 # Conditional efficiencies estimation ----------
 
 cexponormeff <- function(object, level) {
-  beta <- object$mleParam[1:(object$nXvar)]
-  delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  beta <- object$mlParam[1:(object$nXvar)]
+  delta <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     object$nuZUvar)]
-  phi <- object$mleParam[(object$nXvar + object$nuZUvar + 1):(object$nXvar +
+  phi <- object$mlParam[(object$nXvar + object$nuZUvar + 1):(object$nXvar +
     object$nuZUvar + object$nvZVvar)]
   Xvar <- model.matrix(object$formula,
     data = object$dataTable,
@@ -432,7 +432,7 @@ cexponormeff <- function(object, level) {
 # Marginal effects on inefficiencies ----------
 
 cmargexponorm_Eu <- function(object) {
-  delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  delta <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     object$nuZUvar)]
   uHvar <- model.matrix(object$formula,
     data = object$dataTable,
@@ -447,7 +447,7 @@ cmargexponorm_Eu <- function(object) {
 }
 
 cmargexponorm_Vu <- function(object) {
-  delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  delta <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     object$nuZUvar)]
   uHvar <- model.matrix(object$formula,
     data = object$dataTable,

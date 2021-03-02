@@ -2,15 +2,15 @@
 
 logLik.sfacross <- function(object, individual = FALSE, ...) {
   if (length(individual) != 1 || !is.logical(individual[1]))
-    stop("argument 'individual' must be a single logical value",
-         call. = FALSE)
+    stop("argument 'individual' must be a single logical value", call. = FALSE)
   if (individual) {
-    LL <- object$dataTable$logL_OBS
+    LL <- list()
+    LL[["logLik"]] <- object$dataTable$logL_OBS
+    LL[["Nobs"]] <- object$Nobs
+    LL[["df"]] <- object$nParm
   } else {
-    LL <- object$mleLoglik
+    LL <- rbind("logLik: " = object$mlLoglik, "Nobs: " = object$Nobs, "df: " = object$nParm)
   }
-  attr(LL, "Nobs") <- object$Nobs
-  attr(LL, "df") <- object$nParm
   return(LL)
 }
 
@@ -18,14 +18,14 @@ logLik.sfacross <- function(object, individual = FALSE, ...) {
 
 logLik.lcmcross <- function(object, individual = FALSE, ...) {
   if (length(individual) != 1 || !is.logical(individual[1]))
-    stop("argument 'individual' must be a single logical value",
-         call. = FALSE)
+    stop("argument 'individual' must be a single logical value", call. = FALSE)
   if (individual) {
-    LL <- object$dataTable$logL_OBS
+    LL <- list()
+    LL[["logLik"]] <- object$dataTable$logL_OBS
+    LL[["Nobs"]] <- object$Nobs
+    LL[["df"]] <- object$nParm
   } else {
-    LL <- object$mleLoglik
+    LL <- rbind("logLik: " = object$mlLoglik, "Nobs: " = object$Nobs, "df: " = object$nParm)
   }
-  attr(LL, "Nobs") <- object$Nobs
-  attr(LL, "df") <- object$nParm
   return(LL)
 }

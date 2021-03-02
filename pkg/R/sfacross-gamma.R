@@ -188,7 +188,7 @@ gammanormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
     vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
     FiMat = FiMat)), method = "SR1", control = list(maxit = itermax,
     cgtol = gradtol, stop.trust.radius = tol, prec = tol,
-    report.level = if (printInfo) 4L else 0, report.precision = 1L)),
+    report.level = if (printInfo) 2 else 0, report.precision = 1L)),
     sparse = trust.optim(x = startVal, fn = function(parm) -sum(cgammanormlike(parm,
       nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
@@ -201,7 +201,7 @@ gammanormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       S = S, N = N, FiMat = FiMat)), parm), "dgCMatrix"),
       method = "Sparse", control = list(maxit = itermax,
         cgtol = gradtol, stop.trust.radius = tol, prec = tol,
-        report.level = if (printInfo) 4L else 0, report.precision = 1L,
+        report.level = if (printInfo) 2 else 0, report.precision = 1L,
         preconditioner = 1L)), mla = mla(b = startVal,
       fn = function(parm) -sum(cgammanormlike(parm, nXvar = nXvar,
         nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
@@ -226,7 +226,7 @@ gammanormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S, N = N, FiMat = FiMat))
   }
-  mleParam <- if (method %in% c("ucminf", "nlminb")) {
+  mlParam <- if (method %in% c("ucminf", "nlminb")) {
     mleObj$par
   } else {
     if (method == "maxLikAlgo") {
@@ -254,25 +254,25 @@ gammanormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S, N = N, FiMat = FiMat)), mleObj$solution)
   }
-  mleObj$logL_OBS <- cgammanormlike(parm = mleParam, nXvar = nXvar,
+  mleObj$logL_OBS <- cgammanormlike(parm = mlParam, nXvar = nXvar,
     nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar, vHvar = vHvar,
     Yvar = Yvar, Xvar = Xvar, S = S, N = N, FiMat = FiMat)
-  mleObj$gradL_OBS <- cgradgammanormlike(parm = mleParam, nXvar = nXvar,
+  mleObj$gradL_OBS <- cgradgammanormlike(parm = mlParam, nXvar = nXvar,
     nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar, vHvar = vHvar,
     Yvar = Yvar, Xvar = Xvar, S = S, N = N, FiMat = FiMat)
   return(list(startVal = startVal, startLoglik = startLoglik,
-    mleObj = mleObj, mleParam = mleParam))
+    mleObj = mleObj, mlParam = mlParam))
 }
 
 # Conditional efficiencies estimation ----------
 
 cgammanormeff <- function(object, level) {
-  beta <- object$mleParam[1:(object$nXvar)]
-  delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  beta <- object$mlParam[1:(object$nXvar)]
+  delta <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     object$nuZUvar)]
-  phi <- object$mleParam[(object$nXvar + object$nuZUvar + 1):(object$nXvar +
+  phi <- object$mlParam[(object$nXvar + object$nuZUvar + 1):(object$nXvar +
     object$nuZUvar + object$nvZVvar)]
-  P <- object$mleParam[object$nXvar + object$nuZUvar + object$nvZVvar +
+  P <- object$mlParam[object$nXvar + object$nuZUvar + object$nvZVvar +
     1]
   Xvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 1)
@@ -307,9 +307,9 @@ cgammanormeff <- function(object, level) {
 # Marginal effects on inefficiencies ----------
 
 cmarggammanorm_Eu <- function(object) {
-  delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  delta <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     object$nuZUvar)]
-  P <- object$mleParam[object$nXvar + object$nuZUvar + object$nvZVvar +
+  P <- object$mlParam[object$nXvar + object$nuZUvar + object$nvZVvar +
     1]
   uHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 2)
@@ -321,9 +321,9 @@ cmarggammanorm_Eu <- function(object) {
 }
 
 cmarggammanorm_Vu <- function(object) {
-  delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  delta <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     object$nuZUvar)]
-  P <- object$mleParam[object$nXvar + object$nuZUvar + object$nvZVvar +
+  P <- object$mlParam[object$nXvar + object$nuZUvar + object$nvZVvar +
     1]
   uHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 2)

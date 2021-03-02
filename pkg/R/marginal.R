@@ -3,7 +3,7 @@
 marginal.sfacross <- function(object, ...) {
   if (object$udist == "hnormal") {
     if (object$nuZUvar == 1) {
-      warning("marginal effects cannot be computed for homoscedastic models",
+      stop("Marginal effects can only be computed from models with exogenous variables that explain inefficiency",
         call. = FALSE
       )
     } else {
@@ -15,7 +15,7 @@ marginal.sfacross <- function(object, ...) {
   } else {
     if (object$udist == "exponential") {
       if (object$nuZUvar == 1) {
-        warning("marginal effects cannot be computed for homoscedastic models",
+        stop("Marginal effects can only be computed from models with exogenous variables that explain inefficiency",
           call. = FALSE
         )
       } else {
@@ -27,7 +27,7 @@ marginal.sfacross <- function(object, ...) {
     } else {
       if (object$udist == "gamma") {
         if (object$nuZUvar == 1) {
-          warning("marginal effects cannot be computed for homoscedastic models",
+          stop("Marginal effects can only be computed from models with exogenous variables that explain inefficiency",
             call. = FALSE
           )
         } else {
@@ -39,7 +39,7 @@ marginal.sfacross <- function(object, ...) {
       } else {
         if (object$udist == "rayleigh") {
           if (object$nuZUvar == 1) {
-            warning("marginal effects cannot be computed for homoscedastic models",
+            stop("Marginal effects can only be computed from models with exogenous variables that explain inefficiency",
               call. = FALSE
             )
           } else {
@@ -51,7 +51,7 @@ marginal.sfacross <- function(object, ...) {
         } else {
           if (object$udist == "uniform") {
             if (object$nuZUvar == 1) {
-              warning("marginal effects cannot be computed for homoscedastic models",
+              stop("Marginal effects can only be computed from models with exogenous variables that explain inefficiency",
                 call. = FALSE
               )
             } else {
@@ -64,7 +64,7 @@ marginal.sfacross <- function(object, ...) {
             if (object$udist == "tnormal") {
               if (object$scaling) {
                 if (object$nuZUvar == 1) {
-                  warning("marginal effects cannot be computed for homogeneous or homoscedastic models",
+                  stop("Marginal effects can only be computed from models with exogenous variables that explain inefficiency",
                     call. = FALSE
                   )
                 } else {
@@ -76,7 +76,7 @@ marginal.sfacross <- function(object, ...) {
               } else {
                 if (object$nmuZUvar == 1 & object$nuZUvar ==
                   1) {
-                  warning("marginal effects cannot be computed for homogeneous or homoscedastic models",
+                  stop("Marginal effects can only be computed from models with exogenous variables that explain inefficiency",
                     call. = FALSE
                   )
                 } else {
@@ -90,7 +90,7 @@ marginal.sfacross <- function(object, ...) {
               if (object$udist == "lognormal") {
                 if (object$nmuZUvar == 1 & object$nuZUvar ==
                   1) {
-                  warning("marginal effects cannot be computed for homogeneous or homoscedastic models",
+                  stop("Marginal effects can only be computed from models with exogenous variables that explain inefficiency",
                     call. = FALSE
                   )
                 } else {
@@ -113,7 +113,7 @@ marginal.sfacross <- function(object, ...) {
 
 marginal.lcmcross <- function(object, ...) {
   if (object$nuZUvar == 1) {
-    warning("marginal effects cannot be computed for homoscedastic models",
+    stop("Marginal effects can only be computed from models with exogenous variables that explain inefficiency",
       call. = FALSE
     )
   } else {

@@ -329,9 +329,9 @@ sfacross <- function(formula, muhet, uhet, vhet, logDepVar = TRUE, data, subset,
   )
   olsSkew <- skewness(dataTable[["olsResiduals"]])
   olsM3Okay <- if (S * olsSkew < 0) {
-    "Residuals have the 'right' skeweness"
+    "Residuals have the expected skeweness"
   } else {
-    "Residuals have the 'wrong' skeweness"
+    "Residuals do not have the expected skeweness"
   }
   if (S * olsSkew > 0) {
     warning("The residuals of the OLS are ", if (S == 1) {
@@ -511,18 +511,18 @@ sfacross <- function(formula, muhet, uhet, vhet, logDepVar = TRUE, data, subset,
       udist = udist, uHvar = uHvar, vHvar = vHvar
     )
   }
-  names(mleList$mleParam) <- names(mleList$startVal)
-  rownames(mleList$invHessian) <- colnames(mleList$invHessian) <- names(mleList$mleParam)
-  names(mleList$gradient) <- names(mleList$mleParam)
-  colnames(mleList$mleObj$gradL_OBS) <- names(mleList$mleParam)
+  names(mleList$mlParam) <- names(mleList$startVal)
+  rownames(mleList$invHessian) <- colnames(mleList$invHessian) <- names(mleList$mlParam)
+  names(mleList$gradient) <- names(mleList$mlParam)
+  colnames(mleList$mleObj$gradL_OBS) <- names(mleList$mlParam)
   # Return object -------
-  mleDate <- format(Sys.time(), "Model was estimated on : %b %a %d, %Y at %H:%M")
-  dataTable$mleResiduals <- Yvar - as.numeric(crossprod(
-    matrix(mleList$mleParam[1:nXvar]),
+  mlDate <- format(Sys.time(), "Model was estimated on : %b %a %d, %Y at %H:%M")
+  dataTable$mlResiduals <- Yvar - as.numeric(crossprod(
+    matrix(mleList$mlParam[1:nXvar]),
     t(Xvar)
   ))
-  dataTable$mleFitted <- as.numeric(crossprod(
-    matrix(mleList$mleParam[1:nXvar]),
+  dataTable$mlFitted <- as.numeric(crossprod(
+    matrix(mleList$mlParam[1:nXvar]),
     t(Xvar)
   ))
   dataTable$logL_OBS <- mleList$mleObj$logL_OBS
@@ -556,8 +556,8 @@ sfacross <- function(formula, muhet, uhet, vhet, logDepVar = TRUE, data, subset,
   returnObj$nIter <- mleList$nIter
   returnObj$optStatus <- mleList$status
   returnObj$startLoglik <- mleList$startLoglik
-  returnObj$mleLoglik <- mleList$mleLoglik
-  returnObj$mleParam <- mleList$mleParam
+  returnObj$mlLoglik <- mleList$mleLoglik
+  returnObj$mlParam <- mleList$mlParam
   returnObj$gradient <- mleList$gradient
   returnObj$gradL_OBS <- mleList$mleObj$gradL_OBS
   returnObj$gradientNorm <- sqrt(sum(mleList$gradient^2))
@@ -573,8 +573,7 @@ sfacross <- function(formula, muhet, uhet, vhet, logDepVar = TRUE, data, subset,
       }
     }
   }
-  returnObj$mleDate <- mleDate
-  # returnObj$validObs <- validObs
+  returnObj$mlDate <- mlDate
   if (udist %in% c("gamma", "lognormal", "weibull")) {
     returnObj$simDist <- simDist
     returnObj$Nsim <- Nsim
@@ -582,28 +581,19 @@ sfacross <- function(formula, muhet, uhet, vhet, logDepVar = TRUE, data, subset,
   }
   rm(mleList)
   class(returnObj) <- "sfacross"
-    cat("Call:\n")
-    cat(deparse(returnObj$call))
-    cat("\n\n")
-    cat("Likelihood estimates using", returnObj$optType, "\n")
-    cat(sfadist(returnObj$udist), "\n\n")
-    cat(returnObj$typeSfa, "\n")
+  #print.sfacross(returnObj)
   return(returnObj)
 }
 
 # print for sfacross ----------
 
-print.sfacross <- function(x, digits = max(3, getOption("digits") - 2),
-                           ...) {
-  cat("\nCall:\n")
-  cat(deparse(x$call))
+print.sfacross <- function(x, ...) {
+  cat("Call:\n")
+  cat(deparse(x$call ))
   cat("\n\n")
   cat("Likelihood estimates using", x$optType, "\n")
   cat(sfadist(x$udist), "\n\n")
-  cat(x$typeSfa, "\n\n")
-  print.default(format(x$mleParam, digits = digits),
-    print.gap = 2,
-    quote = FALSE
-  )
-  invisible(x)
+  cat(x$typeSfa, "\n")
+ print.default(format(x$mlParam), print.gap = 2, quote = FALSE)
+ invisible(x)
 }

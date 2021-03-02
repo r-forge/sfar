@@ -458,23 +458,6 @@ eExpuFun <- function(object, mu, P, lambda, k) {
   }
 }
 
-# print for lcmcross ----------
-
-print.lcmcross <- function(object, digits = NULL) {
-  if (is.null(digits)) {
-    digits <- max(3, getOption("digits") - 2)
-  }
-  cat("\nCall:\n")
-  cat(deparse(object$call))
-  cat("\n\n")
-  cat("Likelihood estimates using", object$optType, "\n")
-  cat("Normal-Half Normal Latent Class Stochastic Frontier Model", "\n\n")
-  cat(object$typeSfa, "\n\n")
-  print.default(format(object$mleParam, digits = digits), print.gap = 2,
-                quote = FALSE)
-  invisible(object)
-}
-
 # Center text strings (adapted from gdata package) ----------
 
 trimChar <- function(s, recode.factor = TRUE, ...) {
@@ -525,7 +508,7 @@ setMethod("show", "dagoTest",
     x = object
 
     # Title:
-    cat("## ", x@title, " ##\n", sep = "")
+    cat("## ", "D'Agostino's  Test", " ##\n", sep = "")
 
     # Test Results:
     test = x@test

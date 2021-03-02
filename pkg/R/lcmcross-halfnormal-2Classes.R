@@ -543,7 +543,7 @@ LCM2ChnormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S, Zvar = Zvar, nZHvar = nZHvar), lower = startMat[,
       6], upper = startMat[, 7], control = list(iter.max = initIter,
-      trace = 1, eval.max = initIter, rel.tol = tol, x.tol = tol))
+      trace = printInfo, eval.max = initIter, rel.tol = tol, x.tol = tol))
     startVal <- initModel$par
   }
   startLoglik <- sum(cLCMhalfnormlike2C(startVal, nXvar = nXvar,
@@ -581,7 +581,7 @@ LCM2ChnormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S, Zvar = Zvar, nZHvar = nZHvar)), method = "SR1",
       control = list(maxit = itermax, cgtol = gradtol,
-        stop.trust.radius = tol, prec = tol, report.level = if (printInfo) 4L else 0,
+        stop.trust.radius = tol, prec = tol, report.level = if (printInfo) 2 else 0,
         report.precision = 1L)), sparse = trust.optim(x = startVal,
       fn = function(parm) -sum(cLCMhalfnormlike2C(parm,
         nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
@@ -595,7 +595,7 @@ LCM2ChnormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
         S = S, Zvar = Zvar, nZHvar = nZHvar), "dgCMatrix"),
       method = "Sparse", control = list(maxit = itermax,
         cgtol = gradtol, stop.trust.radius = tol, prec = tol,
-        report.level = if (printInfo) 4L else 0, report.precision = 1L,
+        report.level = if (printInfo) 2 else 0, report.precision = 1L,
         preconditioner = 1L)), mla = mla(b = startVal,
       fn = function(parm) -sum(cLCMhalfnormlike2C(parm,
         nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
@@ -626,7 +626,7 @@ LCM2ChnormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S, Zvar = Zvar, nZHvar = nZHvar))
   }
-  mleParam <- if (method %in% c("ucminf", "nlminb")) {
+  mlParam <- if (method %in% c("ucminf", "nlminb")) {
     mleObj$par
   } else {
     if (method == "maxLikAlgo") {
@@ -654,35 +654,35 @@ LCM2ChnormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S, Zvar = Zvar, nZHvar = nZHvar)
   }
-  mleObj$logL_OBS <- cLCMhalfnormlike2C(parm = mleParam, nXvar = nXvar,
+  mleObj$logL_OBS <- cLCMhalfnormlike2C(parm = mlParam, nXvar = nXvar,
     nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar, vHvar = vHvar,
     Yvar = Yvar, Xvar = Xvar, S = S, Zvar = Zvar, nZHvar = nZHvar)
-  mleObj$gradL_OBS <- cgradLCMhalfnormlike2C(parm = mleParam,
+  mleObj$gradL_OBS <- cgradLCMhalfnormlike2C(parm = mlParam,
     nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
     vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, Zvar = Zvar,
     nZHvar = nZHvar)
   return(list(startVal = startVal, startLoglik = startLoglik,
-    mleObj = mleObj, mleParam = mleParam, InitHalf = InitHalf))
+    mleObj = mleObj, mlParam = mlParam, InitHalf = InitHalf))
 }
 
 # Posterior probabilities and efficiencies ----------
 
 cLCM2Chalfnormeff <- function(object, level) {
-  beta1 <- object$mleParam[1:(object$nXvar)]
-  delta1 <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  beta1 <- object$mlParam[1:(object$nXvar)]
+  delta1 <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     object$nuZUvar)]
-  phi1 <- object$mleParam[(object$nXvar + object$nuZUvar + 1):(object$nXvar +
+  phi1 <- object$mlParam[(object$nXvar + object$nuZUvar + 1):(object$nXvar +
     object$nuZUvar + object$nvZVvar)]
-  beta2 <- object$mleParam[(object$nXvar + object$nuZUvar +
+  beta2 <- object$mlParam[(object$nXvar + object$nuZUvar +
     object$nvZVvar + 1):(2 * object$nXvar + object$nuZUvar +
     object$nvZVvar)]
-  delta2 <- object$mleParam[(2 * object$nXvar + object$nuZUvar +
+  delta2 <- object$mlParam[(2 * object$nXvar + object$nuZUvar +
     object$nvZVvar + 1):(2 * object$nXvar + 2 * object$nuZUvar +
     object$nvZVvar)]
-  phi2 <- object$mleParam[(2 * object$nXvar + 2 * object$nuZUvar +
+  phi2 <- object$mlParam[(2 * object$nXvar + 2 * object$nuZUvar +
     object$nvZVvar + 1):(2 * object$nXvar + 2 * object$nuZUvar +
     2 * object$nvZVvar)]
-  theta <- object$mleParam[(2 * object$nXvar + 2 * object$nuZUvar +
+  theta <- object$mlParam[(2 * object$nXvar + 2 * object$nuZUvar +
     2 * object$nvZVvar + 1):(2 * object$nXvar + 2 * object$nuZUvar +
     2 * object$nvZVvar + object$nZHvar)]
   Xvar <- model.matrix(object$formula, data = object$dataTable,
@@ -737,21 +737,21 @@ cLCM2Chalfnormeff <- function(object, level) {
 # Marginal effects on inefficiencies ----------
 
 cmargLCM2Chalfnorm_Eu <- function(object) {
-  beta1 <- object$mleParam[1:(object$nXvar)]
-  delta1 <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  beta1 <- object$mlParam[1:(object$nXvar)]
+  delta1 <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     object$nuZUvar)]
-  phi1 <- object$mleParam[(object$nXvar + object$nuZUvar + 1):(object$nXvar +
+  phi1 <- object$mlParam[(object$nXvar + object$nuZUvar + 1):(object$nXvar +
     object$nuZUvar + object$nvZVvar)]
-  beta2 <- object$mleParam[(object$nXvar + object$nuZUvar +
+  beta2 <- object$mlParam[(object$nXvar + object$nuZUvar +
     object$nvZVvar + 1):(2 * object$nXvar + object$nuZUvar +
     object$nvZVvar)]
-  delta2 <- object$mleParam[(2 * object$nXvar + object$nuZUvar +
+  delta2 <- object$mlParam[(2 * object$nXvar + object$nuZUvar +
     object$nvZVvar + 1):(2 * object$nXvar + 2 * object$nuZUvar +
     object$nvZVvar)]
-  phi2 <- object$mleParam[(2 * object$nXvar + 2 * object$nuZUvar +
+  phi2 <- object$mlParam[(2 * object$nXvar + 2 * object$nuZUvar +
     object$nvZVvar + 1):(2 * object$nXvar + 2 * object$nuZUvar +
     2 * object$nvZVvar)]
-  theta <- object$mleParam[(2 * object$nXvar + 2 * object$nuZUvar +
+  theta <- object$mlParam[(2 * object$nXvar + 2 * object$nuZUvar +
     2 * object$nvZVvar + 1):(2 * object$nXvar + 2 * object$nuZUvar +
     2 * object$nvZVvar + object$nZHvar)]
   Xvar <- model.matrix(object$formula, data = object$dataTable,
@@ -805,21 +805,21 @@ cmargLCM2Chalfnorm_Eu <- function(object) {
 }
 
 cmargLCM2Chalfnorm_Vu <- function(object) {
-  beta1 <- object$mleParam[1:(object$nXvar)]
-  delta1 <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  beta1 <- object$mlParam[1:(object$nXvar)]
+  delta1 <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     object$nuZUvar)]
-  phi1 <- object$mleParam[(object$nXvar + object$nuZUvar + 1):(object$nXvar +
+  phi1 <- object$mlParam[(object$nXvar + object$nuZUvar + 1):(object$nXvar +
     object$nuZUvar + object$nvZVvar)]
-  beta2 <- object$mleParam[(object$nXvar + object$nuZUvar +
+  beta2 <- object$mlParam[(object$nXvar + object$nuZUvar +
     object$nvZVvar + 1):(2 * object$nXvar + object$nuZUvar +
     object$nvZVvar)]
-  delta2 <- object$mleParam[(2 * object$nXvar + object$nuZUvar +
+  delta2 <- object$mlParam[(2 * object$nXvar + object$nuZUvar +
     object$nvZVvar + 1):(2 * object$nXvar + 2 * object$nuZUvar +
     object$nvZVvar)]
-  phi2 <- object$mleParam[(2 * object$nXvar + 2 * object$nuZUvar +
+  phi2 <- object$mlParam[(2 * object$nXvar + 2 * object$nuZUvar +
     object$nvZVvar + 1):(2 * object$nXvar + 2 * object$nuZUvar +
     2 * object$nvZVvar)]
-  theta <- object$mleParam[(2 * object$nXvar + 2 * object$nuZUvar +
+  theta <- object$mlParam[(2 * object$nXvar + 2 * object$nuZUvar +
     2 * object$nvZVvar + 1):(2 * object$nXvar + 2 * object$nuZUvar +
     2 * object$nvZVvar + object$nZHvar)]
   Xvar <- model.matrix(object$formula, data = object$dataTable,

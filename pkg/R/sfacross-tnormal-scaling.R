@@ -383,7 +383,7 @@ truncnormscalAlgOpt <- function(start, olsParam, dataTable, S,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S)), method = "SR1", control = list(maxit = itermax,
       cgtol = gradtol, stop.trust.radius = tol, prec = tol,
-      report.level = if (printInfo) 4L else 0, report.precision = 1L)),
+      report.level = if (printInfo) 2 else 0, report.precision = 1L)),
     sparse = trust.optim(x = startVal, fn = function(parm) -sum(ctruncnormscalike(parm,
       nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
@@ -395,7 +395,7 @@ truncnormscalAlgOpt <- function(start, olsParam, dataTable, S,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S), "dgCMatrix"), method = "Sparse", control = list(maxit = itermax,
       cgtol = gradtol, stop.trust.radius = tol, prec = tol,
-      report.level = if (printInfo) 4L else 0, report.precision = 1L,
+      report.level = if (printInfo) 2 else 0, report.precision = 1L,
       preconditioner = 1L)), mla = mla(b = startVal, fn = function(parm) -sum(ctruncnormscalike(parm,
       nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
@@ -424,7 +424,7 @@ truncnormscalAlgOpt <- function(start, olsParam, dataTable, S,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S))
   }
-  mleParam <- if (method %in% c("ucminf", "nlminb")) {
+  mlParam <- if (method %in% c("ucminf", "nlminb")) {
     mleObj$par
   } else {
     if (method == "maxLikAlgo") {
@@ -452,27 +452,27 @@ truncnormscalAlgOpt <- function(start, olsParam, dataTable, S,
         uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
         S = S)
   }
-  mleObj$logL_OBS <- ctruncnormscalike(parm = mleParam, nXvar = nXvar,
+  mleObj$logL_OBS <- ctruncnormscalike(parm = mlParam, nXvar = nXvar,
     nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar, vHvar = vHvar,
     Yvar = Yvar, Xvar = Xvar, S = S)
-  mleObj$gradL_OBS <- cgradtruncnormscalike(parm = mleParam,
+  mleObj$gradL_OBS <- cgradtruncnormscalike(parm = mlParam,
     nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar, uHvar = uHvar,
     vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S)
   return(list(startVal = startVal, startLoglik = startLoglik,
-    mleObj = mleObj, mleParam = mleParam))
+    mleObj = mleObj, mlParam = mlParam))
 }
 
 # Conditional efficiencies estimation ----------
 
 ctruncnormscaleff <- function(object, level) {
-  beta <- object$mleParam[1:(object$nXvar)]
-  delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  beta <- object$mlParam[1:(object$nXvar)]
+  delta <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     (object$nuZUvar - 1))]
-  tau <- object$mleParam[object$nXvar + (object$nuZUvar - 1) +
+  tau <- object$mlParam[object$nXvar + (object$nuZUvar - 1) +
     1]
-  cu <- object$mleParam[object$nXvar + (object$nuZUvar - 1) +
+  cu <- object$mlParam[object$nXvar + (object$nuZUvar - 1) +
     2]
-  phi <- object$mleParam[(object$nXvar + (object$nuZUvar - 1) +
+  phi <- object$mlParam[(object$nXvar + (object$nuZUvar - 1) +
     2 + 1):(object$nXvar + (object$nuZUvar - 1) + 2 + object$nvZVvar)]
   Xvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 1)
@@ -515,11 +515,11 @@ ctruncnormscaleff <- function(object, level) {
 # Marginal effects on inefficiencies ----------
 
 cmargtruncnormscal_Eu <- function(object) {
-  delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  delta <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     (object$nuZUvar - 1))]
-  tau <- object$mleParam[object$nXvar + (object$nuZUvar - 1) +
+  tau <- object$mlParam[object$nXvar + (object$nuZUvar - 1) +
     1]
-  cu <- object$mleParam[object$nXvar + (object$nuZUvar - 1) +
+  cu <- object$mlParam[object$nXvar + (object$nuZUvar - 1) +
     2]
   uHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 3)
@@ -533,11 +533,11 @@ cmargtruncnormscal_Eu <- function(object) {
 }
 
 cmargtruncnormscal_Vu <- function(object) {
-  delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+  delta <- object$mlParam[(object$nXvar + 1):(object$nXvar +
     (object$nuZUvar - 1))]
-  tau <- object$mleParam[object$nXvar + (object$nuZUvar - 1) +
+  tau <- object$mlParam[object$nXvar + (object$nuZUvar - 1) +
     1]
-  cu <- object$mleParam[object$nXvar + (object$nuZUvar - 1) +
+  cu <- object$mlParam[object$nXvar + (object$nuZUvar - 1) +
     2]
   uHvar <- model.matrix(object$formula, data = object$dataTable,
     rhs = 3)

@@ -11,18 +11,18 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE, ...) {
       call. = FALSE
     )
   }
-  object$AIC <- -2 * object$mleLoglik + 2 * object$nParm
-  object$BIC <- -2 * object$mleLoglik + log(object$Nobs) * object$nParm
-  object$HQIC <- -2 * object$mleLoglik + 2 * log(log(object$Nobs)) * object$nParm
+  object$AIC <- -2 * object$mlLoglik + 2 * object$nParm
+  object$BIC <- -2 * object$mlLoglik + log(object$Nobs) * object$nParm
+  object$HQIC <- -2 * object$mlLoglik + 2 * log(log(object$Nobs)) * object$nParm
   if (object$udist == "tnormal") {
     if (object$scaling) {
-      delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+      delta <- object$mlParam[(object$nXvar + 1):(object$nXvar +
         (object$nuZUvar - 1))]
-      tau <- object$mleParam[object$nXvar + (object$nuZUvar -
+      tau <- object$mlParam[object$nXvar + (object$nuZUvar -
         1) + 1]
-      cu <- object$mleParam[object$nXvar + (object$nuZUvar -
+      cu <- object$mlParam[object$nXvar + (object$nuZUvar -
         1) + 2]
-      phi <- object$mleParam[(object$nXvar + (object$nuZUvar -
+      phi <- object$mlParam[(object$nXvar + (object$nuZUvar -
         1) + 2 + 1):(object$nXvar + (object$nuZUvar -
         1) + 2 + object$nvZVvar)]
       muHvar <- model.matrix(object$formula,
@@ -38,11 +38,11 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE, ...) {
         rhs = 4
       )
     } else {
-      omega <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+      omega <- object$mlParam[(object$nXvar + 1):(object$nXvar +
         object$nmuZUvar)]
-      delta <- object$mleParam[(object$nXvar + object$nmuZUvar +
+      delta <- object$mlParam[(object$nXvar + object$nmuZUvar +
         1):(object$nXvar + object$nmuZUvar + object$nuZUvar)]
-      phi <- object$mleParam[(object$nXvar + object$nmuZUvar +
+      phi <- object$mlParam[(object$nXvar + object$nmuZUvar +
         object$nuZUvar + 1):(object$nXvar + object$nmuZUvar +
         object$nuZUvar + object$nvZVvar)]
       muHvar <- model.matrix(object$formula,
@@ -60,11 +60,11 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE, ...) {
     }
   } else {
     if (object$udist == "lognormal") {
-      omega <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+      omega <- object$mlParam[(object$nXvar + 1):(object$nXvar +
         object$nmuZUvar)]
-      delta <- object$mleParam[(object$nXvar + object$nmuZUvar +
+      delta <- object$mlParam[(object$nXvar + object$nmuZUvar +
         1):(object$nXvar + object$nmuZUvar + object$nuZUvar)]
-      phi <- object$mleParam[(object$nXvar + object$nmuZUvar +
+      phi <- object$mlParam[(object$nXvar + object$nmuZUvar +
         object$nuZUvar + 1):(object$nXvar + object$nmuZUvar +
         object$nuZUvar + object$nvZVvar)]
       muHvar <- model.matrix(object$formula,
@@ -80,9 +80,9 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE, ...) {
         rhs = 4
       )
     } else {
-      delta <- object$mleParam[(object$nXvar + 1):(object$nXvar +
+      delta <- object$mlParam[(object$nXvar + 1):(object$nXvar +
         object$nuZUvar)]
-      phi <- object$mleParam[(object$nXvar + object$nuZUvar +
+      phi <- object$mlParam[(object$nXvar + object$nuZUvar +
         1):(object$nXvar + object$nuZUvar + object$nvZVvar)]
       uHvar <- model.matrix(object$formula,
         data = object$dataTable,
@@ -111,19 +111,19 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE, ...) {
     }
   }
   P <- if (object$udist == "gamma") {
-    object$mleParam[object$nXvar + object$nuZUvar + object$nvZVvar +
+    object$mlParam[object$nXvar + object$nuZUvar + object$nvZVvar +
       1]
   } else {
     NULL
   }
   k <- if (object$udist == "weibull") {
-    object$mleParam[object$nXvar + object$nuZUvar + object$nvZVvar +
+    object$mlParam[object$nXvar + object$nuZUvar + object$nvZVvar +
       1]
   } else {
     NULL
   }
   lambda <- if (object$udist == "tslaplace") {
-    object$mleParam[object$nXvar + object$nuZUvar + object$nvZVvar +
+    object$mlParam[object$nXvar + object$nuZUvar + object$nvZVvar +
       1]
   } else {
     NULL
@@ -139,13 +139,13 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE, ...) {
   Wv <- as.numeric(crossprod(matrix(phi), t(vHvar)))
   object$sigmavSq <- mean(exp(Wv))
   object$sigmauSq <- mean(exp(Wu))
-  if (object$udist == "uniform") {
-    object$theta <- sqrt(12 * object$sigmauSq)
-  }
   object$Varu <- varuFun(
     object = object, mu = mu, P = P, k = k,
     lambda = lambda
   )
+  if (object$udist == "uniform") {
+    object$THETA <- sqrt(12 * object$sigmauSq)
+  }
   object$Eu <- euFun(
     object = object, mu = mu, P = P, k = k,
     lambda = lambda
@@ -185,71 +185,71 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE, ...) {
   object$olsRes <- olsRes
   # MLE estimates and stder, p-values, CI, Gradient
   if (grad && ci) {
-    mleRes <- matrix(nrow = object$nParm, ncol = 7)
-    colnames(mleRes) <- c(
+    mlRes <- matrix(nrow = object$nParm, ncol = 7)
+    colnames(mlRes) <- c(
       "Coefficient", "Std. Error", "binf",
       "bsup", "gradient", "z-value", "Pr(>|z|)"
     )
-    mleRes[, 1] <- object$mleParam
-    mleRes[, 2] <- sqrt(diag(object$invHessian))
-    mleRes[, 3] <- mleRes[, 1] - qnorm(0.975) * mleRes[
+    mlRes[, 1] <- object$mlParam
+    mlRes[, 2] <- sqrt(diag(object$invHessian))
+    mlRes[, 3] <- mlRes[, 1] - qnorm(0.975) * mlRes[
       ,
       2
     ]
-    mleRes[, 4] <- mleRes[, 1] + qnorm(0.975) * mleRes[
+    mlRes[, 4] <- mlRes[, 1] + qnorm(0.975) * mlRes[
       ,
       2
     ]
-    mleRes[, 5] <- object$gradient
-    mleRes[, 6] <- mleRes[, 1] / mleRes[, 2]
-    mleRes[, 7] <- 2 * pnorm(-abs(mleRes[, 6]))
+    mlRes[, 5] <- object$gradient
+    mlRes[, 6] <- mlRes[, 1] / mlRes[, 2]
+    mlRes[, 7] <- 2 * pnorm(-abs(mlRes[, 6]))
   } else {
     if (grad == TRUE && ci == FALSE) {
-      mleRes <- matrix(nrow = object$nParm, ncol = 5)
-      colnames(mleRes) <- c(
+      mlRes <- matrix(nrow = object$nParm, ncol = 5)
+      colnames(mlRes) <- c(
         "Coefficient", "Std. Error",
         "gradient", "z-value", "Pr(>|z|)"
       )
-      mleRes[, 1] <- object$mleParam
-      mleRes[, 2] <- sqrt(diag(object$invHessian))
-      mleRes[, 3] <- object$gradient
-      mleRes[, 4] <- mleRes[, 1] / mleRes[, 2]
-      mleRes[, 5] <- 2 * pnorm(-abs(mleRes[, 4]))
+      mlRes[, 1] <- object$mlParam
+      mlRes[, 2] <- sqrt(diag(object$invHessian))
+      mlRes[, 3] <- object$gradient
+      mlRes[, 4] <- mlRes[, 1] / mlRes[, 2]
+      mlRes[, 5] <- 2 * pnorm(-abs(mlRes[, 4]))
     } else {
       if (grad == FALSE && ci == TRUE) {
-        mleRes <- matrix(nrow = object$nParm, ncol = 6)
-        colnames(mleRes) <- c(
+        mlRes <- matrix(nrow = object$nParm, ncol = 6)
+        colnames(mlRes) <- c(
           "Coefficient", "Std. Error",
           "binf", "bsup", "z-value", "Pr(>|z|)"
         )
-        mleRes[, 1] <- object$mleParam
-        mleRes[, 2] <- sqrt(diag(object$invHessian))
-        mleRes[, 3] <- mleRes[, 1] - qnorm(0.975) * mleRes[
+        mlRes[, 1] <- object$mlParam
+        mlRes[, 2] <- sqrt(diag(object$invHessian))
+        mlRes[, 3] <- mlRes[, 1] - qnorm(0.975) * mlRes[
           ,
           2
         ]
-        mleRes[, 4] <- mleRes[, 1] + qnorm(0.975) * mleRes[
+        mlRes[, 4] <- mlRes[, 1] + qnorm(0.975) * mlRes[
           ,
           2
         ]
-        mleRes[, 5] <- mleRes[, 1] / mleRes[, 2]
-        mleRes[, 6] <- 2 * pnorm(-abs(mleRes[, 5]))
+        mlRes[, 5] <- mlRes[, 1] / mlRes[, 2]
+        mlRes[, 6] <- 2 * pnorm(-abs(mlRes[, 5]))
       } else {
-        mleRes <- matrix(nrow = object$nParm, ncol = 4)
-        colnames(mleRes) <- c(
+        mlRes <- matrix(nrow = object$nParm, ncol = 4)
+        colnames(mlRes) <- c(
           "Coefficient", "Std. Error",
           "z value", "Pr(>|z|)"
         )
-        mleRes[, 1] <- object$mleParam
-        mleRes[, 2] <- sqrt(diag(object$invHessian))
-        mleRes[, 3] <- mleRes[, 1] / mleRes[, 2]
-        mleRes[, 4] <- 2 * pnorm(-abs(mleRes[, 3]))
+        mlRes[, 1] <- object$mlParam
+        mlRes[, 2] <- sqrt(diag(object$invHessian))
+        mlRes[, 3] <- mlRes[, 1] / mlRes[, 2]
+        mlRes[, 4] <- 2 * pnorm(-abs(mlRes[, 3]))
       }
     }
   }
-  row.names(mleRes) <- names(object$startVal)
-  object$mleRes <- mleRes
-  object$chisq <- 2 * (object$mleLoglik - object$olsLoglik)
+  row.names(mlRes) <- names(object$startVal)
+  object$mlRes <- mlRes
+  object$chisq <- 2 * (object$mlLoglik - object$olsLoglik)
   object$df <- object$nParm - object$nXvar - object$nvZVvar
   class(object) <- "summary.sfacross"
   return(object)
@@ -258,156 +258,116 @@ summary.sfacross <- function(object, grad = FALSE, ci = FALSE, ...) {
 # print summary for sfacross ----------
 
 print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), ...) {
-  mleRes <- x$mleRes
-  if (dim(mleRes)[2] == 4) {
-    mleRes[, 1] <- as.numeric(formatC(x$mleRes[, 1],
-      digits = digits,
-      format = "f"
+  mlRes <- x$mlRes
+  if (dim(mlRes)[2] == 4) {
+    mlRes[, 1] <- as.numeric(formatC(x$mlRes[, 1],
+      digits = digits, format = "f"
     ))
-    mleRes[, 2] <- as.numeric(formatC(x$mleRes[, 2],
-      digits = digits,
-      format = "f"
+    mlRes[, 2] <- as.numeric(formatC(x$mlRes[, 2],
+      digits = digits, format = "f"
     ))
-    mleRes[, 3] <- as.numeric(formatC(x$mleRes[, 3],
-      digits = digits,
-      format = "f"
+    mlRes[, 3] <- as.numeric(formatC(x$mlRes[, 3],
+      digits = digits, format = "f"
     ))
-    mleRes[, 4] <- as.numeric(formatC(x$mleRes[, 4],
-      digits = digits,
-      format = "e"
+    mlRes[, 4] <- as.numeric(formatC(x$mlRes[, 4],
+      digits = digits, format = "e"
     ))
   } else {
-    if (dim(mleRes)[2] == 5) {
-      mleRes[, 1] <- as.numeric(formatC(x$mleRes[, 1],
+    if (dim(mlRes)[2] == 5) {
+      mlRes[, 1] <- as.numeric(formatC(x$mlRes[, 1],
         digits = digits, format = "f"
       ))
-      mleRes[, 2] <- as.numeric(formatC(x$mleRes[, 2],
+      mlRes[, 2] <- as.numeric(formatC(x$mlRes[, 2],
         digits = digits, format = "f"
       ))
-      mleRes[, 3] <- as.numeric(formatC(x$mleRes[, 3],
+      mlRes[, 3] <- as.numeric(formatC(x$mlRes[, 3],
         digits = digits, format = "e"
       ))
-      mleRes[, 4] <- as.numeric(formatC(x$mleRes[, 4],
+      mlRes[, 4] <- as.numeric(formatC(x$mlRes[, 4],
         digits = digits, format = "f"
       ))
-      mleRes[, 5] <- as.numeric(formatC(x$mleRes[, 5],
+      mlRes[, 5] <- as.numeric(formatC(x$mlRes[, 5],
         digits = digits, format = "e"
       ))
     } else {
-      if (dim(mleRes)[2] == 6) {
-        mleRes[, 1] <- as.numeric(formatC(x$mleRes[
-          ,
-          1
-        ], digits = digits, format = "f"))
-        mleRes[, 2] <- as.numeric(formatC(x$mleRes[
-          ,
-          2
-        ], digits = digits, format = "f"))
-        mleRes[, 3] <- as.numeric(formatC(x$mleRes[
-          ,
-          3
-        ], digits = digits, format = "f"))
-        mleRes[, 4] <- as.numeric(formatC(x$mleRes[
-          ,
-          4
-        ], digits = digits, format = "f"))
-        mleRes[, 5] <- as.numeric(formatC(x$mleRes[
-          ,
-          5
-        ], digits = digits, format = "f"))
-        mleRes[, 6] <- as.numeric(formatC(x$mleRes[
-          ,
-          6
-        ], digits = digits, format = "e"))
+      if (dim(mlRes)[2] == 6) {
+        mlRes[, 1] <- as.numeric(formatC(x$mlRes[, 1], 
+        digits = digits, format = "f"))
+        mlRes[, 2] <- as.numeric(formatC(x$mlRes[, 2], 
+        digits = digits, format = "f"))
+        mlRes[, 3] <- as.numeric(formatC(x$mlRes[, 3], 
+        digits = digits, format = "f"))
+        mlRes[, 4] <- as.numeric(formatC(x$mlRes[, 4], 
+        digits = digits, format = "f"))
+        mlRes[, 5] <- as.numeric(formatC(x$mlRes[, 5], 
+        digits = digits, format = "f"))
+        mlRes[, 6] <- as.numeric(formatC(x$mlRes[, 6], 
+        digits = digits, format = "e"))
       } else {
-        if (dim(mleRes)[2] == 7) {
-          mleRes[, 1] <- as.numeric(formatC(x$mleRes[
-            ,
-            1
-          ], digits = digits, format = "f"))
-          mleRes[, 2] <- as.numeric(formatC(x$mleRes[
-            ,
-            2
-          ], digits = digits, format = "f"))
-          mleRes[, 3] <- as.numeric(formatC(x$mleRes[
-            ,
-            3
-          ], digits = digits, format = "f"))
-          mleRes[, 4] <- as.numeric(formatC(x$mleRes[
-            ,
-            4
-          ], digits = digits, format = "f"))
-          mleRes[, 5] <- as.numeric(formatC(x$mleRes[
-            ,
-            5
-          ], digits = digits, format = "e"))
-          mleRes[, 6] <- as.numeric(formatC(x$mleRes[
-            ,
-            6
-          ], digits = digits, format = "f"))
-          mleRes[, 7] <- as.numeric(formatC(x$mleRes[
-            ,
-            7
-          ], digits = digits, format = "e"))
+        if (dim(mlRes)[2] == 7) {
+          mlRes[, 1] <- as.numeric(formatC(x$mlRes[, 1],
+          digits = digits, format = "f"))
+          mlRes[, 2] <- as.numeric(formatC(x$mlRes[, 2],
+          digits = digits, format = "f"))
+          mlRes[, 3] <- as.numeric(formatC(x$mlRes[, 3],
+          digits = digits, format = "f"))
+          mlRes[, 4] <- as.numeric(formatC(x$mlRes[, 4],
+          digits = digits, format = "f"))
+          mlRes[, 5] <- as.numeric(formatC(x$mlRes[, 5],
+          digits = digits, format = "e"))
+          mlRes[, 6] <- as.numeric(formatC(x$mlRes[, 6],
+          digits = digits, format = "f"))
+          mlRes[, 7] <- as.numeric(formatC(x$mlRes[, 7],
+          digits = digits, format = "e"))
         }
       }
     }
   }
-  row.names(mleRes) <- formatC(row.names(mleRes),
-    width = max(nchar(row.names(mleRes))),
+  row.names(mlRes) <- formatC(row.names(mlRes),
+    width = max(nchar(row.names(mlRes))),
     flag = "-"
   )
-  mleRes1 <- mleRes[1:x$nXvar, , drop = FALSE]
+  mlRes1 <- mlRes[1:x$nXvar, , drop = FALSE]
   if (x$udist == "tnormal") {
     if (x$scaling) {
-      mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + (x$nuZUvar -
+      mlRes2 <- mlRes[(x$nXvar + 1):(x$nXvar + (x$nuZUvar -
         1)), , drop = FALSE]
-      mleRes3 <- mleRes[x$nXvar + (x$nuZUvar - 1) + 1, ,
-        drop = FALSE
-      ]
-      mleRes4 <- mleRes[x$nXvar + (x$nuZUvar - 1) + 2, ,
-        drop = FALSE
-      ]
-      mleRes5 <- mleRes[(x$nXvar + (x$nuZUvar - 1) + 2 +
-        1):(x$nXvar + (x$nuZUvar - 1) + 2 + x$nvZVvar), ,
-      drop = FALSE
-      ]
+      mlRes3 <- mlRes[x$nXvar + (x$nuZUvar - 1) + 1, , drop = FALSE]
+      mlRes4 <- mlRes[x$nXvar + (x$nuZUvar - 1) + 2, , drop = FALSE]
+      mlRes5 <- mlRes[(x$nXvar + (x$nuZUvar - 1) + 2 +
+        1):(x$nXvar + (x$nuZUvar - 1) + 2 + x$nvZVvar), , drop = FALSE]
     } else {
-      mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + x$nmuZUvar), ,
-        drop = FALSE
-      ]
-      mleRes3 <- mleRes[(x$nXvar + x$nmuZUvar + 1):(x$nXvar +
+      mlRes2 <- mlRes[(x$nXvar + 1):(x$nXvar + x$nmuZUvar), , drop = FALSE]
+      mlRes3 <- mlRes[(x$nXvar + x$nmuZUvar + 1):(x$nXvar +
         x$nmuZUvar + x$nuZUvar), , drop = FALSE]
-      mleRes4 <- mleRes[(x$nXvar + x$nmuZUvar + x$nuZUvar +
-        1):(x$nXvar + x$nmuZUvar + x$nuZUvar + x$nvZVvar), ,
-      drop = FALSE
-      ]
+      mlRes4 <- mlRes[(x$nXvar + x$nmuZUvar + x$nuZUvar +
+        1):(x$nXvar + x$nmuZUvar + x$nuZUvar + x$nvZVvar), , drop = FALSE]
     }
   } else {
     if (x$udist == "lognormal") {
-      mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + x$nmuZUvar), ,
+      mlRes2 <- mlRes[(x$nXvar + 1):(x$nXvar + x$nmuZUvar), ,
         drop = FALSE
       ]
-      mleRes3 <- mleRes[(x$nXvar + x$nmuZUvar + 1):(x$nXvar +
+      mlRes3 <- mlRes[(x$nXvar + x$nmuZUvar + 1):(x$nXvar +
         x$nmuZUvar + x$nuZUvar), , drop = FALSE]
-      mleRes4 <- mleRes[(x$nXvar + x$nmuZUvar + x$nuZUvar +
+      mlRes4 <- mlRes[(x$nXvar + x$nmuZUvar + x$nuZUvar +
         1):(x$nXvar + x$nmuZUvar + x$nuZUvar + x$nvZVvar), ,
       drop = FALSE
       ]
     } else {
-      mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + x$nuZUvar), ,
+      mlRes2 <- mlRes[(x$nXvar + 1):(x$nXvar + x$nuZUvar), ,
         drop = FALSE
       ]
-      mleRes3 <- mleRes[(x$nXvar + x$nuZUvar + 1):(x$nXvar +
+      mlRes3 <- mlRes[(x$nXvar + x$nuZUvar + 1):(x$nXvar +
         x$nuZUvar + x$nvZVvar), , drop = FALSE]
       if (x$udist %in% c("gamma", "weibull", "tslaplace")) {
-        mleRes4 <- mleRes[x$nXvar + x$nuZUvar + x$nvZVvar +
+        mlRes4 <- mlRes[x$nXvar + x$nuZUvar + x$nvZVvar +
           1, , drop = FALSE]
       }
     }
   }
   lengthSum <- nchar(sfadist(x$udist)) + 10
-  dimCoefTable <- as.character(dim(x$mleRes)[2])
+  dimCoefTable <- as.character(dim(x$mlRes)[2])
   cat(
     paste0(rep("-", lengthSum + 2 + switch(dimCoefTable,
       `4` = 18, `5` = 31, `6` = 43, `7` = 57
@@ -427,9 +387,9 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
   cat("Log likelihood iter:", paste0(rep(" ", lengthSum - nchar("Log likelihood iter:") -
     nchar(x$nIter)), collapse = ""), x$nIter, "\n")
   cat("Log likelihood value:", paste0(rep(" ", lengthSum -
-    nchar("Log likelihood value:") - nchar(formatC(x$mleLoglik,
+    nchar("Log likelihood value:") - nchar(formatC(x$mlLoglik,
       digits = digits, format = "f"
-    ))), collapse = ""), formatC(x$mleLoglik,
+    ))), collapse = ""), formatC(x$mlLoglik,
     digits = digits, format = "f"
   ), "\n")
   cat("Log likelihood gradient norm:", paste0(rep(" ", lengthSum -
@@ -538,9 +498,9 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
     "\n"
   )
   if (x$udist == "uniform") {
-    cat("theta                         = ", paste0(rep(
+    cat("THETA                         = ", paste0(rep(
       " ",
-      lengthSum - nchar("theta                         = ") -
+      lengthSum - nchar("THETA                         = ") -
         nchar(formatC(x$theta, digits = digits, format = "f"))
     ),
     collapse = ""
@@ -641,7 +601,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  printCoefmat(mleRes1, P.values = TRUE, digits = digits, signif.legend = FALSE)
+  printCoefmat(mlRes1, P.values = TRUE, digits = digits, signif.legend = FALSE)
   cat(
     paste0(rep("-", lengthSum + 2 + switch(dimCoefTable,
       `4` = 18, `5` = 31, `6` = 43, `7` = 57
@@ -660,7 +620,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes2,
+      printCoefmat(mlRes2,
         P.values = TRUE, digits = digits,
         signif.legend = FALSE
       )
@@ -670,7 +630,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      cat(centerText("Location parameter [offset mu] in u (one sided error)",
+      cat(centerText("Location parameter [offset mu] in u (one-sided error)",
         width = lengthSum + 2 + switch(dimCoefTable,
           `4` = 18, `5` = 31, `6` = 43, `7` = 57
         )
@@ -681,7 +641,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes3,
+      printCoefmat(mlRes3,
         P.values = TRUE, digits = digits,
         signif.legend = FALSE
       )
@@ -691,7 +651,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      cat(centerText("Parameter in variance of u (one sided error)",
+      cat(centerText("Parameter in variance of u (one-sided error)",
         width = lengthSum + 2 + switch(dimCoefTable,
           `4` = 18, `5` = 31, `6` = 43, `7` = 57
         )
@@ -702,7 +662,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes4,
+      printCoefmat(mlRes4,
         P.values = TRUE, digits = digits,
         signif.legend = FALSE
       )
@@ -712,7 +672,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      cat(centerText("Parameters in variance of v (symmetric error)",
+      cat(centerText("Parameters in variance of v (two-sided error)",
         width = lengthSum + 2 + switch(dimCoefTable,
           `4` = 18, `5` = 31, `6` = 43, `7` = 57
         )
@@ -723,7 +683,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes5,
+      printCoefmat(mlRes5,
         P.values = TRUE, digits = digits,
         signif.legend = TRUE
       )
@@ -734,7 +694,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         "\n"
       )
     } else {
-      cat(centerText("Location parameter [offset mu] in u (one sided error)",
+      cat(centerText("Location parameter [offset mu] in u (one-sided error)",
         width = lengthSum + 2 + switch(dimCoefTable,
           `4` = 18, `5` = 31, `6` = 43, `7` = 57
         )
@@ -745,7 +705,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes2,
+      printCoefmat(mlRes2,
         P.values = TRUE, digits = digits,
         signif.legend = FALSE
       )
@@ -755,7 +715,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      cat(centerText("Parameter in variance of u (one sided error)",
+      cat(centerText("Parameter in variance of u (one-sided error)",
         width = lengthSum + 2 + switch(dimCoefTable,
           `4` = 18, `5` = 31, `6` = 43, `7` = 57
         )
@@ -766,7 +726,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes3,
+      printCoefmat(mlRes3,
         P.values = TRUE, digits = digits,
         signif.legend = FALSE
       )
@@ -776,7 +736,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      cat(centerText("Parameters in variance of v (symmetric error)",
+      cat(centerText("Parameters in variance of v (two-sided error)",
         width = lengthSum + 2 + switch(dimCoefTable,
           `4` = 18, `5` = 31, `6` = 43, `7` = 57
         )
@@ -787,7 +747,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes4,
+      printCoefmat(mlRes4,
         P.values = TRUE, digits = digits,
         signif.legend = TRUE
       )
@@ -800,7 +760,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
     }
   } else {
     if (x$udist == "lognormal") {
-      cat(centerText("Location parameter [offset mu] in u (one sided error)",
+      cat(centerText("Location parameter [offset mu] in u (one-sided error)",
         width = lengthSum + 2 + switch(dimCoefTable,
           `4` = 18, `5` = 31, `6` = 43, `7` = 57
         )
@@ -811,7 +771,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes2,
+      printCoefmat(mlRes2,
         P.values = TRUE, digits = digits,
         signif.legend = FALSE
       )
@@ -821,7 +781,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      cat(centerText("Parameter in variance of u (one sided error)",
+      cat(centerText("Parameter in variance of u (one-sided error)",
         width = lengthSum + 2 + switch(dimCoefTable,
           `4` = 18, `5` = 31, `6` = 43, `7` = 57
         )
@@ -832,7 +792,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes3,
+      printCoefmat(mlRes3,
         P.values = TRUE, digits = digits,
         signif.legend = FALSE
       )
@@ -842,7 +802,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      cat(centerText("Parameters in variance of v (symmetric error)",
+      cat(centerText("Parameters in variance of v (two-sided error)",
         width = lengthSum + 2 + switch(dimCoefTable,
           `4` = 18, `5` = 31, `6` = 43, `7` = 57
         )
@@ -853,7 +813,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes4,
+      printCoefmat(mlRes4,
         P.values = TRUE, digits = digits,
         signif.legend = TRUE
       )
@@ -866,7 +826,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
     } else {
       if (x$udist == "gamma") {
         cat(
-          centerText("Parameter in variance of u (one sided error)",
+          centerText("Parameter in variance of u (one-sided error)",
             width = lengthSum + 2 + switch(dimCoefTable,
               `4` = 18, `5` = 31, `6` = 43, `7` = 57
             )
@@ -879,7 +839,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes2,
+        printCoefmat(mlRes2,
           P.values = TRUE, digits = digits,
           signif.legend = FALSE
         )
@@ -890,7 +850,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
           "\n"
         )
         cat(
-          centerText("Parameters in variance of v (symmetric error)",
+          centerText("Parameters in variance of v (two-sided error)",
             width = lengthSum + 2 + switch(dimCoefTable,
               `4` = 18, `5` = 31, `6` = 43, `7` = 57
             )
@@ -903,7 +863,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes3,
+        printCoefmat(mlRes3,
           P.values = TRUE, digits = digits,
           signif.legend = TRUE
         )
@@ -914,7 +874,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
           "\n"
         )
         cat(
-          centerText("Location parameter P in u (one sided error)",
+          centerText("Location parameter P in u (one-sided error)",
             width = lengthSum + 2 + switch(dimCoefTable,
               `4` = 18, `5` = 31, `6` = 43, `7` = 57
             )
@@ -927,7 +887,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes4,
+        printCoefmat(mlRes4,
           P.values = TRUE, digits = digits,
           signif.legend = TRUE
         )
@@ -940,7 +900,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
       } else {
         if (x$udist == "weibull") {
           cat(
-            centerText("Parameter in variance of u (one sided error)",
+            centerText("Parameter in variance of u (one-sided error)",
               width = lengthSum + 2 + switch(dimCoefTable,
                 `4` = 18, `5` = 31, `6` = 43, `7` = 57
               )
@@ -952,7 +912,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes2,
+          printCoefmat(mlRes2,
             P.values = TRUE, digits = digits,
             signif.legend = FALSE
           )
@@ -962,7 +922,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
           collapse = ""
           ), "\n")
           cat(
-            centerText("Parameters in variance of v (symmetric error)",
+            centerText("Parameters in variance of v (two-sided error)",
               width = lengthSum + 2 + switch(dimCoefTable,
                 `4` = 18, `5` = 31, `6` = 43, `7` = 57
               )
@@ -974,7 +934,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes3,
+          printCoefmat(mlRes3,
             P.values = TRUE, digits = digits,
             signif.legend = TRUE
           )
@@ -984,7 +944,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
           collapse = ""
           ), "\n")
           cat(
-            centerText("Shape parameter k in u (one sided error)",
+            centerText("Shape parameter k in u (one-sided error)",
               width = lengthSum + 2 + switch(dimCoefTable,
                 `4` = 18, `5` = 31, `6` = 43, `7` = 57
               )
@@ -996,7 +956,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes4,
+          printCoefmat(mlRes4,
             P.values = TRUE, digits = digits,
             signif.legend = TRUE
           )
@@ -1008,7 +968,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
         } else {
           if (x$udist == "tslaplace") {
             cat(
-              centerText("Parameter in variance of u (one sided error)",
+              centerText("Parameter in variance of u (one-sided error)",
                 width = lengthSum + 2 + switch(dimCoefTable,
                   `4` = 18, `5` = 31, `6` = 43, `7` = 57
                 )
@@ -1020,7 +980,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
             )),
             collapse = ""
             ), "\n")
-            printCoefmat(mleRes2,
+            printCoefmat(mlRes2,
               P.values = TRUE, digits = digits,
               signif.legend = FALSE
             )
@@ -1030,7 +990,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
             collapse = ""
             ), "\n")
             cat(
-              centerText("Parameters in variance of v (symmetric error)",
+              centerText("Parameters in variance of v (two-sided error)",
                 width = lengthSum + 2 + switch(dimCoefTable,
                   `4` = 18, `5` = 31, `6` = 43, `7` = 57
                 )
@@ -1042,7 +1002,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
             )),
             collapse = ""
             ), "\n")
-            printCoefmat(mleRes3,
+            printCoefmat(mlRes3,
               P.values = TRUE, digits = digits,
               signif.legend = TRUE
             )
@@ -1052,14 +1012,14 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
             collapse = ""
             ), "\n")
             cat(
-              centerText("Skewness parameter 'lambda' in u (one sided error)",
+              centerText("Skewness parameter 'lambda' in u (one-sided error)",
                 width = lengthSum + 2 + switch(dimCoefTable,
                   `4` = 18, `5` = 31, `6` = 43, `7` = 57
                 )
               ),
               "\n"
             )
-            printCoefmat(mleRes4,
+            printCoefmat(mlRes4,
               P.values = TRUE, digits = digits,
               signif.legend = TRUE
             )
@@ -1070,7 +1030,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
             ), "\n")
           } else {
             cat(
-              centerText("Parameter in variance of u (one sided error)",
+              centerText("Parameter in variance of u (one-sided error)",
                 width = lengthSum + 2 + switch(dimCoefTable,
                   `4` = 18, `5` = 31, `6` = 43, `7` = 57
                 )
@@ -1082,7 +1042,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
             )),
             collapse = ""
             ), "\n")
-            printCoefmat(mleRes2,
+            printCoefmat(mlRes2,
               P.values = TRUE, digits = digits,
               signif.legend = FALSE
             )
@@ -1092,7 +1052,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
             collapse = ""
             ), "\n")
             cat(
-              centerText("Parameters in variance of v (symmetric error)",
+              centerText("Parameters in variance of v (two-sided error)",
                 width = lengthSum + 2 + switch(dimCoefTable,
                   `4` = 18, `5` = 31, `6` = 43, `7` = 57
                 )
@@ -1104,7 +1064,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
             )),
             collapse = ""
             ), "\n")
-            printCoefmat(mleRes3,
+            printCoefmat(mlRes3,
               P.values = TRUE, digits = digits,
               signif.legend = TRUE
             )
@@ -1118,7 +1078,7 @@ print.summary.sfacross <- function(x, digits = max(3, getOption("digits") - 2), 
       }
     }
   }
-  cat(x$mleDate, "\n")
+  cat(x$mlDate, "\n")
   cat("Log likelihood status:", x$optStatus, "\n")
   cat(
     paste0(rep("-", lengthSum + 2 + switch(dimCoefTable,
@@ -1142,76 +1102,76 @@ summary.lcmcross <- function(object, grad = FALSE, ci = FALSE, ...) {
       call. = FALSE
     )
   }
-  object$AIC <- -2 * object$mleLoglik + 2 * object$nParm
-  object$BIC <- -2 * object$mleLoglik + log(object$Nobs) * object$nParm
-  object$HQIC <- -2 * object$mleLoglik + 2 * log(log(object$Nobs)) * object$nParm
+  object$AIC <- -2 * object$mlLoglik + 2 * object$nParm
+  object$BIC <- -2 * object$mlLoglik + log(object$Nobs) * object$nParm
+  object$HQIC <- -2 * object$mlLoglik + 2 * log(log(object$Nobs)) * object$nParm
   # MLE estimates and stder, p-values, CI, Gradient
   if (grad && ci) {
-    mleRes <- matrix(nrow = object$nParm, ncol = 7)
-    colnames(mleRes) <- c(
+    mlRes <- matrix(nrow = object$nParm, ncol = 7)
+    colnames(mlRes) <- c(
       "Coefficient", "Std. Error", "binf",
       "bsup", "gradient", "z-value", "Pr(>|z|)"
     )
-    mleRes[, 1] <- object$mleParam
-    mleRes[, 2] <- sqrt(diag(object$invHessian))
-    mleRes[, 3] <- mleRes[, 1] - qnorm(0.975) * mleRes[
+    mlRes[, 1] <- object$mlParam
+    mlRes[, 2] <- sqrt(diag(object$invHessian))
+    mlRes[, 3] <- mlRes[, 1] - qnorm(0.975) * mlRes[
       ,
       2
     ]
-    mleRes[, 4] <- mleRes[, 1] + qnorm(0.975) * mleRes[
+    mlRes[, 4] <- mlRes[, 1] + qnorm(0.975) * mlRes[
       ,
       2
     ]
-    mleRes[, 5] <- object$gradient
-    mleRes[, 6] <- mleRes[, 1] / mleRes[, 2]
-    mleRes[, 7] <- 2 * pnorm(-abs(mleRes[, 6]))
+    mlRes[, 5] <- object$gradient
+    mlRes[, 6] <- mlRes[, 1] / mlRes[, 2]
+    mlRes[, 7] <- 2 * pnorm(-abs(mlRes[, 6]))
   } else {
     if (grad == TRUE && ci == FALSE) {
-      mleRes <- matrix(nrow = object$nParm, ncol = 5)
-      colnames(mleRes) <- c(
+      mlRes <- matrix(nrow = object$nParm, ncol = 5)
+      colnames(mlRes) <- c(
         "Coefficient", "Std. Error",
         "gradient", "z-value", "Pr(>|z|)"
       )
-      mleRes[, 1] <- object$mleParam
-      mleRes[, 2] <- sqrt(diag(object$invHessian))
-      mleRes[, 3] <- object$gradient
-      mleRes[, 4] <- mleRes[, 1] / mleRes[, 2]
-      mleRes[, 5] <- 2 * pnorm(-abs(mleRes[, 4]))
+      mlRes[, 1] <- object$mlParam
+      mlRes[, 2] <- sqrt(diag(object$invHessian))
+      mlRes[, 3] <- object$gradient
+      mlRes[, 4] <- mlRes[, 1] / mlRes[, 2]
+      mlRes[, 5] <- 2 * pnorm(-abs(mlRes[, 4]))
     } else {
       if (grad == FALSE && ci == TRUE) {
-        mleRes <- matrix(nrow = object$nParm, ncol = 6)
-        colnames(mleRes) <- c(
+        mlRes <- matrix(nrow = object$nParm, ncol = 6)
+        colnames(mlRes) <- c(
           "Coefficient", "Std. Error",
           "binf", "bsup", "z-value", "Pr(>|z|)"
         )
-        mleRes[, 1] <- object$mleParam
-        mleRes[, 2] <- sqrt(diag(object$invHessian))
-        mleRes[, 3] <- mleRes[, 1] - qnorm(0.975) * mleRes[
+        mlRes[, 1] <- object$mlParam
+        mlRes[, 2] <- sqrt(diag(object$invHessian))
+        mlRes[, 3] <- mlRes[, 1] - qnorm(0.975) * mlRes[
           ,
           2
         ]
-        mleRes[, 4] <- mleRes[, 1] + qnorm(0.975) * mleRes[
+        mlRes[, 4] <- mlRes[, 1] + qnorm(0.975) * mlRes[
           ,
           2
         ]
-        mleRes[, 5] <- mleRes[, 1] / mleRes[, 2]
-        mleRes[, 6] <- 2 * pnorm(-abs(mleRes[, 5]))
+        mlRes[, 5] <- mlRes[, 1] / mlRes[, 2]
+        mlRes[, 6] <- 2 * pnorm(-abs(mlRes[, 5]))
       } else {
-        mleRes <- matrix(nrow = object$nParm, ncol = 4)
-        colnames(mleRes) <- c(
+        mlRes <- matrix(nrow = object$nParm, ncol = 4)
+        colnames(mlRes) <- c(
           "Coefficient", "Std. Error",
           "z value", "Pr(>|z|)"
         )
-        mleRes[, 1] <- object$mleParam
-        mleRes[, 2] <- sqrt(diag(object$invHessian))
-        mleRes[, 3] <- mleRes[, 1] / mleRes[, 2]
-        mleRes[, 4] <- 2 * pnorm(-abs(mleRes[, 3]))
+        mlRes[, 1] <- object$mlParam
+        mlRes[, 2] <- sqrt(diag(object$invHessian))
+        mlRes[, 3] <- mlRes[, 1] / mlRes[, 2]
+        mlRes[, 4] <- 2 * pnorm(-abs(mlRes[, 3]))
       }
     }
   }
-  row.names(mleRes) <- names(object$startVal)
-  object$mleRes <- mleRes
-  # object$chisq <- 2 * (object$mleLoglik - object$olsLoglik)
+  row.names(mlRes) <- names(object$startVal)
+  object$mlRes <- mlRes
+  # object$chisq <- 2 * (object$mlLoglik - object$olsLoglik)
   object$df <- object$nParm - object$nClasses * object$nXvar -
     object$nClasses * object$nvZVvar - object$nZHvar *
     (object$nClasses - 1)
@@ -1219,116 +1179,85 @@ summary.lcmcross <- function(object, grad = FALSE, ci = FALSE, ...) {
   return(object)
 }
 
-
 # print summary for lcmcross ----------
 
 print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), ...) {
-  mleRes <- x$mleRes
-  if (dim(mleRes)[2] == 4) {
-    mleRes[, 1] <- as.numeric(formatC(x$mleRes[, 1],
-      digits = digits,
-      format = "f"
+  mlRes <- x$mlRes
+  if (dim(mlRes)[2] == 4) {
+    mlRes[, 1] <- as.numeric(formatC(x$mlRes[, 1],
+      digits = digits, format = "f"
     ))
-    mleRes[, 2] <- as.numeric(formatC(x$mleRes[, 2],
-      digits = digits,
-      format = "f"
+    mlRes[, 2] <- as.numeric(formatC(x$mlRes[, 2],
+      digits = digits, format = "f"
     ))
-    mleRes[, 3] <- as.numeric(formatC(x$mleRes[, 3],
-      digits = digits,
-      format = "f"
+    mlRes[, 3] <- as.numeric(formatC(x$mlRes[, 3],
+      digits = digits, format = "f"
     ))
-    mleRes[, 4] <- as.numeric(formatC(x$mleRes[, 4],
-      digits = digits,
-      format = "e"
+    mlRes[, 4] <- as.numeric(formatC(x$mlRes[, 4],
+      digits = digits, format = "e"
     ))
   } else {
-    if (dim(mleRes)[2] == 5) {
-      mleRes[, 1] <- as.numeric(formatC(x$mleRes[, 1],
+    if (dim(mlRes)[2] == 5) {
+      mlRes[, 1] <- as.numeric(formatC(x$mlRes[, 1],
         digits = digits, format = "f"
       ))
-      mleRes[, 2] <- as.numeric(formatC(x$mleRes[, 2],
+      mlRes[, 2] <- as.numeric(formatC(x$mlRes[, 2],
         digits = digits, format = "f"
       ))
-      mleRes[, 3] <- as.numeric(formatC(x$mleRes[, 3],
+      mlRes[, 3] <- as.numeric(formatC(x$mlRes[, 3],
         digits = digits, format = "e"
       ))
-      mleRes[, 4] <- as.numeric(formatC(x$mleRes[, 4],
+      mlRes[, 4] <- as.numeric(formatC(x$mlRes[, 4],
         digits = digits, format = "f"
       ))
-      mleRes[, 5] <- as.numeric(formatC(x$mleRes[, 5],
+      mlRes[, 5] <- as.numeric(formatC(x$mlRes[, 5],
         digits = digits, format = "e"
       ))
     } else {
-      if (dim(mleRes)[2] == 6) {
-        mleRes[, 1] <- as.numeric(formatC(x$mleRes[
-          ,
-          1
-        ], digits = digits, format = "f"))
-        mleRes[, 2] <- as.numeric(formatC(x$mleRes[
-          ,
-          2
-        ], digits = digits, format = "f"))
-        mleRes[, 3] <- as.numeric(formatC(x$mleRes[
-          ,
-          3
-        ], digits = digits, format = "f"))
-        mleRes[, 4] <- as.numeric(formatC(x$mleRes[
-          ,
-          4
-        ], digits = digits, format = "f"))
-        mleRes[, 5] <- as.numeric(formatC(x$mleRes[
-          ,
-          5
-        ], digits = digits, format = "f"))
-        mleRes[, 6] <- as.numeric(formatC(x$mleRes[
-          ,
-          6
-        ], digits = digits, format = "e"))
+      if (dim(mlRes)[2] == 6) {
+        mlRes[, 1] <- as.numeric(formatC(x$mlRes[, 1],
+        digits = digits, format = "f"))
+        mlRes[, 2] <- as.numeric(formatC(x$mlRes[, 2],
+        digits = digits, format = "f"))
+        mlRes[, 3] <- as.numeric(formatC(x$mlRes[, 3],
+        digits = digits, format = "f"))
+        mlRes[, 4] <- as.numeric(formatC(x$mlRes[, 4],
+        digits = digits, format = "f"))
+        mlRes[, 5] <- as.numeric(formatC(x$mlRes[, 5],
+        digits = digits, format = "f"))
+        mlRes[, 6] <- as.numeric(formatC(x$mlRes[, 6],
+        digits = digits, format = "e"))
       } else {
-        if (dim(mleRes)[2] == 7) {
-          mleRes[, 1] <- as.numeric(formatC(x$mleRes[
-            ,
-            1
-          ], digits = digits, format = "f"))
-          mleRes[, 2] <- as.numeric(formatC(x$mleRes[
-            ,
-            2
-          ], digits = digits, format = "f"))
-          mleRes[, 3] <- as.numeric(formatC(x$mleRes[
-            ,
-            3
-          ], digits = digits, format = "f"))
-          mleRes[, 4] <- as.numeric(formatC(x$mleRes[
-            ,
-            4
-          ], digits = digits, format = "f"))
-          mleRes[, 5] <- as.numeric(formatC(x$mleRes[
-            ,
-            5
-          ], digits = digits, format = "e"))
-          mleRes[, 6] <- as.numeric(formatC(x$mleRes[
-            ,
-            6
-          ], digits = digits, format = "f"))
-          mleRes[, 7] <- as.numeric(formatC(x$mleRes[
-            ,
-            7
-          ], digits = digits, format = "e"))
+        if (dim(mlRes)[2] == 7) {
+          mlRes[, 1] <- as.numeric(formatC(x$mlRes[, 1],
+          digits = digits, format = "f"))
+          mlRes[, 2] <- as.numeric(formatC(x$mlRes[, 2],
+          digits = digits, format = "f"))
+          mlRes[, 3] <- as.numeric(formatC(x$mlRes[, 3],
+          digits = digits, format = "f"))
+          mlRes[, 4] <- as.numeric(formatC(x$mlRes[, 4],
+          digits = digits, format = "f"))
+          mlRes[, 5] <- as.numeric(formatC(x$mlRes[, 5],
+          digits = digits, format = "e"))
+          mlRes[, 6] <- as.numeric(formatC(x$mlRes[, 6],
+          digits = digits, format = "f"))
+          mlRes[, 7] <- as.numeric(formatC(x$mlRes[, 7],
+          digits = digits, format = "e"))
         }
       }
     }
   }
-  row.names(mleRes) <- formatC(row.names(mleRes),
-    width = max(nchar(row.names(mleRes))),
+  row.names(mlRes) <- formatC(row.names(mlRes),
+    width = max(nchar(row.names(mlRes))),
     flag = "-"
   )
-  mleRes1 <- mleRes[1:x$nXvar, ]
-  mleRes2 <- mleRes[(x$nXvar + 1):(x$nXvar + x$nuZUvar), , drop = FALSE]
-  mleRes3 <- mleRes[(x$nXvar + x$nuZUvar + 1):(x$nXvar + x$nuZUvar +
+  mlRes1 <- mlRes[1:x$nXvar, ]
+  mlRes2 <- mlRes[(x$nXvar + 1):(x$nXvar + x$nuZUvar), , drop = FALSE]
+  mlRes3 <- mlRes[(x$nXvar + x$nuZUvar + 1):(x$nXvar + x$nuZUvar +
     x$nvZVvar), , drop = FALSE]
   sfaModel <- "Normal-Half Normal Latent Class Stochastic Frontier Model"
   lengthSum <- nchar(sfaModel) # + 10
-  dimCoefTable <- as.character(dim(x$mleRes)[2])
+  dimCoefTable <- as.character(dim(x$mlRes)[2])
   cat(
     paste0(rep("-", lengthSum + 2 + switch(dimCoefTable,
       `4` = 18, `5` = 31, `6` = 43, `7` = 57
@@ -1348,9 +1277,9 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
   cat("Log likelihood iter:", paste0(rep(" ", lengthSum - nchar("Log likelihood iter:") -
     nchar(x$nIter)), collapse = ""), x$nIter, "\n")
   cat("Log likelihood value:", paste0(rep(" ", lengthSum -
-    nchar("Log likelihood value:") - nchar(formatC(x$mleLoglik,
+    nchar("Log likelihood value:") - nchar(formatC(x$mlLoglik,
       digits = digits, format = "f"
-    ))), collapse = ""), formatC(x$mleLoglik,
+    ))), collapse = ""), formatC(x$mlLoglik,
     digits = digits, format = "f"
   ), "\n")
   cat("Log likelihood gradient norm:", paste0(rep(" ", lengthSum -
@@ -1414,7 +1343,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  printCoefmat(mleRes[1:x$nXvar, , drop = FALSE],
+  printCoefmat(mlRes[1:x$nXvar, , drop = FALSE],
     P.values = TRUE,
     digits = digits, signif.legend = FALSE
   )
@@ -1424,7 +1353,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  cat(centerText("Parameter in variance of u (one sided error) for latent class 1",
+  cat(centerText("Parameter in variance of u (one-sided error) for latent class 1",
     width = lengthSum + 2 + switch(dimCoefTable, `4` = 18,
       `5` = 31, `6` = 43, `7` = 57
     )
@@ -1435,7 +1364,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  printCoefmat(mleRes[(x$nXvar + 1):(x$nXvar + x$nuZUvar), ,
+  printCoefmat(mlRes[(x$nXvar + 1):(x$nXvar + x$nuZUvar), ,
     drop = FALSE
   ], P.values = TRUE, digits = digits, signif.legend = FALSE)
   cat(
@@ -1444,7 +1373,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  cat(centerText("Parameters in variance of v (symmetric error) for latent class 1",
+  cat(centerText("Parameters in variance of v (two-sided error) for latent class 1",
     width = lengthSum + 2 + switch(dimCoefTable, `4` = 18,
       `5` = 31, `6` = 43, `7` = 57
     )
@@ -1455,7 +1384,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  printCoefmat(mleRes[(x$nXvar + x$nuZUvar + 1):(x$nXvar + x$nuZUvar +
+  printCoefmat(mlRes[(x$nXvar + x$nuZUvar + 1):(x$nXvar + x$nuZUvar +
     x$nvZVvar), , drop = FALSE],
   P.values = TRUE, digits = digits,
   signif.legend = FALSE
@@ -1477,7 +1406,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  printCoefmat(mleRes[(x$nXvar + x$nuZUvar + x$nvZVvar + 1):(2 *
+  printCoefmat(mlRes[(x$nXvar + x$nuZUvar + x$nvZVvar + 1):(2 *
     x$nXvar + x$nuZUvar + x$nvZVvar), , drop = FALSE],
   P.values = TRUE,
   digits = digits, signif.legend = FALSE
@@ -1488,7 +1417,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  cat(centerText("Parameter in variance of u (one sided error) for latent class 2",
+  cat(centerText("Parameter in variance of u (one-sided error) for latent class 2",
     width = lengthSum + 2 + switch(dimCoefTable, `4` = 18,
       `5` = 31, `6` = 43, `7` = 57
     )
@@ -1499,7 +1428,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  printCoefmat(mleRes[(2 * x$nXvar + x$nuZUvar + x$nvZVvar +
+  printCoefmat(mlRes[(2 * x$nXvar + x$nuZUvar + x$nvZVvar +
     1):(2 * x$nXvar + 2 * x$nuZUvar + x$nvZVvar), , drop = FALSE],
   P.values = TRUE, digits = digits, signif.legend = FALSE
   )
@@ -1509,7 +1438,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  cat(centerText("Parameters in variance of v (symmetric error) for latent class 2",
+  cat(centerText("Parameters in variance of v (two-sided error) for latent class 2",
     width = lengthSum + 2 + switch(dimCoefTable, `4` = 18,
       `5` = 31, `6` = 43, `7` = 57
     )
@@ -1520,7 +1449,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
     )), collapse = ""),
     "\n"
   )
-  printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuZUvar + x$nvZVvar +
+  printCoefmat(mlRes[(2 * x$nXvar + 2 * x$nuZUvar + x$nvZVvar +
     1):(2 * x$nXvar + 2 * x$nuZUvar + 2 * x$nvZVvar), , drop = FALSE],
   P.values = TRUE, digits = digits, signif.legend = FALSE
   )
@@ -1542,7 +1471,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
       )), collapse = ""),
       "\n"
     )
-    printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuZUvar + 2 *
+    printCoefmat(mlRes[(2 * x$nXvar + 2 * x$nuZUvar + 2 *
       x$nvZVvar + 1):(2 * x$nXvar + 2 * x$nuZUvar + 2 * x$nvZVvar +
       x$nZHvar), , drop = FALSE],
     P.values = TRUE, digits = digits,
@@ -1567,7 +1496,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuZUvar +
+      printCoefmat(mlRes[(2 * x$nXvar + 2 * x$nuZUvar +
         2 * x$nvZVvar + 1):(3 * x$nXvar + 2 * x$nuZUvar +
         2 * x$nvZVvar), , drop = FALSE],
       P.values = TRUE,
@@ -1579,7 +1508,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      cat(centerText("Parameter in variance of u (one sided error) for latent class 3",
+      cat(centerText("Parameter in variance of u (one-sided error) for latent class 3",
         width = lengthSum + 2 + switch(dimCoefTable,
           `4` = 18, `5` = 31, `6` = 43, `7` = 57
         )
@@ -1590,7 +1519,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes[(3 * x$nXvar + 2 * x$nuZUvar +
+      printCoefmat(mlRes[(3 * x$nXvar + 2 * x$nuZUvar +
         2 * x$nvZVvar + 1):(3 * x$nXvar + 3 * x$nuZUvar +
         2 * x$nvZVvar), , drop = FALSE],
       P.values = TRUE,
@@ -1602,7 +1531,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      cat(centerText("Parameters in variance of v (symmetric error) for latent class 3",
+      cat(centerText("Parameters in variance of v (two-sided error) for latent class 3",
         width = lengthSum + 2 + switch(dimCoefTable,
           `4` = 18, `5` = 31, `6` = 43, `7` = 57
         )
@@ -1613,7 +1542,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuZUvar +
+      printCoefmat(mlRes[(3 * x$nXvar + 3 * x$nuZUvar +
         2 * x$nvZVvar + 1):(3 * x$nXvar + 3 * x$nuZUvar +
         3 * x$nvZVvar), , drop = FALSE],
       P.values = TRUE,
@@ -1636,7 +1565,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
         )), collapse = ""),
         "\n"
       )
-      printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuZUvar +
+      printCoefmat(mlRes[(3 * x$nXvar + 3 * x$nuZUvar +
         3 * x$nvZVvar + 1):(3 * x$nXvar + 3 * x$nuZUvar +
         3 * x$nvZVvar + 2 * x$nZHvar), , drop = FALSE],
       P.values = TRUE, digits = digits, signif.legend = TRUE
@@ -1663,7 +1592,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuZUvar +
+        printCoefmat(mlRes[(2 * x$nXvar + 2 * x$nuZUvar +
           2 * x$nvZVvar + 1):(3 * x$nXvar + 2 * x$nuZUvar +
           2 * x$nvZVvar), , drop = FALSE],
         P.values = TRUE,
@@ -1676,7 +1605,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           "\n"
         )
         cat(
-          centerText("Parameter in variance of u (one sided error) for latent class 3",
+          centerText("Parameter in variance of u (one-sided error) for latent class 3",
             width = lengthSum + 2 + switch(dimCoefTable,
               `4` = 18, `5` = 31, `6` = 43, `7` = 57
             )
@@ -1689,7 +1618,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes[(3 * x$nXvar + 2 * x$nuZUvar +
+        printCoefmat(mlRes[(3 * x$nXvar + 2 * x$nuZUvar +
           2 * x$nvZVvar + 1):(3 * x$nXvar + 3 * x$nuZUvar +
           2 * x$nvZVvar), , drop = FALSE],
         P.values = TRUE,
@@ -1702,7 +1631,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           "\n"
         )
         cat(
-          centerText("Parameters in variance of v (symmetric error) for latent class 3",
+          centerText("Parameters in variance of v (two-sided error) for latent class 3",
             width = lengthSum + 2 + switch(dimCoefTable,
               `4` = 18, `5` = 31, `6` = 43, `7` = 57
             )
@@ -1715,7 +1644,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuZUvar +
+        printCoefmat(mlRes[(3 * x$nXvar + 3 * x$nuZUvar +
           2 * x$nvZVvar + 1):(3 * x$nXvar + 3 * x$nuZUvar +
           3 * x$nvZVvar), , drop = FALSE],
         P.values = TRUE,
@@ -1741,7 +1670,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuZUvar +
+        printCoefmat(mlRes[(3 * x$nXvar + 3 * x$nuZUvar +
           3 * x$nvZVvar + 1):(4 * x$nXvar + 3 * x$nuZUvar +
           3 * x$nvZVvar), , drop = FALSE],
         P.values = TRUE,
@@ -1754,7 +1683,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           "\n"
         )
         cat(
-          centerText("Parameter in variance of u (one sided error) for latent class 4",
+          centerText("Parameter in variance of u (one-sided error) for latent class 4",
             width = lengthSum + 2 + switch(dimCoefTable,
               `4` = 18, `5` = 31, `6` = 43, `7` = 57
             )
@@ -1767,7 +1696,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes[(4 * x$nXvar + 3 * x$nuZUvar +
+        printCoefmat(mlRes[(4 * x$nXvar + 3 * x$nuZUvar +
           3 * x$nvZVvar + 1):(4 * x$nXvar + 4 * x$nuZUvar +
           3 * x$nvZVvar), , drop = FALSE],
         P.values = TRUE,
@@ -1780,7 +1709,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           "\n"
         )
         cat(
-          centerText("Parameters in variance of v (symmetric error) for latent class 4",
+          centerText("Parameters in variance of v (two-sided error) for latent class 4",
             width = lengthSum + 2 + switch(dimCoefTable,
               `4` = 18, `5` = 31, `6` = 43, `7` = 57
             )
@@ -1793,7 +1722,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes[(4 * x$nXvar + 4 * x$nuZUvar +
+        printCoefmat(mlRes[(4 * x$nXvar + 4 * x$nuZUvar +
           3 * x$nvZVvar + 1):(4 * x$nXvar + 4 * x$nuZUvar +
           4 * x$nvZVvar), , drop = FALSE],
         P.values = TRUE,
@@ -1819,7 +1748,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )), collapse = ""),
           "\n"
         )
-        printCoefmat(mleRes[(4 * x$nXvar + 4 * x$nuZUvar +
+        printCoefmat(mlRes[(4 * x$nXvar + 4 * x$nuZUvar +
           4 * x$nvZVvar + 1):(4 * x$nXvar + 4 * x$nuZUvar +
           4 * x$nvZVvar + 3 * x$nZHvar), , drop = FALSE],
         P.values = TRUE, digits = digits, signif.legend = TRUE
@@ -1845,7 +1774,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(2 * x$nXvar + 2 * x$nuZUvar +
+          printCoefmat(mlRes[(2 * x$nXvar + 2 * x$nuZUvar +
             2 * x$nvZVvar + 1):(3 * x$nXvar + 2 * x$nuZUvar +
             2 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
@@ -1857,7 +1786,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           collapse = ""
           ), "\n")
           cat(
-            centerText("Parameter in variance of u (one sided error) for latent class 3",
+            centerText("Parameter in variance of u (one-sided error) for latent class 3",
               width = lengthSum + 2 + switch(dimCoefTable,
                 `4` = 18, `5` = 31, `6` = 43, `7` = 57
               )
@@ -1869,7 +1798,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(3 * x$nXvar + 2 * x$nuZUvar +
+          printCoefmat(mlRes[(3 * x$nXvar + 2 * x$nuZUvar +
             2 * x$nvZVvar + 1):(3 * x$nXvar + 3 * x$nuZUvar +
             2 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
@@ -1881,7 +1810,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           collapse = ""
           ), "\n")
           cat(
-            centerText("Parameters in variance of v (symmetric error) for latent class 3",
+            centerText("Parameters in variance of v (two-sided error) for latent class 3",
               width = lengthSum + 2 + switch(dimCoefTable,
                 `4` = 18, `5` = 31, `6` = 43, `7` = 57
               )
@@ -1893,7 +1822,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuZUvar +
+          printCoefmat(mlRes[(3 * x$nXvar + 3 * x$nuZUvar +
             2 * x$nvZVvar + 1):(3 * x$nXvar + 3 * x$nuZUvar +
             3 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
@@ -1917,7 +1846,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(3 * x$nXvar + 3 * x$nuZUvar +
+          printCoefmat(mlRes[(3 * x$nXvar + 3 * x$nuZUvar +
             3 * x$nvZVvar + 1):(4 * x$nXvar + 3 * x$nuZUvar +
             3 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
@@ -1929,7 +1858,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           collapse = ""
           ), "\n")
           cat(
-            centerText("Parameter in variance of u (one sided error) for latent class 4",
+            centerText("Parameter in variance of u (one-sided error) for latent class 4",
               width = lengthSum + 2 + switch(dimCoefTable,
                 `4` = 18, `5` = 31, `6` = 43, `7` = 57
               )
@@ -1941,7 +1870,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(4 * x$nXvar + 3 * x$nuZUvar +
+          printCoefmat(mlRes[(4 * x$nXvar + 3 * x$nuZUvar +
             3 * x$nvZVvar + 1):(4 * x$nXvar + 4 * x$nuZUvar +
             3 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
@@ -1953,7 +1882,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           collapse = ""
           ), "\n")
           cat(
-            centerText("Parameters in variance of v (symmetric error) for latent class 4",
+            centerText("Parameters in variance of v (two-sided error) for latent class 4",
               width = lengthSum + 2 + switch(dimCoefTable,
                 `4` = 18, `5` = 31, `6` = 43, `7` = 57
               )
@@ -1965,7 +1894,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(4 * x$nXvar + 4 * x$nuZUvar +
+          printCoefmat(mlRes[(4 * x$nXvar + 4 * x$nuZUvar +
             3 * x$nvZVvar + 1):(4 * x$nXvar + 4 * x$nuZUvar +
             4 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
@@ -1989,7 +1918,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(4 * x$nXvar + 4 * x$nuZUvar +
+          printCoefmat(mlRes[(4 * x$nXvar + 4 * x$nuZUvar +
             4 * x$nvZVvar + 1):(5 * x$nXvar + 4 * x$nuZUvar +
             4 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
@@ -2001,7 +1930,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           collapse = ""
           ), "\n")
           cat(
-            centerText("Parameter in variance of u (one sided error) for latent class 5",
+            centerText("Parameter in variance of u (one-sided error) for latent class 5",
               width = lengthSum + 2 + switch(dimCoefTable,
                 `4` = 18, `5` = 31, `6` = 43, `7` = 57
               )
@@ -2013,7 +1942,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(5 * x$nXvar + 4 * x$nuZUvar +
+          printCoefmat(mlRes[(5 * x$nXvar + 4 * x$nuZUvar +
             4 * x$nvZVvar + 1):(5 * x$nXvar + 5 * x$nuZUvar +
             4 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
@@ -2025,7 +1954,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           collapse = ""
           ), "\n")
           cat(
-            centerText("Parameters in variance of v (symmetric error) for latent class 5",
+            centerText("Parameters in variance of v (two-sided error) for latent class 5",
               width = lengthSum + 2 + switch(dimCoefTable,
                 `4` = 18, `5` = 31, `6` = 43, `7` = 57
               )
@@ -2037,7 +1966,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(5 * x$nXvar + 5 * x$nuZUvar +
+          printCoefmat(mlRes[(5 * x$nXvar + 5 * x$nuZUvar +
             4 * x$nvZVvar + 1):(5 * x$nXvar + 5 * x$nuZUvar +
             5 * x$nvZVvar), , drop = FALSE],
           P.values = TRUE,
@@ -2061,7 +1990,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
           )),
           collapse = ""
           ), "\n")
-          printCoefmat(mleRes[(5 * x$nXvar + 5 * x$nuZUvar +
+          printCoefmat(mlRes[(5 * x$nXvar + 5 * x$nuZUvar +
             5 * x$nvZVvar + 1):(5 * x$nXvar + 5 * x$nuZUvar +
             5 * x$nvZVvar + 4 * x$nZHvar), , drop = FALSE],
           P.values = TRUE, digits = digits, signif.legend = TRUE
@@ -2075,7 +2004,7 @@ print.summary.lcmcross <- function(x, digits = max(3, getOption("digits") - 2), 
       }
     }
   }
-  cat(x$mleDate, "\n")
+  cat(x$mlDate, "\n")
   cat("Log likelihood status:", x$optStatus, "\n")
   cat(
     paste0(rep("-", lengthSum + 2 + switch(dimCoefTable,
