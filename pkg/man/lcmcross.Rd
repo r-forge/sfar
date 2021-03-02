@@ -322,14 +322,14 @@ frontier: A framework for the analysis of firm inefficiency.
 ## Using data on eighty-two countries production (DGP)
 # Cobb Douglas (production function) half normal distribution
 # Only the intercept is used as the separating variables
-cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, data = worldprod, method = "bfgs")
+cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, data = worldprod)
   summary(cb_2c_h)
 
 # summary of the initial MLE model
   summary(cb_2c_h$InitHalf)
 
 # same result by jump-starting the estimation
-cb_2c_h2 <- lcmcross(formula = ly ~ lk + ll + yr, data = worldprod, method = "bfgs", 
+cb_2c_h2 <- lcmcross(formula = ly ~ lk + ll + yr, data = worldprod, 
     initStart = TRUE)
   summary(cb_2c_h2)
 
@@ -338,7 +338,7 @@ cb_2c_h3 <- lcmcross(formula = ly ~ lk + ll + yr, thet = ~initStat, data = world
   summary(cb_2c_h3)
 
 # Only the intercept is used as the separating variables and inefficiency
-# drivers are estimated with variables initStat
+# drivers are estimated with variable initStat
 cb_2c_h4 <- lcmcross(formula = ly ~ lk + ll + yr, uhet = ~initStat, data = worldprod)
   summary(cb_2c_h4)
 }

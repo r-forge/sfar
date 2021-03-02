@@ -4,7 +4,7 @@
 \alias{residuals.sfacross}
 \alias{residuals.lcmcross}
 
-\title{Extract classic of latent class stochastic models residuals}
+\title{Extract classic or latent class stochastic models residuals}
 
 \description{
 It returns the residuals' values from classic or latent class 
