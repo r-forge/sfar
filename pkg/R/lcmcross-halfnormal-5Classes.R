@@ -1979,7 +1979,7 @@ LCM5ChnormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S, Zvar = Zvar, nZHvar = nZHvar), lower = startMat[,
       6], upper = startMat[, 7], control = list(iter.max = initIter,
-      trace = printInfo, eval.max = initIter, rel.tol = tol, x.tol = tol))
+      trace = if (printInfo) 1 else 0, eval.max = initIter, rel.tol = tol, x.tol = tol))
     startVal <- initModel$par
   }
   startLoglik <- sum(cLCMhalfnormlike5C(startVal, nXvar = nXvar,
@@ -1999,7 +1999,7 @@ LCM5ChnormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S, Zvar = Zvar, nZHvar = nZHvar)), hessian = 0,
-    control = list(trace = printInfo, maxeval = itermax,
+    control = list(trace = if (printInfo) 1 else 0, maxeval = itermax,
       stepmax = stepmax, xtol = tol, grtol = gradtol)),
     maxLikAlgo = maxRoutine(fn = cLCMhalfnormlike5C, grad = cgradLCMhalfnormlike5C,
       hess = chessLCMhalfnormlike5C, start = startVal,
@@ -2054,7 +2054,7 @@ LCM5ChnormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S, Zvar = Zvar, nZHvar = nZHvar), control = list(iter.max = itermax,
-      trace = printInfo, eval.max = itermax, rel.tol = tol,
+      trace = if (printInfo) 1 else 0, eval.max = itermax, rel.tol = tol,
       x.tol = tol)))
   if (method %in% c("ucminf", "nlminb")) {
     mleObj$gradient <- colSums(cgradLCMhalfnormlike5C(mleObj$par,

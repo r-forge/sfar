@@ -175,7 +175,7 @@ lognormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S, N = N,
-      FiMat = FiMat)), hessian = 0, control = list(trace = printInfo,
+      FiMat = FiMat)), hessian = 0, control = list(trace = if (printInfo) 1 else 0,
       maxeval = itermax, stepmax = stepmax, xtol = tol,
       grtol = gradtol)), maxLikAlgo = maxRoutine(fn = clognormlike,
     grad = cgradlognormlike, start = startVal, finalHessian = if (hessianType ==
@@ -229,7 +229,7 @@ lognormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
         nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
         vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S,
         N = N, FiMat = FiMat)), control = list(iter.max = itermax,
-        trace = printInfo, eval.max = itermax, rel.tol = tol,
+        trace = if (printInfo) 1 else 0, eval.max = itermax, rel.tol = tol,
         x.tol = tol)))
   if (method %in% c("ucminf", "nlminb")) {
     mleObj$gradient <- colSums(cgradlognormlike(mleObj$par,

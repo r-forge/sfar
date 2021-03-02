@@ -299,7 +299,7 @@ truncnormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
       vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S)),
-    hessian = 0, control = list(trace = printInfo, maxeval = itermax,
+    hessian = 0, control = list(trace = if (printInfo) 1 else 0, maxeval = itermax,
       stepmax = stepmax, xtol = tol, grtol = gradtol)),
     maxLikAlgo = maxRoutine(fn = ctruncnormlike, grad = cgradtruncnormlike,
       hess = chesstruncnormlike, start = startVal, finalHessian = if (hessianType ==
@@ -358,7 +358,7 @@ truncnormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
         nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
         nmuZUvar = nmuZUvar, muHvar = muHvar, uHvar = uHvar,
         vHvar = vHvar, Yvar = Yvar, Xvar = Xvar, S = S),
-      control = list(iter.max = itermax, trace = printInfo,
+      control = list(iter.max = itermax, trace = if (printInfo) 1 else 0,
         eval.max = itermax, rel.tol = tol, x.tol = tol)))
   if (method %in% c("ucminf", "nlminb")) {
     mleObj$gradient <- colSums(cgradtruncnormlike(mleObj$par,

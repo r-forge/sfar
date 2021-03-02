@@ -172,7 +172,7 @@ gammanormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       FiMat = FiMat)), gr = function(parm) -colSums(cgradgammanormlike(parm,
       nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
-      S = S, N = N, FiMat = FiMat)), hessian = 0, control = list(trace = printInfo,
+      S = S, N = N, FiMat = FiMat)), hessian = 0, control = list(trace = if (printInfo) 1 else 0,
       maxeval = itermax, stepmax = stepmax, xtol = tol,
       grtol = gradtol)), maxLikAlgo = maxRoutine(fn = cgammanormlike,
     grad = cgradgammanormlike, start = startVal, finalHessian = if (hessianType ==
@@ -218,7 +218,7 @@ gammanormAlgOpt <- function(start, olsParam, dataTable, S, nXvar,
       nXvar = nXvar, nuZUvar = nuZUvar, nvZVvar = nvZVvar,
       uHvar = uHvar, vHvar = vHvar, Yvar = Yvar, Xvar = Xvar,
       S = S, N = N, FiMat = FiMat)), control = list(iter.max = itermax,
-      trace = printInfo, eval.max = itermax, rel.tol = tol,
+      trace = if (printInfo) 1 else 0, eval.max = itermax, rel.tol = tol,
       x.tol = tol)))
   if (method %in% c("ucminf", "nlminb")) {
     mleObj$gradient <- colSums(cgradgammanormlike(mleObj$par,
