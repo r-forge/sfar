@@ -6,7 +6,7 @@
 \alias{coef.sfacross}
 \alias{coef.lcmcross}
 
-\title{Extract classic of latent class stochastic models coefficients}
+\title{Extract classic or latent class stochastic models coefficients}
 
 \description{
 From an object of class \code{'summary.sfacross'} or \code{'summary.lcmcross'}, 
