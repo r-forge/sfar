@@ -21,20 +21,19 @@ stochastic frontier models estimated with \code{\link{sfacross}} or \code{\link{
 \item{object}{A classic or a latent class stochastic frontier model returned by
 \code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
-\item{individual}{Logical. If \code{TRUE}, a vector of individual likelihood is
-returned. If \code{FALSE} (default), the sum of all observations likelihood is
-returned.}
+\item{individual}{Logical. If \code{FALSE} (default), the sum of all observations likelihood is
+returned. If \code{TRUE}, a vector of individual likelihood is returned.}
 
 \item{...}{Currently ignored.}
 }
 
 \value{
 \code{\link{logLik}} returns an object of class \code{'logLik'}, which is either a
-numeric scalar (the log-likelihood value when \code{individual = FALSE}), 
-or a numeric vector (the log-likelihood of each observation when 
-\code{individual = TRUE}) with the following 2 attributes: 
-\item{Nobs}{Total number of observations.}
-\item{df}{Number of free parameters, i.e. length of the coefficient vector.}
+numeric matrix with the log-likelihood value (\code{logLik}), the total number of observations (\code{Nobs}) and 
+the number of free parameters (\code{df}), when \code{individual = FALSE}, 
+
+or a list of elements, containing the log-likelihood of each observation (\code{logLik}), the total number of observations (\code{Nobs}) and 
+the number of free parameters (\code{df}), when \code{individual = TRUE}. 
 }
 
 \examples{
@@ -50,14 +49,12 @@ tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
 
 ## Using data on eighty-two countries production (DGP)
 # LCM Cobb Douglas (production function) half normal distribution
-cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", data = worldprod, 
-    S = 1, method = "ucminf")
+cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", data = worldprod, S = 1)
   logLik(cb_2c_h, individual = TRUE)
 }
 
 \seealso{
-\code{\link{sfacross}}, for the stochastic frontier analysis model fitting
-function.
+\code{\link{sfacross}}, for the stochastic frontier analysis model fitting function.
 
 \code{\link{lcmcross}}, for the latent class stochastic frontier analysis
 model fitting function.

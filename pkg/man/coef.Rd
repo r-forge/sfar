@@ -6,7 +6,7 @@
 \alias{coef.sfacross}
 \alias{coef.lcmcross}
 
-\title{coef methods for class \code{'summary'} of frontier objects}
+\title{Extract classic of latent class stochastic models coefficients}
 
 \description{
 From an object of class \code{'summary.sfacross'} or \code{'summary.lcmcross'}, 
@@ -28,11 +28,11 @@ estimated coefficients for the likelihood estimation.
 
 \arguments{
 \item{object}{A classic or latent class stochastic frontier model returned by
-\code{\link{sfacross}} or \code{\link{lcmcross}}.}
+\code{\link{sfacross}} or \code{\link{lcmcross}}, or an object of class 
+\code{'summary.sfacross'} or \code{'summary.lcmcross'}.}
 
-\item{...}{Currently ignored.}
-
-\item{extraPar}{Logical (default = \code{FALSE}). If \code{TRUE}, additional parameters 
+\item{extraPar}{Logical (default = \code{FALSE}). Only applies to objects of 
+class \code{'sfacross'} or \code{'lcmcross'}. If \code{TRUE}, additional parameters 
 are returned:
 
 \code{sigmaSq} = \code{sigmauSq} + \code{sigmavSq}
@@ -53,6 +53,8 @@ are returned:
 
 \code{gamma} = \code{sigmauSq}/(\code{sigmauSq} + \code{sigmavSq})
 }
+
+\item{...}{Currently ignored.}
 }
 
 \value{

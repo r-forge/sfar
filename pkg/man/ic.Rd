@@ -3,7 +3,7 @@
 \alias{ic}
 \alias{ic.sfacross}
 \alias{ic.lcmcross}
-\title{Information criteria}
+\title{Extract information criteria}
 
 \description{
 \code{\link{ic}} returns information criterion from classic or latent class stochastic frontier 

@@ -4,7 +4,7 @@
 \alias{residuals.sfacross}
 \alias{residuals.lcmcross}
 
-\title{Residuals of frontier estimation}
+\title{Extract classic of latent class stochastic models residuals}
 
 \description{
 It returns the residuals' values from classic or latent class 
@@ -30,7 +30,8 @@ When the \code{object} is of class \code{'sfacross'}, \code{link{residuals}}
 returns a vector of residuals values.
 
 When the \code{object} is of class \code{'lcmcross'}, \code{link{residuals}} 
-returns a data frame containing the residuals values for each latent class.
+returns a data frame containing the residuals values for each latent class, 
+where each variable terminates with \code{"_c#"}, \code{"#"} being the class number.
 }
 
 \note{The residuals values are ordered in the same way as the
@@ -46,14 +47,14 @@ tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
     I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
     udist = 'tnormal', muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
     scaling = TRUE, method = 'mla')
-  residuals(tl_u_ts)
+  resid.tl_u_ts <- residuals(tl_u_ts)
+  head(resid.tl_u_ts)
 
 ## Using data on eighty-two countries production (DGP)
 # LCM Cobb Douglas (production function) half normal distribution
-cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = 'hnormal', data = worldprod, 
-    S = 1, method = 'ucminf')
-  resid <- residuals(cb_2c_h)
-  head(resid)
+cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = 'hnormal', data = worldprod, S = 1)
+  resid.cb_2c_h <- residuals(cb_2c_h)
+  head(resid.cb_2c_h)
 }
 
 \seealso{

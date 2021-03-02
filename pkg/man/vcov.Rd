@@ -4,7 +4,7 @@
 \alias{vcov.sfacross}
 \alias{vcov.lcmcross}
 
-\title{Variance-covariance matrix for frontier objects}
+\title{Calculate variance-covariance matrix for frontier objects}
 
 \description{
 Extract the variance-covariance matrix of the maximum likelihood (ML) 
@@ -74,7 +74,7 @@ cb_s_h <- sfacross(formula = YIT ~ X1 + X2 + X3 + X4, udist = "hnormal",
 ## Data on eighty-two countries production (DGP)
 # LCM Cobb Douglas (production function) half normal distribution
 cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal",
-    data = worldprod, uhet = ~ initStat, S = 1, method = "ucminf")
+    data = worldprod, uhet = ~ initStat, S = 1)
   vcov(cb_2c_h)
 }
 

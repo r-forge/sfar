@@ -3,7 +3,7 @@
 \alias{fitted}
 \alias{fitted.sfacross}
 \alias{fitted.lcmcross}
-\title{Fitted frontier value}
+\title{Extract fitted frontier value}
 
 \description{
 \code{\link{fitted}} returns the fitted frontier values from classic or latent class 
@@ -27,7 +27,8 @@ stochastic frontier models estimated with \code{\link{sfacross}} or \code{\link{
 In the case of an object of class \code{'sfacross'}, a vector of fitted values is returned.
 
 In the case of an object of class \code{'lcmcross'}, a data frame containing the 
-fitted values for each class is returned.
+fitted values for each class is returned where each variable terminates with 
+\code{"_c#"}, \code{"#"} being the class number.
 }
 
 \note{
@@ -39,8 +40,8 @@ in the dataset used for the estimation.
 ## Using data on eighty-two countries production (DGP)
 # LCM Cobb Douglas (production function) half normal distribution
 cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = 'hnormal', data = worldprod)
-  fit.val <- fitted(cb_2c_h)
-  head(fit.val)
+  fit.cb_2c_h <- fitted(cb_2c_h)
+  head(fit.cb_2c_h)
 }
 
 \seealso{

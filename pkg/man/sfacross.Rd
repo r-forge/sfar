@@ -29,8 +29,6 @@ sfacross(formula, muhet, uhet, vhet, logDepVar = TRUE, data, subset, S = 1,
   simType = "halton", Nsim = 100, prime = 2, burn = 10, antithetics = FALSE,
   seed = 12345, itermax = 2000, printInfo = FALSE, tol = 1e-12, gradtol = 1e-06,
   stepmax = 0.1, qac = "marquardt")
-
-\method{print}{sfacross}(x, digits = max(3, getOption("digits") - 2), ...)
 }
 
 \arguments{
@@ -88,7 +86,7 @@ likelihood (ML) estimation.}
 Default = \code{"bfgs"}. 9 algorithms are available:
 \itemize{
   \item \code{"bfgs"}, for Broyden-Fletcher-Goldfarb-Shanno
-(see \code{\link[maxLik:maxNR]{maxBFGS}})
+(see \code{\link[maxLik:maxBFGS]{maxBFGS}})
   \item \code{"bhhh"}, for Berndt-Hall-Hall-Hausman
 (see \code{\link[maxLik:maxNR]{maxBHHH}})
   \item \code{"nr"}, for Newton-Raphson (see \code{\link[maxLik]{maxNR}})
@@ -147,12 +145,6 @@ and \code{"nr"} algorithms. If \code{"stephalving"}, the step length is decrease
 the direction is kept. If \code{"marquardt"} (default), the step length is decreased
 while also moving closer to the pure gradient direction. See \code{\link[maxLik:maxNR]{maxBHHH}} and
 \code{\link[maxLik]{maxNR}}.}
-
-\item{x}{An object of class \code{'sfacross'} returned by \code{\link{sfacross}}.}
-
-\item{digits}{Number of digits displayed in values.}
-
-\item{...}{Currently ignored.}
 }
 
 \details{
@@ -245,10 +237,9 @@ the two-sided error term.}
 
 \item{startVal}{Numeric vector. Starting value for M(S)L estimation.}
 
-\item{dataTable}{A data frame (tibble format) containing information on the dependent
-and explanatory variables used for optimization along with residuals and
-fitted values of the OLS and M(S)L estimations, and the individual
-observation log-likelihood.}
+\item{dataTable}{A data frame (tibble format) containing information on data 
+used for optimization along with residuals and fitted values of the OLS and 
+M(S)L estimations, and the individual observation log-likelihood.}
 
 \item{olsParam}{Numeric vector. OLS estimates.}
 
@@ -276,9 +267,9 @@ D'Agostino and Pearson, 1973).}
 
 \item{startLoglik}{Log-likelihood at the starting values.}
 
-\item{mleLoglik}{Log-likelihood value of the M(S)L estimation.}
+\item{mlLoglik}{Log-likelihood value of the M(S)L estimation.}
 
-\item{mleParam}{Parameters obtained from M(S)L estimation.}
+\item{mlParam}{Parameters obtained from M(S)L estimation.}
 
 \item{gradient}{Each variable gradient of the M(S)L estimation.}
 
@@ -292,7 +283,7 @@ the M(S)L estimation.}
 
 \item{hessianType}{The argument \code{'hessianType'}. See the section \sQuote{Arguments}.}
 
-\item{mleDate}{Date and time of the estimated model.}
+\item{mlDate}{Date and time of the estimated model.}
 
 \item{simDist}{The argument \code{'simDist'}, only if \code{udist = "gamma"}, 
 \code{"lognormal"} or , \code{"weibull"}. See the section \sQuote{Arguments}.}
@@ -418,14 +409,14 @@ frontier analysis. Master thesis, Western Kentucky University, May.
 tl_u_h <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
     log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
     I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
-    udist = 'hnormal', uhet = ~ regu, data = utility, S = -1, method = 'sparse')
+    udist = 'hnormal', uhet = ~ regu, data = utility, S = -1, method = 'bfgs')
   summary(tl_u_h)
 
 # Translog (cost function) truncated normal with heteroscedasticity
 tl_u_t <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
     log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
     I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
-    udist = 'tnormal', muhet = ~ regu, data = utility, S = -1, method = 'ucminf')
+    udist = 'tnormal', muhet = ~ regu, data = utility, S = -1, method = 'bhhh')
   summary(tl_u_t)
 
 # Translog (cost function) truncated normal with scaling property
