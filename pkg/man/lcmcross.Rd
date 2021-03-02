@@ -8,7 +8,7 @@
 \description{
 \code{\link{lcmcross}} is a symbolic formula based function for the
 estimation of the latent class stochastic frontier model (LCM) in the case of
-cross-sectional or pooled cross section data. The model is estimated using
+cross-sectional or pooled cross-section data. The model is estimated using
 maximum likelihood (ML). See Orea and Kumbhakar (2004), Parmeter and
 Kumbhakar (2014, p282).
 
@@ -172,7 +172,7 @@ The number of classes can be retained based on information criterion (see
 for instance \code{\link[=ic.lcmcross]{ic}}).
 
 Class assignment is based on the largest posterior probability. This probability is 
-obtained using Bayes' rule and for class \eqn{j} we have
+obtained using Bayes' rule, as follows for class \eqn{j}:
 \deqn{w\left(j|i\right)=\frac{P\left(i|j\right)\pi\left(i,
 j\right)}{\sum_{m=1}^JP\left(i|m\right)\pi\left(i, m\right)}}
 
@@ -260,7 +260,7 @@ the ML estimation.}
 }
 
 \note{
-In the case of panel data, \code{\link{lcmcross}} estimates a pooled cross section
+In the case of panel data, \code{\link{lcmcross}} estimates a pooled cross-section
 where the probability of belonging to a class a priori is not permanent (not fixed over time).
 }
 
@@ -303,44 +303,39 @@ frontier: A framework for the analysis of firm inefficiency.
 
   \code{\link[=coef.lcmcross]{coef}} for extracting coefficients of the estimation.
 
-  \code{\link[=efficiencies.lcmcross]{efficiencies}} for calculating efficiency estimates.
+  \code{\link[=efficiencies.lcmcross]{efficiencies}} for computing (in-)efficiency estimates.
 
-  \code{\link[=fitted.lcmcross]{fitted}} for obtaining the fitted frontier values.
+  \code{\link[=fitted.lcmcross]{fitted}} for extracting the fitted frontier values.
 
-  \code{\link[=ic.lcmcross]{ic}} for computing information criteria.
+  \code{\link[=ic.lcmcross]{ic}} for extracting information criteria.
 
   \code{\link[=logLik.lcmcross]{logLik}} for extracting log-likelihood value(s) of the estimation.
 
-  \code{\link[=marginal.lcmcross]{marginal}} for calculating marginal effects of Z-variables on inefficiency.
+  \code{\link[=marginal.lcmcross]{marginal}} for computing marginal effects of inefficiency drivers.
 
   \code{\link[=residuals.lcmcross]{residuals}} for extracting residuals of the estimation.
 
-  \code{\link[=vcov.lcmcross]{vcov}} for extracting the variance-covariance matrix of the coefficients.
+  \code{\link[=vcov.lcmcross]{vcov}} for computing the variance-covariance matrix of the coefficients.
 }
 
 \examples{
 ## Using data on eighty-two countries production (DGP)
-# Cobb Douglas (production function) half normal distribution
-# Only the intercept is used as the separating variables
-cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, data = worldprod)
-  summary(cb_2c_h)
+# LCM Cobb Douglas (production function) half normal distribution
+# Intercept and initStat used as separating variables
+cb_2c_h1 <- lcmcross(formula = ly ~ lk + ll + yr, thet = ~initStat, data = worldprod)
+  summary(cb_2c_h1)
 
-# summary of the initial MLE model
-  summary(cb_2c_h$InitHalf)
+# summary of the initial ML model
+  summary(cb_2c_h1$InitHalf)
 
 # same result by jump-starting the estimation
-cb_2c_h2 <- lcmcross(formula = ly ~ lk + ll + yr, data = worldprod, 
-    initStart = TRUE)
+cb_2c_h2 <- lcmcross(formula = ly ~ lk + ll + yr, data = worldprod, initStart = TRUE)
   summary(cb_2c_h2)
 
-# Intercept and initStat used as separating variables
-cb_2c_h3 <- lcmcross(formula = ly ~ lk + ll + yr, thet = ~initStat, data = worldprod)
+# Only the intercept is used as the separating variable and only variable 
+# initStat is used as inefficiency driver
+cb_2c_h3 <- lcmcross(formula = ly ~ lk + ll + yr, uhet = ~initStat, data = worldprod)
   summary(cb_2c_h3)
-
-# Only the intercept is used as the separating variables and inefficiency
-# drivers are estimated with variable initStat
-cb_2c_h4 <- lcmcross(formula = ly ~ lk + ll + yr, uhet = ~initStat, data = worldprod)
-  summary(cb_2c_h4)
 }
 
 \author{K Hervé Dakpo, Yann Desjeux and Laure Latruffe}

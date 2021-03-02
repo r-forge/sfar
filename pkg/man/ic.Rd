@@ -3,7 +3,7 @@
 \alias{ic}
 \alias{ic.sfacross}
 \alias{ic.lcmcross}
-\title{Extract information criteria}
+\title{Extract information criteria of classic or latent class stochastic models}
 
 \description{
 \code{\link{ic}} returns information criterion from classic or latent class stochastic frontier 
@@ -47,12 +47,13 @@ HQIC) of the maximum likelihood coefficients.
 }
 
 \examples{
-## Using data on eighty-two countries production (DGP)
-# LCM Cobb Douglas (production function) half normal distribution
-cb_2c_h <- lcmcross(formula = ly ~ lk + ll + yr, udist = "hnormal", data = worldprod)
-  ic(cb_2c_h)
-  ic(cb_2c_h, IC = "BIC")
-  ic(cb_2c_h, IC = "HQIC")
+## Using data on Swiss railway
+# LCM (cost function) half normal distribution
+cb_2c_u <- lcmcross(formula = LNCT ~ LNQ2 + LNQ3 + LNNET + LNPK + LNPL, 
+    udist = "hnormal", uhet = ~ 1, data = swissrailways, S = -1, method="ucminf")
+  ic(cb_2c_u)
+  ic(cb_2c_u, IC = "BIC")
+  ic(cb_2c_u, IC = "HQIC")
 }
 
 \seealso{

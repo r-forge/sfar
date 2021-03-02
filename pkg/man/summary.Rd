@@ -6,11 +6,10 @@
 \alias{summary.lcmcross}
 \alias{print.summary.lcmcross}
 
-\title{Summary methods for frontier objects}
+\title{Summary of results for classic or latent class stochastic models}
 
-\description{Create and print summary results of objects of class 
-\code{'sfacross'} and \code{'lcmcross'} returned by \code{\link{sfacross}}
-and \code{\link{lcmcross}}.
+\description{Create and print summary results for classic or latent class stochastic 
+models returned by \code{\link{sfacross}} and \code{\link{lcmcross}}.
 }
 
 \usage{
@@ -61,8 +60,8 @@ of the one-sided error term (\eqn{\sigma_u^2}).}
 
 \item{Varu}{For \code{object} of class \code{'sfacross'}. Variance of the one-sided error term.}
 
-\item{THETA}{For \code{object} of class \code{'sfacross'} with \code{"udist = uniform"}.
-\code{THETA} value in the case the uniform distribution is defined as: \eqn{u_i \in [0, \Theta]}.}
+\item{THETA}{For \code{object} of class \code{'sfacross'} with \code{"udist = uniform"}. 
+\eqn{\Theta} value in the case the uniform distribution is defined as: \eqn{u_i \in [0, \Theta]}.}
 
 \item{Eu}{For \code{object} of class \code{'sfacross'}. Expected unconditional inefficiency.}
 
@@ -83,20 +82,14 @@ difference between the stochastic frontier and the OLS.}
 }
 
 \examples{
-## Data on fossil fuel fired steam electric power generation plants in the
-## United States
+## Using data on fossil fuel fired steam electric power generation plants in the U.S.
 # Translog SFA (cost function) truncated normal with scaling property
 tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) +
     log(wl/wf) + log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) +
     I(log(wl/wf) * log(wk/wf)) + I(log(y) * log(wl/wf)) + I(log(y) * log(wk/wf)),
     udist = "tnormal", muhet = ~ regu, uhet = ~ regu, data = utility, S = -1,
     scaling = TRUE, method = "mla")
-  summary(tl_u_ts)
-
-## Using data on Swiss railway
-cb_2c_u <- lcmcross(formula = LNCT ~ LNQ2 + LNQ3 + LNNET + LNPK + LNPL, 
-    udist = "hnormal", uhet = ~ 1, data = swissrailways, S = -1)
-  summary(cb_2c_u, grad = TRUE, ci = TRUE)
+  summary(tl_u_ts, grad = TRUE, ci = TRUE)
 }
 
 \seealso{
@@ -106,21 +99,21 @@ cb_2c_u <- lcmcross(formula = LNCT ~ LNQ2 + LNQ3 + LNNET + LNPK + LNPL,
 
   \code{\link[=coef.sfacross]{coef}} for extracting coefficients of the estimation.
 
-  \code{\link[=efficiencies.sfacross]{efficiencies}} for calculating efficiency estimates.
+  \code{\link[=efficiencies.sfacross]{efficiencies}} for computing (in-)efficiency estimates.
 
-  \code{\link[=fitted.sfacross]{fitted}} for obtaining the fitted frontier values.
+  \code{\link[=fitted.sfacross]{fitted}} for extracting the fitted frontier values.
 
-  \code{\link[=ic.sfacross]{ic}} for computing information criteria.
+  \code{\link[=ic.sfacross]{ic}} for extracting information criteria.
 
   \code{\link[=logLik.sfacross]{logLik}} for extracting log-likelihood value(s) of the estimation.
 
-  \code{\link[=marginal.sfacross]{marginal}} for calculating marginal effects of Z-variables on inefficiency.
+  \code{\link[=marginal.sfacross]{marginal}} for computing marginal effects of inefficiency drivers.
 
   \code{\link[=residuals.sfacross]{residuals}} for extracting residuals of the estimation.
 
-  \code{\link[=vcov.sfacross]{vcov}} for extracting the variance-covariance matrix of the coefficients.
+  \code{\link[=vcov.sfacross]{vcov}} for computing the variance-covariance matrix of the coefficients.
   
-  \code{\link{skewnessTest}} for implementing Skewness test of objects of class \code{'sfacross'}.
+  \code{\link{skewnessTest}} for implementing skewness test.
 }
 
 \keyword{methods}

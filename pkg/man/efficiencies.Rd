@@ -4,7 +4,7 @@
 \alias{efficiencies.sfacross}
 \alias{efficiencies.lcmcross}
 
-\title{Returning conditional (in-)efficiency estimates}
+\title{Compute conditional (in-)efficiency estimates of classic or latent class stochastic models}
 
 \description{
 \code{\link{efficiencies}} returns (in-)efficiency estimates from classic or latent class stochastic 
@@ -18,7 +18,7 @@ frontier models estimated with \code{\link{sfacross}} or \code{\link{lcmcross}.}
 }
 
 \arguments{
-\item{object}{A classic or a latent class stochastic frontier model returned by
+\item{object}{A classic or latent class stochastic frontier model returned by
 \code{\link{sfacross}} or \code{\link{lcmcross}}.}
 
 \item{level}{A number between between 0 and 0.9999 used for the computation
@@ -110,8 +110,8 @@ and Coelli (1988). In some cases the conditional mode is also returned
 Horrace and Schmidt (1996), Hjalmarsson \emph{et al.} (1996), or Berra and 
 Sharma (1999) (see \sQuote{Value} section).
 
-In the case of the half normal distribution for the one-sided error term the formulae 
-are as follows(for notations, see the \sQuote{Details} section of 
+In the case of the half normal distribution for the one-sided error term, the formulae 
+are as follows (for notations, see the \sQuote{Details} section of 
 \code{\link{sfacross}} or \code{\link{lcmcross}}):
 
 \itemize{
@@ -128,7 +128,7 @@ and
 
 \deqn{\sigma_*^2 = \frac{\sigma_u^2 \sigma_v^2}{\sigma_u^2 + \sigma_v^2}}
 \itemize{
-\item The Battese and Coelli (1988) conditional efficiency score is obtained by:
+\item The Battese and Coelli (1988) conditional efficiency is obtained by:
 }
 \deqn{E\left[\exp{\left(-u_i\right)}|\epsilon_i\right] = \exp{\left(-\mu_{i*}+\frac{1}{2}\sigma_*^2\right)}
  \frac{\Phi\left(\frac{\mu_{i*}}{\sigma_*}-\sigma_*\right)}{\Phi\left(\frac{\mu_{i*}}{\sigma_*}\right)}}
@@ -143,7 +143,7 @@ and
 
 \deqn{M\left[u_i|\epsilon_i\right]= 0 \quad For \quad \mu_{i*} \leq 0}
 \itemize{
-\item The confidence intervals are obtained by:
+\item The confidence intervals are obtained with:
 }
 
 \deqn{\mu_{i*} + I_L\sigma_* \leq E\left[u_i|\epsilon_i\right] \leq \mu_{i*} + I_U\sigma_*}
@@ -164,8 +164,7 @@ Thus
 }
 
 \examples{
-## Data on fossil fuel fired steam electric power generation plants in the 
-## United States
+## Using data on fossil fuel fired steam electric power generation plants in the U.S.
 # Translog SFA (cost function) truncated normal with scaling property
 tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) + log(wl/wf) + 
     log(wk/wf) + I(1/2 * (log(wl/wf))^2) + I(1/2 * (log(wk/wf))^2) + I(log(wl/wf) * 

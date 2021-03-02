@@ -22,9 +22,9 @@ which accounts for technological heterogeneity by splitting the observations int
 maximum number of five classes. The classification operates based on a logit
 functional form that can be specified using some covariates (namely, the separating 
 variables allowing the separation of observations in several classes). Only the half
-normal distribution is available for the one-sided error term. Moreover,
-heteroscedasticity in both error terms is possible. The choice of the number
-of classes can be guided by several information criteria (i.e. AIC, BIC or HQIC).
+normal distribution is available for the one-sided error term. Heteroscedasticity 
+in both error terms is possible. The choice of the number of classes can be guided 
+by several information criteria (i.e. AIC, BIC or HQIC).
 }
 
 \section{sfacross}{
