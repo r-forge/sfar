@@ -15,7 +15,7 @@ ic.sfacross <- function(object, IC = "AIC", ...) {
       }
     }
   }
-  cat(IC, ": ", obj, "\n", sep="")
+  message(IC, ": ", prettyNum(obj), sep="")
 }
 
 # information criteria for lcmcross ----------
@@ -35,5 +35,5 @@ ic.lcmcross <- function(object, IC = "AIC", ...) {
       }
     }
   }
-  cat(IC, ": ", obj, "\n", sep="")
+  message(IC, ": ", prettyNum(obj), sep="")
 }
