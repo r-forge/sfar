@@ -224,9 +224,9 @@ the two-sided error term.}
 used for optimization along with residuals and fitted values of the OLS and 
 ML estimations, and the individual observation log-likelihood.}
 
-\item{InitHalf}{Initial ML estimation with half normal distribution for the
-one-sided error term. Model to construct the starting values for the latent
-class estimation. Object of class \code{'maxLik'} and \code{'maxim'}
+\item{InitHalf}{When \code{start = NULL}. Initial ML estimation with half normal 
+distribution for the one-sided error term. Model to construct the starting values 
+for the latent class estimation. Object of class \code{'maxLik'} and \code{'maxim'}
 returned.}
 
 \item{optType}{The optimization algorithm used.}
