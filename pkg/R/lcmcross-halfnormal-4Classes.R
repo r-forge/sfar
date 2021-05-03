@@ -1647,21 +1647,23 @@ cLCM4Chalfnormeff <- function(object, level) {
   u_c4 <- mustar4 + sigmastar4 * dnorm(mustar4/sigmastar4)/pnorm(mustar4/sigmastar4)
   u_c <- ifelse(Group_c == 1, u_c1, ifelse(Group_c == 2, u_c2, 
     ifelse(Group_c == 3, u_c3, u_c4)))
+  ineff_c1 <- ifelse(Group_c == 1, u_c1, NA)
+  ineff_c2 <- ifelse(Group_c == 2, u_c2, NA)
+  ineff_c3 <- ifelse(Group_c == 3, u_c3, NA)
+  ineff_c4 <- ifelse(Group_c == 4, u_c4, NA)
   if (object$logDepVar == TRUE) {
     teJLMS_c <- exp(-u_c)
-    res <- bind_cols(u_c = u_c, teJLMS_c = teJLMS_c, PosteriorProb_c = P_cond_c, 
-      Group_c = Group_c, u_c1 = u_c1, u_c2 = u_c2, u_c3 = u_c3, 
-      u_c4 = u_c4, PosteriorProb_c1 = Pcond_c1, PosteriorProb_c2 = Pcond_c2, 
-      PosteriorProb_c3 = Pcond_c3, PosteriorProb_c4 = Pcond_c4, 
-      PriorProb_c1 = Probc1, PriorProb_c2 = Probc2, PriorProb_c3 = Probc3, 
-      PriorProb_c4 = Probc4)
+    res <- bind_cols(Group_c = Group_c, PosteriorProb_c = P_cond_c, PosteriorProb_c1 = Pcond_c1, 
+      PosteriorProb_c2 = Pcond_c2, PosteriorProb_c3 = Pcond_c3, PosteriorProb_c4 = Pcond_c4, 
+      PriorProb_c1 = Probc1, PriorProb_c2 = Probc2, PriorProb_c3 = Probc3, PriorProb_c4 = Probc4, 
+      u_c = u_c, teJLMS_c = teJLMS_c, u_c1 = u_c1, u_c2 = u_c2, u_c3 = u_c3, u_c4 = u_c4, 
+      ineff_c1 = ineff_c1, ineff_c2 = ineff_c2, ineff_c3 = ineff_c3, ineff_c4 = ineff_c4)
   } else {
-    res <- bind_cols(u_c = u_c, PosteriorProb_c = P_cond_c, 
-      Group_c = Group_c, u_c1 = u_c1, u_c2 = u_c2, u_c3 = u_c3, 
-      u_c4 = u_c4, PosteriorProb_c1 = Pcond_c1, PosteriorProb_c2 = Pcond_c2, 
-      PosteriorProb_c3 = Pcond_c3, PosteriorProb_c4 = Pcond_c4, 
-      PriorProb_c1 = Probc1, PriorProb_c2 = Probc2, PriorProb_c3 = Probc3, 
-      PriorProb_c4 = Probc4)
+    res <- bind_cols(Group_c = Group_c, PosteriorProb_c = P_cond_c, PosteriorProb_c1 = Pcond_c1, 
+      PosteriorProb_c2 = Pcond_c2, PosteriorProb_c3 = Pcond_c3, PosteriorProb_c4 = Pcond_c4, 
+      PriorProb_c1 = Probc1, PriorProb_c2 = Probc2, PriorProb_c3 = Probc3, PriorProb_c4 = Probc4, 
+      u_c = u_c, u_c1 = u_c1, u_c2 = u_c2, u_c3 = u_c3, u_c4 = u_c4, ineff_c1 = ineff_c1, 
+      ineff_c2 = ineff_c2, ineff_c3 = ineff_c3, ineff_c4 = ineff_c4)
   }
   return(res)
 }
