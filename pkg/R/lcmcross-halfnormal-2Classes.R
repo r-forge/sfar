@@ -729,17 +729,17 @@ cLCM2Chalfnormeff <- function(object, level) {
   u_c1 <- mustar1 + sigmastar1 * dnorm(mustar1/sigmastar1)/pnorm(mustar1/sigmastar1)
   u_c2 <- mustar2 + sigmastar2 * dnorm(mustar2/sigmastar2)/pnorm(mustar2/sigmastar2)
   u_c <- ifelse(Group_c == 1, u_c1, u_c2)
+  ineff_c1 <- ifelse(Group_c == 1, u_c1, NA)
+  ineff_c2 <- ifelse(Group_c == 2, u_c2, NA)
   if (object$logDepVar == TRUE) {
     teJLMS_c <- exp(-u_c)
-    res <- bind_cols(u_c = u_c, teJLMS_c = teJLMS_c, PosteriorProb_c = P_cond_c, 
-      Group_c = Group_c, u_c1 = u_c1, u_c2 = u_c2, PosteriorProb_c1 = Pcond_c1, 
-      PosteriorProb_c2 = Pcond_c2, PriorProb_c1 = Probc1, 
-      PriorProb_c2 = Probc2)
+    res <- bind_cols(Group_c = Group_c, PosteriorProb_c = P_cond_c, PosteriorProb_c1 = Pcond_c1, 
+      PosteriorProb_c2 = Pcond_c2, PriorProb_c1 = Probc1, PriorProb_c2 = Probc2, u_c = u_c, 
+      teJLMS_c = teJLMS_c, u_c1 = u_c1, u_c2 = u_c2, ineff_c1 = ineff_c1, ineff_c2 = ineff_c2)
   } else {
-    res <- bind_cols(u_c = u_c, PosteriorProb_c = P_cond_c, 
-      Group_c = Group_c, u_c1 = u_c1, u_c2 = u_c2, PosteriorProb_c1 = Pcond_c1, 
-      PosteriorProb_c2 = Pcond_c2, PriorProb_c1 = Probc1, 
-      PriorProb_c2 = Probc2)
+    res <- bind_cols(Group_c = Group_c, PosteriorProb_c = P_cond_c, PosteriorProb_c1 = Pcond_c1, 
+      PosteriorProb_c2 = Pcond_c2, PriorProb_c1 = Probc1, PriorProb_c2 = Probc2, u_c = u_c, 
+      u_c1 = u_c1, u_c2 = u_c2, ineff_c1 = ineff_c1, ineff_c2 = ineff_c2)
   }
   return(res)
 }

@@ -85,21 +85,23 @@ TRUE} and \code{udist = "hnormal"}, \code{"exponential"},
 \bold{- For object of class \code{'lcmcross'} the following elements are
 returned:}
 
-\item{u_c}{Conditional inefficiency of the most probable class given the
-posterior probability.}
-
-\item{teJLMS_c}{\eqn{\exp{(-u_c)}}. Only when, in the function
-\link{lcmcross}, \code{logDepVar = TRUE}.}
+\item{Group_c}{Most probable class of each observation.}
 
 \item{PosteriorProb_c}{Highest posterior probability.}
-
-\item{Group_c}{Class of each observation.}
-
-\item{u_c#}{Conditional inefficiency associated to class #.}
 
 \item{PosteriorProb_c#}{Posterior probability of class #.}
 
 \item{PriorProb_c#}{Prior probability of class #.}
+
+\item{u_c}{Conditional inefficiency of the most probable class given the
+posterior probability.}
+
+\item{teJLMS_c}{\eqn{\exp{(-u_c)}}. Only when, in the function \link{lcmcross}, \code{logDepVar = TRUE}.}
+
+\item{u_c#}{Conditional inefficiency associated to class #, regardless of \code{Group_c}.}
+
+\item{ineff_c#}{Conditional inefficiency (\code{u_c}) for observations in class # only.}
+
 }
 
 \details{
