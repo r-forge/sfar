@@ -111,8 +111,8 @@ coef.lcmcross <- function(object, extraPar = FALSE, ...) {
     Wv2 <- as.numeric(crossprod(matrix(phi2), t(vHvar)))
     if (object$nClasses == 3) {
       delta3 <- object$mlParam[(3 * object$nXvar + 2 *
-        object$nuZUvar + 2 * object$nvZVvar + 1):(3 * object$nXvar +
-        3 * object$nuZUvar + 2 * object$nvZVvar)]
+        object$nuZUvar + 2 * object$nvZVvar + 1):(3 *
+        object$nXvar + 3 * object$nuZUvar + 2 * object$nvZVvar)]
       phi3 <- object$mlParam[(3 * object$nXvar + 3 * object$nuZUvar +
         2 * object$nvZVvar + 1):(3 * object$nXvar + 3 *
         object$nuZUvar + 3 * object$nvZVvar)]
@@ -120,22 +120,54 @@ coef.lcmcross <- function(object, extraPar = FALSE, ...) {
       Wv3 <- as.numeric(crossprod(matrix(phi3), t(vHvar)))
     } else {
       if (object$nClasses == 4) {
+        delta3 <- object$mlParam[(3 * object$nXvar +
+          2 * object$nuZUvar + 2 * object$nvZVvar + 1):(3 *
+          object$nXvar + 3 * object$nuZUvar + 2 * object$nvZVvar)]
+        phi3 <- object$mlParam[(3 * object$nXvar + 3 *
+          object$nuZUvar + 2 * object$nvZVvar + 1):(3 *
+          object$nXvar + 3 * object$nuZUvar + 3 * object$nvZVvar)]
         delta4 <- object$mlParam[(4 * object$nXvar +
           3 * object$nuZUvar + 3 * object$nvZVvar + 1):(4 *
           object$nXvar + 4 * object$nuZUvar + 3 * object$nvZVvar)]
         phi4 <- object$mlParam[(4 * object$nXvar + 4 *
           object$nuZUvar + 3 * object$nvZVvar + 1):(4 *
           object$nXvar + 4 * object$nuZUvar + 4 * object$nvZVvar)]
+        Wu3 <- as.numeric(crossprod(matrix(delta3), t(uHvar)))
+        Wv3 <- as.numeric(crossprod(matrix(phi3), t(vHvar)))
         Wu4 <- as.numeric(crossprod(matrix(delta4), t(uHvar)))
         Wv4 <- as.numeric(crossprod(matrix(phi4), t(vHvar)))
       } else {
         if (object$nClasses == 5) {
+          delta3 <- object$mlParam[(3 * object$nXvar +
+          2 * object$nuZUvar + 2 * object$nvZVvar +
+          1):(3 * object$nXvar + 3 * object$nuZUvar +
+          2 * object$nvZVvar)]
+          phi3 <- object$mlParam[(3 * object$nXvar +
+          3 * object$nuZUvar + 2 * object$nvZVvar +
+          1):(3 * object$nXvar + 3 * object$nuZUvar +
+          3 * object$nvZVvar)]
+          delta4 <- object$mlParam[(4 * object$nXvar +
+          3 * object$nuZUvar + 3 * object$nvZVvar +
+          1):(4 * object$nXvar + 4 * object$nuZUvar +
+          3 * object$nvZVvar)]
+          phi4 <- object$mlParam[(4 * object$nXvar +
+          4 * object$nuZUvar + 3 * object$nvZVvar +
+          1):(4 * object$nXvar + 4 * object$nuZUvar +
+          4 * object$nvZVvar)]
           delta5 <- object$mlParam[(5 * object$nXvar +
-          4 * object$nuZUvar + 4 * object$nvZVvar + 1):(5 *
-          object$nXvar + 5 * object$nuZUvar + 4 * object$nvZVvar)]
+          4 * object$nuZUvar + 4 * object$nvZVvar +
+          1):(5 * object$nXvar + 5 * object$nuZUvar +
+          4 * object$nvZVvar)]
           phi5 <- object$mlParam[(5 * object$nXvar +
-          5 * object$nuZUvar + 4 * object$nvZVvar + 1):(5 *
-          object$nXvar + 5 * object$nuZUvar + 5 * object$nvZVvar)]
+          5 * object$nuZUvar + 4 * object$nvZVvar +
+          1):(5 * object$nXvar + 5 * object$nuZUvar +
+          5 * object$nvZVvar)]
+          Wu3 <- as.numeric(crossprod(matrix(delta3),
+          t(uHvar)))
+          Wv3 <- as.numeric(crossprod(matrix(phi3), t(vHvar)))
+          Wu4 <- as.numeric(crossprod(matrix(delta4),
+          t(uHvar)))
+          Wv4 <- as.numeric(crossprod(matrix(phi4), t(vHvar)))
           Wu5 <- as.numeric(crossprod(matrix(delta5),
           t(uHvar)))
           Wv5 <- as.numeric(crossprod(matrix(phi5), t(vHvar)))
@@ -208,3 +240,4 @@ coef.lcmcross <- function(object, extraPar = FALSE, ...) {
   }
   return(cRes)
 }
+

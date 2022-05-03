@@ -89,12 +89,11 @@ returned:}
 
 \item{PosteriorProb_c}{Highest posterior probability.}
 
-\item{PosteriorProb_c#}{Posterior probability of class #.}
+\item{PosteriorProb_c#}{Posterior probability associated to class #, regardless of \code{Group_c}.}
 
-\item{PriorProb_c#}{Prior probability of class #.}
+\item{PriorProb_c#}{Prior probability associated to class #, regardless of \code{Group_c}.}
 
-\item{u_c}{Conditional inefficiency of the most probable class given the
-posterior probability.}
+\item{u_c}{Conditional inefficiency of the most probable class given the posterior probability.}
 
 \item{teJLMS_c}{\eqn{\exp{(-u_c)}}. Only when, in the function \link{lcmcross}, \code{logDepVar = TRUE}.}
 
@@ -175,6 +174,13 @@ tl_u_ts <- sfacross(formula = log(tc/wf) ~ log(y) + I(1/2 * (log(y))^2) + log(wl
   eff.tl_u_ts <- efficiencies(tl_u_ts)
   head(eff.tl_u_ts)
   summary(eff.tl_u_ts)
+  
+cb_2c_h1 <- lcmcross(formula = ly ~ lk + ll + yr, thet = ~initStat, data = worldprod)
+  eff.ccb_2c_h1 <- efficiencies(cb_2c_h1)
+  table(eff.ccb_2c_h1$Group_c)
+  summary(eff.ccb_2c_h1[,c("ineff_c1", "ineff_c2")])
+  summary(eff.ccb_2c_h1[eff.ccb_2c_h1$Group_c == 1, c("PosteriorProb_c1", "PriorProb_c1")])
+  summary(eff.ccb_2c_h1[eff.ccb_2c_h1$Group_c == 2, c("PosteriorProb_c2", "PriorProb_c2")])
 }
 
 \references{

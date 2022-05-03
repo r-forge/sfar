@@ -1,7 +1,7 @@
 # fitted values for sfacross ----------
 
 fitted.sfacross <- function(object, ...) {
-  object$dataTable$mleFitted
+  object$dataTable$mlFitted
 }
 
 # fitted values for lcmcross ----------
