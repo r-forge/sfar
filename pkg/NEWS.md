@@ -1,5 +1,5 @@
 # sfaR 0.1.1
-Changes in 'sfaR' version 0.1.1 (2022-05-05)
+Changes in 'sfaR' version 0.1.1 (released on CRAN 2022-05-05)
 
 ## NEW FEATURES
 
